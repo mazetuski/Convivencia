@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Login Correcto</h1>
+    {#{% for perfiles in perfil %}#}
+        {#<h2>{{ perfiles.perfil }}</h2>#}
+    {#{% endfor %}#}
+    <p>{{ alumno.getNombre() }} {{ alumno.getApellido1() }}</p>
+
+    <a href="{{ path('logout') }}">Salir</a>
+
+{% endblock %}
