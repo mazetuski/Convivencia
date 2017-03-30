@@ -32,7 +32,8 @@ security:
 
     access_control:
         - { path: ^/convivencia/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/convivencia/registro$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/convivencia/registro$, roles: ROLE_ADMIN }
+        - { path: ^/convivencia/admin$, roles: ROLE_ADMIN }
         - { path: ^/, roles: ROLE_USER }
             # activate different ways to authenticate
 

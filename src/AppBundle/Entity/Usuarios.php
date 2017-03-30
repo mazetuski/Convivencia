@@ -3,13 +3,16 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Usuarios
  *
  * @ORM\Table(name="usuarios")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UsuariosRepository")
+ * @UniqueEntity("usuario")
  */
 class Usuarios implements  UserInterface
 {
@@ -23,16 +26,10 @@ class Usuarios implements  UserInterface
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idUsuario", type="integer")
-     */
-    private $idUsuario;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="usuario", type="string", length=30, unique=true)
+     *
      */
     private $usuario;
 
@@ -46,12 +43,12 @@ class Usuarios implements  UserInterface
     private $plainPassword;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Perfil")
-     * @ORM\JoinColumn(name="idPerfil", referencedColumnName="id")
+     * @ORM\Column(name="roles", type="array", length=255)
+     *
      */
-    private $idPerfil;
+    private $roles;
 
 
     /**
@@ -155,23 +152,6 @@ class Usuarios implements  UserInterface
 
 
     /**
-     * @return int
-     */
-    public function getIdPerfil()
-    {
-        return $this->idPerfil;
-    }
-
-    /**
-     * @param int $idPerfil
-     */
-    public function setIdPerfil($idPerfil)
-    {
-        $this->idPerfil = $idPerfil;
-    }
-
-
-    /**
      * Returns the roles granted to the user.
      *
      * <code>
@@ -189,7 +169,18 @@ class Usuarios implements  UserInterface
      */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        $roles = $this->roles;
+        $roles[] = "ROLE_USER";
+        return $roles;
+    }
+
+    /**
+     * @param array $roles
+     * @return $this
+     */
+    public function setRoles(array $roles){
+        $this->roles = $roles;
+        return $this;
     }
 
     /**
@@ -224,4 +215,6 @@ class Usuarios implements  UserInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
+
+
 }

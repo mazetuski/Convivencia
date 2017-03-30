@@ -23,6 +23,14 @@ class Tutores
 
     /**
      * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     */
+    private $idUsuario;
+
+    /**
+     * @var int
      * @ORM\ManyToMany(targetEntity="Alumno")
      * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
      */
@@ -209,4 +217,61 @@ class Tutores
     {
         return $this->email;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idAlumno = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set idUsuario
+     *
+     * @param \AppBundle\Entity\Usuarios $idUsuario
+     *
+     * @return Tutores
+     */
+    public function setIdUsuario(\AppBundle\Entity\Usuarios $idUsuario = null)
+    {
+        $this->idUsuario = $idUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get idUsuario
+     *
+     * @return \AppBundle\Entity\Usuarios
+     */
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
+
+    /**
+     * Add idAlumno
+     *
+     * @param \AppBundle\Entity\Alumno $idAlumno
+     *
+     * @return Tutores
+     */
+    public function addIdAlumno(\AppBundle\Entity\Alumno $idAlumno)
+    {
+        $this->idAlumno[] = $idAlumno;
+
+        return $this;
+    }
+
+    /**
+     * Remove idAlumno
+     *
+     * @param \AppBundle\Entity\Alumno $idAlumno
+     */
+    public function removeIdAlumno(\AppBundle\Entity\Alumno $idAlumno)
+    {
+        $this->idAlumno->removeElement($idAlumno);
+    }
+
+
 }

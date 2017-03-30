@@ -63,4 +63,3 @@ class Perfil
         return $this->perfil;
     }
 }
-

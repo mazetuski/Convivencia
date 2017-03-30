@@ -22,6 +22,13 @@ class Profesores
     private $id;
 
     /**
+     * @var int
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     */
+    private $idUsuario;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
@@ -185,5 +192,29 @@ class Profesores
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set idUsuario
+     *
+     * @param \AppBundle\Entity\Usuarios $idUsuario
+     *
+     * @return Profesores
+     */
+    public function setIdUsuario(\AppBundle\Entity\Usuarios $idUsuario = null)
+    {
+        $this->idUsuario = $idUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get idUsuario
+     *
+     * @return \AppBundle\Entity\Usuarios
+     */
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
     }
 }

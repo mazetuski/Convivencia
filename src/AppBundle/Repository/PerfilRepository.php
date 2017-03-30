@@ -19,6 +19,15 @@ class PerfilRepository extends \Doctrine\ORM\EntityRepository
             ->where("p.id = :id")
             ->setParameter("id", $id)
             ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function getPerfiles(){
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select("p.perfil, p.id")
+            ->from('AppBundle:Perfil', 'p')
+            ->getQuery()
             ->getResult();
     }
 

@@ -9,11 +9,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Alumno;
-use AppBundle\Entity\Perfil;
 use AppBundle\Entity\Usuarios;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -35,7 +35,7 @@ class ConvivenciaController extends Controller
     {
 
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirectToRoute("loginCorrecto");
+            return $this->redirectToRoute("alumno");
         }
 
         // Recupera el servicio de autenticación
@@ -52,43 +52,7 @@ class ConvivenciaController extends Controller
             'last_username' => $lastUsername,
             'error'         => $error,
         ));
-        /*
-        $em = $this->getDoctrine()->getManager();
 
-        $usuario = new Usuarios();
-
-        $form = $this->createFormBuilder($usuario)
-            ->add("Usuario")
-            ->add("Password", PasswordType::class, array('required' => false))
-            ->add("registro", SubmitType::class)
-            ->add("login", SubmitType::class)
-            ->getForm();
-
-
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $usuario = $form->getData();
-            if($form->get("registro")->isClicked())
-                return $this->redirectToRoute("convivencia_registro");
-            else{
-                $usuarioLogeado = $em->getRepository("AppBundle:Usuarios")
-                    ->getUsuario($usuario->getUsuario(), $usuario->getPassword());
-                $perfil = $em->getRepository("AppBundle:Perfil")
-                    ->getPerfil($usuarioLogeado->getIdPerfil());
-                return $this->render('convivencia/loginCorrecto.html.twig', array(
-                    'perfil' => $perfil,
-                    'usuario' => $usuario
-                ));
-            }
-        }
-
-        return $this->render('convivencia/index.html.twig', array(
-            'form' => $form->createView(),
-        ));
-        */
     }
 
     /**
@@ -97,7 +61,7 @@ class ConvivenciaController extends Controller
      */
     public function registroAction(Request $request)
     {
-
+        $em = $this->getDoctrine()->getManager();
         $usuario = new Usuarios();
         $form = $this->createFormBuilder($usuario)
             ->add('Usuario')
@@ -105,6 +69,16 @@ class ConvivenciaController extends Controller
                 'type' => PasswordType::class,
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
+            ))
+            ->add('roles', ChoiceType::class, array(
+                'multiple' => true,
+                'expanded' =>true,
+                'choices' => array(
+                  'Alumno' => "ROLE_USER",
+                  'Tutor' => "ROLE_TUTOR",
+                  'Profesor' => "ROLE_PROFESOR",
+                  'Jefatura' => "ROLE_ADMIN",
+                ),
             ))
             ->getForm();
 
@@ -114,17 +88,15 @@ class ConvivenciaController extends Controller
             // Codificamos la contraseña en texto plano accediendo al 'encoder' que habíamos indicado en la configuración
             $password = $this->get('security.password_encoder')
                 ->encodePassword($usuario, $usuario->getPlainPassword());
-
             // Establecemos la contraseña real ya codificada al usuario
             $usuario->setPassword($password);
 
             // Persistimos la entidad como cualquier otra
-            $em = $this->getDoctrine()->getManager();
             $em->persist($usuario);
             $em->flush();
 
-            // Redigirimos a la pantalla de login para que acceda el nuevo usuario
-            return $this->redirectToRoute('login');
+            // Redigirimos a la pantalla del admin
+            return $this->redirectToRoute('admin');
         }
 
         return $this->render('convivencia/registro.html.twig', array(
@@ -141,19 +113,32 @@ class ConvivenciaController extends Controller
     }
 
     /**
-     * @Route("/loginCorrecto", name="loginCorrecto")
+     * @Route("/alumno", name="alumno")
      */
-    public function loginCorrectoAction(Request $request)
+    public function alumnoAction(Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
-        /** @var  $alumno */
-        $alumno = $em->getRepository('AppBundle:Alumno')
-            ->getAlumno($this->getUser()->getIdUsuario());
+        /** @var \AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        
+        if(!$alumnoHelper->alumnoExists($this->getUser()))
+            print_r("No existe");
 
-        return $this->render('convivencia/loginCorrecto.html.twig', array(
-                'alumno' =>$alumno,
+        if(in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
+            return $this->redirectToRoute("admin");
+
+        return $this->render('convivencia/alumno.html.twig', array(
+                'alumno' => $this->getUser(),
             )
         );
+    }
+
+    /**
+     * @Route("/admin", name="admin")
+     */
+    public function adminAction(Request $request){
+
+        return $this->render('convivencia/admin.html.twig');
     }
 }

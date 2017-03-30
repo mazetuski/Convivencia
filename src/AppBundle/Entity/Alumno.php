@@ -23,6 +23,14 @@ class Alumno
 
     /**
      * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     */
+    private $idUsuario;
+
+    /**
+     * @var int
      * @ORM\ManyToOne(targetEntity="Tutores")
      * @ORM\JoinColumn(name="idTutor", referencedColumnName="id")
      */
@@ -332,5 +340,29 @@ class Alumno
     public function getPuntos()
     {
         return $this->puntos;
+    }
+
+    /**
+     * Set idUsuario
+     *
+     * @param \AppBundle\Entity\Usuarios $idUsuario
+     *
+     * @return Alumno
+     */
+    public function setIdUsuario(\AppBundle\Entity\Usuarios $idUsuario = null)
+    {
+        $this->idUsuario = $idUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get idUsuario
+     *
+     * @return \AppBundle\Entity\Usuarios
+     */
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
     }
 }

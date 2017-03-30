@@ -22,6 +22,21 @@ class Alumno
     private $id;
 
     /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     */
+    private $idUsuario;
+
+    /**
+     * @var int
+     * @ORM\ManyToOne(targetEntity="Tutores")
+     * @ORM\JoinColumn(name="idTutor", referencedColumnName="id")
+     */
+    private $idTutor;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
@@ -53,7 +68,6 @@ class Alumno
      * @var string
      * @ORM\ManyToOne(targetEntity="Cursos")
      * @ORM\JoinColumn(name="idCurso", referencedColumnName="id")
-     * @ORM\Column(name="idCurso", type="integer")
      */
     private $idCurso;
 
@@ -217,6 +231,22 @@ class Alumno
     }
 
     /**
+     * @return int
+     */
+    public function getIdTutor()
+    {
+        return $this->idTutor;
+    }
+
+    /**
+     * @param int $idTutor
+     */
+    public function setIdTutor($idTutor)
+    {
+        $this->idTutor = $idTutor;
+    }
+
+    /**
      * Set telefono
      *
      * @param string $telefono
@@ -312,4 +342,3 @@ class Alumno
         return $this->puntos;
     }
 }
-

@@ -22,6 +22,21 @@ class Tutores
     private $id;
 
     /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     */
+    private $idUsuario;
+
+    /**
+     * @var int
+     * @ORM\ManyToMany(targetEntity="Alumno")
+     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
+     */
+    private $idAlumno;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
@@ -178,6 +193,22 @@ class Tutores
     }
 
     /**
+     * @return int
+     */
+    public function getIdAlumno()
+    {
+        return $this->idAlumno;
+    }
+
+    /**
+     * @param int $idAlumno
+     */
+    public function setIdAlumno($idAlumno)
+    {
+        $this->idAlumno = $idAlumno;
+    }
+
+    /**
      * Get email
      *
      * @return string
@@ -187,4 +218,3 @@ class Tutores
         return $this->email;
     }
 }
-
