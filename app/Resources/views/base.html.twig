@@ -8,14 +8,14 @@
             <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="{{ asset('css/estilo.css') }}">
+            <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+        {% include 'convivencia/header.html.twig' %}
         {% block body %}
-            {% block header %}
-                <a href="{{ path('logout') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Logout</a>
-            {% endblock %}
+
         {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
