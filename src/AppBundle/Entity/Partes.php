@@ -12,6 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Partes
 {
+
+    function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->horaSalidaAula = new \DateTime();
+        $this->horaLlegadaJefatura = new \DateTime();
+    }
+
     /**
      * @var int
      *

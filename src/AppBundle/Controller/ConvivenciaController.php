@@ -15,6 +15,7 @@ use AppBundle\Entity\Usuarios;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
+use AppBundle\Form\SancionFormType;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
@@ -198,7 +199,8 @@ class ConvivenciaController extends Controller
     /**
      * @Route("/sanciones", name="gestion_sanciones")
      */
-    public function showGestionSanciones(){
+    public function showGestionSanciones()
+    {
 
         $em = $this->getDoctrine()->getManager();
         /** @var SancionesRepository $sancionesRepository */
@@ -253,10 +255,9 @@ class ConvivenciaController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        $parte = null;
         if ($request->query->has('idParte'))
             $parte = $repositoryPartes->getParteById($request->get('idParte'));
-        if ($parte == null)
+        else
             $parte = new Partes();
         $form = $this->createForm(ParteFormType::class, $parte);
         $form->handleRequest($request);
@@ -269,6 +270,33 @@ class ConvivenciaController extends Controller
 
         return $this->render('convivencia/partes/partesForm.html.twig', array(
             'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/nuevaSancion", name="nueva_sancion")
+     * @Method({"GET", "POST"})
+     */
+    public function crearSancionAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var SancionesRepository $repositorySancion */
+        $repositorySancion = $em->getRepository("AppBundle:Sanciones");
+        if ($request->query->has('idSancion'))
+            $sancion = $repositorySancion->findOneById($request->get('idSancion'));
+        else
+            $sancion = new Sanciones();
+        $form = $this->createForm(SancionFormType::class, $sancion);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($sancion);
+            $em->flush();
+            return $this->redirectToRoute("gestion_sanciones");
+        }
+
+        return $this->render("convivencia/sanciones/sancionesForm.html.twig", array(
+            "form" => $form->createView(),
         ));
     }
 }

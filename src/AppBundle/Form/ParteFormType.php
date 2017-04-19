@@ -86,8 +86,10 @@ class ParteFormType extends AbstractType
            ->add('idSancion', EntityType::class, array(
                'class' => 'AppBundle:Sanciones',
                'choice_label' => 'sancion',
-               'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-               'label_attr' => array('class' => 'w3-text-teal')
+               'attr' => array('class' => 'w3-input w3-border w3-light-grey selectForm'),
+               'label_attr' => array('class' => 'w3-text-teal'),
+               'expanded' => "true",
+               'multiple' => "true"
            ));
     }
 

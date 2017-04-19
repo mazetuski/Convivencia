@@ -1,3 +1,17 @@
 body{
     background: #f5f5f5;
 }
+
+.formConvivencia>div>div{
+    margin: 15px 0;
+}
+
+.selectForm input{
+    display: inline-block;
+    width: 8%;
+}
+
+.selectForm label{
+    display: inline-block;
+    width: 89%;
+}

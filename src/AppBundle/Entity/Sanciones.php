@@ -12,6 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Sanciones
 {
+
+    function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->fechaFinal = new \DateTime();
+        $this->fechaInicio = new \DateTime();
+    }
+
     /**
      * @var int
      *

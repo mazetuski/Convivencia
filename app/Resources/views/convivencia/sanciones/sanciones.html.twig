@@ -13,7 +13,7 @@
                 </div>
                 <div class="w3-col m3 w3-section">
                     {#TODO: enlaces#}
-                    <a href="{{ path('nuevoParte') }}" class="w3-margin-right" title="Nuevo Parte"><i class="fa fa-plus-circle fa-2x"></i></a>
+                    <a href="{{ path('nueva_sancion') }}" class="w3-margin-right" title="Nueva Sanción"><i class="fa fa-plus-circle fa-2x"></i></a>
                     <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
                     <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
                 </div>
@@ -27,11 +27,11 @@
                                 <td>{{ sancion.id }}</td>
                                 <td>{{ sancion.fecha|date("d/m/Y") }}</td>
                                 <td><a href="{{ path('verAlumno', {'id': sancion.idAlumno.id}) }}">{{ sancion.idAlumno.nombre }}</a></td>
-                                <td>{{ sancion.fechaInicio }}</td>
-                                <td>{{ sancion.fechaFinal }}</td>
+                                <td>{{ sancion.fechaInicio|date("d/m/Y") }}</td>
+                                <td>{{ sancion.fechaFinal|date("d/m/Y") }}</td>
                                 <td>{{ sancion.idEstado.estado }}</td>
-                                <td>{{ sancion.puntos }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">edit</a></td>
+                                <td>{{ sancion.puntosRecuperados }}</td>
+                                <td><a href="{{ path('nueva_sancion') }}?idSancion={{ sancion.id }}">edit</a></td>
                             </tr>
                         {% endfor %}
                     </table>
