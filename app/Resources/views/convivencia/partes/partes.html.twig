@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% block header %}
+        <main class="w3-container">
+            <h1>Gestion Partes</h1>
+            {#TODO: ajustar form#}
+            <form action="">
+                <div class="w3-col m3 w3-section">
+                    <input type="text" name="like" id="partesSearchBar"> <i
+                            class="fa fa-search fa-lg fa-flip-horizontal"></i> <input type="submit" value="Buscar"/>
+                </div>
+                <div class="w3-col m3 w3-section">
+                    {#TODO: enlaces#}
+                    <a href="{{ path('nuevoParte') }}" class="w3-margin-right" title="Nuevo Parte"><i
+                                class="fa fa-plus-circle fa-2x"></i></a>
+                    <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
+                    <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
+                </div>
+                <div class="w3-col m12 w3-responsive w3-section">
+                    <table class="w3-table-all w3-centered w3-margin-top">
+                        <tr>
+                            <th>NumParte</th>
+                            <th>Fecha</th>
+                            <th>Alumno</th>
+                            <th>Curso</th>
+                            <th>Profesor</th>
+                            <th>Tipo</th>
+                            <th>Puntos</th>
+                            <th></th>
+                        </tr>
+                        {% for parte in partes %}
+                            <tr>
+                                <td>{{ parte.id }}</td>
+                                <td>{{ parte.fecha|date("d/m/Y") }}</td>
+                                <td>
+                                    <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.nombre }}</a>
+                                </td>
+                                <td>Ninguno</td>
+                                <td>
+                                    <a href="{{ path('verProfesor', {'id': parte.idProfesor.id}) }}">{{ parte.idProfesor.nombre }}</a>
+                                </td>
+                                <td>{{ parte.idTipo.tipo }}</td>
+                                <td>{{ parte.puntos }}</td>
+                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">edit</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </form>
+        </main>
+    {% endblock %}
+{% endblock %}

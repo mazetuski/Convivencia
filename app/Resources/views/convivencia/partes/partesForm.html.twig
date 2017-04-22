@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="w3-row w3-container w3-white w3-margin-bottom">
+    <h1 class="w3-center">Formulario Parte</h1>
+
+        {{ form_start(form, {'attr': {'class':'w3-content formConvivencia'}}) }}
+        {{ form_widget(form) }}
+        <input class="w3-button w3-block w3-section w3-teal" type="submit" name="registrarse" value="Enviar">
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}

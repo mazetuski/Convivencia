@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    <main class="w3-container w3-margin-top w3-center">
+        {#TODO: AÑADIR NOMBRE DEL ALUMNO#}
+            <header class="w3-container">
+                <img class="w3-circle" src="https://www.w3schools.com/w3css/img_avatar3.png" style="width: 300px" alt="avatar">
+                <h4 class="w3-center">Puntos: {{ alumno.puntos }}/12 </h4>
+            </header>
+            <div class="w3-container w3-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/EAN13.svg/220px-EAN13.svg.png" style="width:150px;">
+            </div>
+    </main>
+
+
+{% endblock %}

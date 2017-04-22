@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Alumno
@@ -40,6 +41,7 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nombre;
 
@@ -47,6 +49,7 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="apellido1", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $apellido1;
 
@@ -54,6 +57,7 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="apellido2", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $apellido2;
 
@@ -61,6 +65,7 @@ class Alumno
      * @var int
      *
      * @ORM\Column(name="nie", type="integer")
+     * @Assert\NotBlank()
      */
     private $nie;
 
@@ -75,6 +80,7 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="telefono", type="string", length=10)
+     * @Assert\NotBlank()
      */
     private $telefono;
 
@@ -82,6 +88,10 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=30)
+     * @Assert\Email(
+     *      message = "The email '{{ value }}' is not a valid email.",
+     *      checkMX = true
+     * )
      */
     private $email;
 
@@ -89,8 +99,25 @@ class Alumno
      * @var string
      *
      * @ORM\Column(name="direccion", type="string", length=100)
+     * @Assert\NotBlank()
      */
     private $direccion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codpostal", type="string", length=5)
+     * @Assert\NotBlank()
+     */
+    private $codigoPostal;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="foto", type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $foto;
 
     /**
      * @var int
@@ -365,4 +392,38 @@ class Alumno
     {
         return $this->idUsuario;
     }
+
+    /**
+     * @return string
+     */
+    public function getCodigoPostal()
+    {
+        return $this->codigoPostal;
+    }
+
+    /**
+     * @param string $codigoPostal
+     */
+    public function setCodigoPostal($codigoPostal)
+    {
+        $this->codigoPostal = $codigoPostal;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFoto()
+    {
+        return $this->foto;
+    }
+
+    /**
+     * @param string $foto
+     */
+    public function setFoto($foto)
+    {
+        $this->foto = $foto;
+    }
+
+
 }

@@ -24,9 +24,24 @@ class Cursos
     /**
      * @var string
      *
-     * @ORM\Column(name="curso", type="string", length=255)
+     * @ORM\Column(name="curso", type="string", length=5)
      */
     private $curso;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="aula", type="string", length=5)
+     */
+    private $aula;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Tutores")
+     * @ORM\JoinColumn(name="idTutor", referencedColumnName="id")
+     */
+    private $idTutor;
 
 
     /**
@@ -62,4 +77,38 @@ class Cursos
     {
         return $this->curso;
     }
+
+    /**
+     * @return string
+     */
+    public function getAula()
+    {
+        return $this->aula;
+    }
+
+    /**
+     * @param string $aula
+     */
+    public function setAula($aula)
+    {
+        $this->aula = $aula;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdTutor()
+    {
+        return $this->idTutor;
+    }
+
+    /**
+     * @param int $idTutor
+     */
+    public function setIdTutor($idTutor)
+    {
+        $this->idTutor = $idTutor;
+    }
+
+
 }
