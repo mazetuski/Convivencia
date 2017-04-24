@@ -1,19 +1,21 @@
 {% block header %}
     {% if app.user.usuario is defined %}
-        <header class="w3-container w3-teal">
-            <a href="{{ path('logout') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Logout</a>
-            <a href="{{ path('index') }}"
-               class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">{{ app.user.usuario }}</a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('convivencia_registro') }}"
-                   class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Registro</a>
-                <a href="{{ path('gestion_partes') }}"
-                   class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Gestion Partes</a>
-                <a href="{{ path('gestion_sanciones') }}"
-                   class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Gestion Sanciones</a>
-            {% elseif is_granted('ROLE_USER') %}
-                <a href="{{ path('registrarAlumno') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-xlarge">Perfil</a>
-            {% endif %}
+        <header class="w3-container" style="background-color: #38889B; color: #FFFFFF">
+            <div style="text-align: center;">
+                <a href="{{ path('logout') }}" class="w3-padding w3-mobile w3-xlarge">Logout</a>
+                <a href="{{ path('index') }}"
+                   class="w3-padding w3-mobile w3-xlarge">{{ app.user.usuario }}</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('convivencia_registro') }}"
+                       class="w3-padding w3-mobile w3-xlarge">Registro</a>
+                    <a href="{{ path('gestion_partes') }}"
+                       class="w3-padding w3-mobile w3-xlarge">Gestion Partes</a>
+                    <a href="{{ path('gestion_sanciones') }}"
+                       class="w3-padding w3-mobile w3-xlarge">Gestion Sanciones</a>
+                {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('registrarAlumno') }}" class="w3-padding w3-mobile w3-left w3-xlarge">Perfil</a>
+                {% endif %}
+            </div>
         </header>
     {% endif %}
 {% endblock %}
