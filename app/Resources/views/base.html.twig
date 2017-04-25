@@ -5,10 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Convivencia{% endblock %}</title>
         {% block stylesheets %}
+            {# CSS #}
             <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+            {# Font awesome #}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            {# Chosen css #}
+            <link rel="stylesheet" href="{{ asset('css/chosen/chosen.min.css') }}">
             <link rel="stylesheet" href="{{ asset('css/estilo.css') }}">
+
+            {# JAVASCRIPT #}
             <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+            {# Chosen js #}
+            <script type="text/javascript" src="{{ asset('js/chosen/chosen.jquery.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/convivencia.js') }}"></script>
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>

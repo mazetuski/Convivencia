@@ -42,6 +42,16 @@ class Conductas
      */
     private $tipo;
 
+//    /**
+//     * @ORM\OneToMany(targetEntity="rPartesConductas", mappedBy="idConducta")
+//     */
+//    private $parteConducta;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Partes", mappedBy="idConducta")
+     */
+    private $idParte;
+
 
     /**
      * Get id
@@ -75,6 +85,13 @@ class Conductas
     public function getConducta()
     {
         return $this->conducta;
+    }
+
+    /**
+     * @return string Una cadena que contiene los puntos y el nombre de la conducta.
+     */
+    public function getNombreAndPuntos(){
+        return '('.$this->getPuntos() . ') - ' . $this->getConducta();
     }
 
     /**
@@ -124,5 +141,62 @@ class Conductas
     {
         return $this->tipo;
     }
-}
 
+//    /**
+//     * @return mixed
+//     */
+//    public function getParteConducta()
+//    {
+//        return $this->parteConducta;
+//    }
+//
+//    /**
+//     * @param mixed $parteConducta
+//     */
+//    public function setParteConducta($parteConducta)
+//    {
+//        $this->parteConducta = $parteConducta;
+//        return $this;
+//    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idParte = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add idParte
+     *
+     * @param \AppBundle\Entity\Partes $idParte
+     *
+     * @return Conductas
+     */
+    public function addIdParte(\AppBundle\Entity\Partes $idParte)
+    {
+        $this->idParte[] = $idParte;
+
+        return $this;
+    }
+
+    /**
+     * Remove idParte
+     *
+     * @param \AppBundle\Entity\Partes $idParte
+     */
+    public function removeIdParte(\AppBundle\Entity\Partes $idParte)
+    {
+        $this->idParte->removeElement($idParte);
+    }
+
+    /**
+     * Get idParte
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIdParte()
+    {
+        return $this->idParte;
+    }
+}

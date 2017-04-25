@@ -2,11 +2,11 @@ body{
     background: #f5f5f5;
 }
 
-a {
+header a {
 	text-decoration: none;
 }
 
-a:hover{
+header a:hover{
 	color: #38889B;
 	background-color: #FFFFFF;
 }

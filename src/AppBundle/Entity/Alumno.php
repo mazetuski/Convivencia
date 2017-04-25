@@ -23,6 +23,14 @@ class Alumno
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $nombre;
+
+    /**
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Usuarios")
@@ -37,13 +45,6 @@ class Alumno
      */
     private $idTutor;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nombre", type="string", length=255)
-     * @Assert\NotBlank()
-     */
-    private $nombre;
 
     /**
      * @var string
@@ -126,6 +127,14 @@ class Alumno
      */
     private $puntos;
 
+
+    /**
+     * Función que devuelve el nombre completo del alumno
+     * @return string
+     */
+    public function getNombreCompleto(){
+        return $this->getNombre() . ' ' . $this->getApellido1() . ' ' . $this->getApellido2();
+    }
 
     /**
      * Get id

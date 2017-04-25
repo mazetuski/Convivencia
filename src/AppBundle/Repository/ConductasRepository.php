@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Conductas;
 
 /**
  * ConductasRepository
@@ -10,4 +11,20 @@ namespace AppBundle\Repository;
  */
 class ConductasRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * Función que devuelve un array con las conductas indexadas por el tipo
+     * @return array Array con las conductas indexadas por el tipo
+     */
+    public function getConductasOption()
+    {
+        $conductas = $this->findAll();
+        $arrConductas = [];
+        /** @var Conductas $conducta */
+        foreach ($conductas as $conducta) {
+            $arrConductas[$conducta->getTipo()][] = $conducta->getNombreAndPuntos();
+        }
+        return $arrConductas;
+    }
+
 }

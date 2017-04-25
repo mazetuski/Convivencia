@@ -12,6 +12,7 @@ use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\Usuarios;
+use AppBundle\Form\ImportFormType;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
@@ -22,11 +23,16 @@ use AppBundle\Services\AlumnoHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class ConvivenciaController
@@ -178,6 +184,29 @@ class ConvivenciaController extends Controller
     }
 
     /**
+     * @Route("/admin/import", name="admin_import")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function importAction(Request $request){
+        $form = $this->createForm(ImportFormType::class);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            /** @var File $file */
+            $file = $form['importar']->getData();
+            
+            if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
+                while(($row = fgetcsv($handle)) !== FALSE) {
+                    print_r($row); // process the row.
+                }
+            }
+        }
+
+        return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
+            'form' =>$form->createView(),
+        ));
+    }
+
+    /**
      * @Route("/partes", name="gestion_partes")
      * @Method({"GET", "POST"})
      */
@@ -189,7 +218,7 @@ class ConvivenciaController extends Controller
         if ($request->query->has('like'))
             $partes = $repositoryPartes->getPartesLike($request->get('like'));
         else
-            $partes = $repositoryPartes->getPartesByEstado();
+            $partes = $repositoryPartes->findAll();
         return $this->render('convivencia/partes/partes.html.twig', array(
             'partes' => $partes,
             'user' => $this->getUser(),
@@ -205,7 +234,7 @@ class ConvivenciaController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var SancionesRepository $sancionesRepository */
         $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
-        $sanciones = $sancionesRepository->getSancionesPorEstado();
+        $sanciones = $sancionesRepository->findAll();
 
         return $this->render("convivencia/sanciones/sanciones.html.twig", array(
             'sanciones' => $sanciones,

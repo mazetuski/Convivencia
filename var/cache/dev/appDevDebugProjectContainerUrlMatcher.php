@@ -160,9 +160,17 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'verProfesor')), array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showProfesorAction',));
             }
 
-            // admin
-            if ($pathinfo === '/convivencia/admin') {
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::adminAction',  '_route' => 'admin',);
+            if (0 === strpos($pathinfo, '/convivencia/admin')) {
+                // admin
+                if ($pathinfo === '/convivencia/admin') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::adminAction',  '_route' => 'admin',);
+                }
+
+                // admin_import
+                if ($pathinfo === '/convivencia/admin/import') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importAction',  '_route' => 'admin_import',);
+                }
+
             }
 
             // gestion_partes

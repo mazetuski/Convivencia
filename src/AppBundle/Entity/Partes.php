@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,12 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Partes
 {
 
-    function __construct()
-    {
-        $this->fecha = new \DateTime();
-        $this->horaSalidaAula = new \DateTime();
-        $this->horaLlegadaJefatura = new \DateTime();
-    }
+
 
     /**
      * @var int
@@ -39,14 +35,14 @@ class Partes
     /**
      * @var string
      *
-     * @ORM\Column(name="descripcion", type="string", length=255)
+     * @ORM\Column(name="descripcion", type="string", length=1000)
      */
     private $descripcion;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tareas", type="string", length=255)
+     * @ORM\Column(name="tareas", type="string", length=600)
      */
     private $tareas;
 
@@ -117,13 +113,16 @@ class Partes
      */
     private $idProfesor;
 
+//    /**
+//     * @ORM\OneToMany(targetEntity="rPartesConductas", mappedBy="idParte")
+//     */
+//    private $parteConducta;
+
     /**
-     * @var int
-     *
-     * @ORM\ManyToMany(targetEntity="Sanciones")
-     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Conductas", inversedBy="idParte")
+     * @ORM\JoinTable(name="partes_conductas")
      */
-    private $idSancion;
+    private $idConducta;
 
 
     /**
@@ -362,22 +361,6 @@ class Partes
     }
 
     /**
-     * @return int
-     */
-    public function getIdSancion()
-    {
-        return $this->idSancion;
-    }
-
-    /**
-     * @param int $idSancion
-     */
-    public function setIdSancion($idSancion)
-    {
-        $this->idSancion = $idSancion;
-    }
-
-    /**
      * Set idAlumno
      *
      * @param integer $idAlumno
@@ -424,5 +407,68 @@ class Partes
     {
         return $this->idProfesor;
     }
-}
 
+//    /**
+//     * @return mixed
+//     */
+//    public function getParteConducta()
+//    {
+//        return $this->parteConducta;
+//    }
+//
+//    /**
+//     * @param mixed $parteConducta
+//     */
+//    public function setParteConducta($parteConducta)
+//    {
+//        $this->parteConducta = $parteConducta;
+//
+//        return $this;
+//    }
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->horaSalidaAula = new \DateTime();
+        $this->horaLlegadaJefatura = new \DateTime();
+        $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add idConductum
+     *
+     * @param \AppBundle\Entity\Conductas $idConductum
+     *
+     * @return Partes
+     */
+    public function addIdConductum(\AppBundle\Entity\Conductas $idConductum)
+    {
+        $this->idConducta[] = $idConductum;
+
+        return $this;
+    }
+
+    /**
+     * Remove idConductum
+     *
+     * @param \AppBundle\Entity\Conductas $idConductum
+     */
+    public function removeIdConductum(\AppBundle\Entity\Conductas $idConductum)
+    {
+        $this->idConducta->removeElement($idConductum);
+    }
+
+    /**
+     * Get idConducta
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIdConducta()
+    {
+        return $this->idConducta;
+    }
+}

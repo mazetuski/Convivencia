@@ -64,10 +64,10 @@ class Alumno extends \AppBundle\Entity\Alumno implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idUsuario', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idTutor', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nombre', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido1', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido2', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nie', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idCurso', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'telefono', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'email', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'direccion', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'codigoPostal', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'foto', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'puntos'];
+            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nombre', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idUsuario', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idTutor', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido1', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido2', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nie', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idCurso', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'telefono', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'email', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'direccion', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'codigoPostal', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'foto', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'puntos'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idUsuario', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idTutor', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nombre', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido1', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido2', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nie', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idCurso', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'telefono', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'email', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'direccion', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'codigoPostal', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'foto', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'puntos'];
+        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nombre', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idUsuario', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idTutor', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido1', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'apellido2', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'nie', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'idCurso', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'telefono', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'email', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'direccion', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'codigoPostal', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'foto', '' . "\0" . 'AppBundle\\Entity\\Alumno' . "\0" . 'puntos'];
     }
 
     /**
@@ -173,6 +173,17 @@ class Alumno extends \AppBundle\Entity\Alumno implements \Doctrine\ORM\Proxy\Pro
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getNombreCompleto()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNombreCompleto', []);
+
+        return parent::getNombreCompleto();
+    }
+
     /**
      * {@inheritDoc}
      */
