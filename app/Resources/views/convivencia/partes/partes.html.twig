@@ -28,6 +28,7 @@
                             <th>Profesor</th>
                             <th>Tipo</th>
                             <th>Puntos</th>
+                            <th>Estado</th>
                             <th></th>
                         </tr>
                         {% for parte in partes %}
@@ -43,6 +44,7 @@
                                 </td>
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>
+                                <td>{{ parte.idEstado.estado }}</td>
                                 <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">edit</a></td>
                             </tr>
                         {% endfor %}

@@ -2,16 +2,31 @@ body{
     background: #f5f5f5;
 }
 
+form textarea{
+    min-height: 200px;
+}
+
+form input{
+    text-indent: 5px;
+}
+
+form .minTextArea{
+    min-height: 150px;
+}
+
 .formConvivencia>div>div{
     margin: 15px 0;
 }
 
 .selectForm input{
     display: inline-block;
+    vertical-align: middle;
     width: 8%;
 }
 
 .selectForm label{
     display: inline-block;
+    vertical-align: top;
     width: 89%;
+    margin-bottom: .7em;
 }

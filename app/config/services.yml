@@ -7,3 +7,7 @@ services:
     app.alumnoHelper:
         class: AppBundle\Services\AlumnoHelper
         arguments: ['@doctrine.orm.entity_manager']
+    form.parteType:
+        class: AppBundle\Form\ParteFormType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags: [ name: ParteFormType ]

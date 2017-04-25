@@ -193,4 +193,28 @@ class Profesores
     {
         return $this->email;
     }
+
+    /**
+     * Set idUsuario
+     *
+     * @param \AppBundle\Entity\Usuarios $idUsuario
+     *
+     * @return Profesores
+     */
+    public function setIdUsuario(\AppBundle\Entity\Usuarios $idUsuario = null)
+    {
+        $this->idUsuario = $idUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get idUsuario
+     *
+     * @return \AppBundle\Entity\Usuarios
+     */
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
 }

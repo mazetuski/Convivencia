@@ -35,14 +35,14 @@ class Partes
     /**
      * @var string
      *
-     * @ORM\Column(name="descripcion", type="string", length=1000)
+     * @ORM\Column(name="descripcion", type="string", length=255)
      */
     private $descripcion;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tareas", type="string", length=600)
+     * @ORM\Column(name="tareas", type="string", length=255)
      */
     private $tareas;
 

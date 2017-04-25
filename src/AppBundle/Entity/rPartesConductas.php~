@@ -31,7 +31,7 @@ class rPartesConductas
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Partes")
+     * @ORM\ManyToOne(targetEntity="Partes", inversedBy="parteConducta")
      * @ORM\JoinColumn(name="idParte", referencedColumnName="id")
      */
     private $idParte;
@@ -39,7 +39,7 @@ class rPartesConductas
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Conductas")
+     * @ORM\ManyToOne(targetEntity="Conductas", inversedBy="parteConducta")
      * @ORM\JoinColumn(name="idConducta", referencedColumnName="id")
      */
     private $idConducta;
@@ -127,4 +127,3 @@ class rPartesConductas
         return $this->idConducta;
     }
 }
-
