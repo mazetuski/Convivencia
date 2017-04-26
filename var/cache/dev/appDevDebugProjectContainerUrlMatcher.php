@@ -168,7 +168,7 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
                 // admin_import
                 if ($pathinfo === '/convivencia/admin/import') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importAction',  '_route' => 'admin_import',);
+                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importAlumnoAction',  '_route' => 'admin_import',);
                 }
 
             }

@@ -33,8 +33,8 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
-     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Usuarios", cascade={"remove"})
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id", onDelete="CASCADE")
      */
     private $idUsuario;
 
@@ -65,7 +65,7 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\Column(name="nie", type="integer")
+     * @ORM\Column(name="nie", type="integer", nullable=true)
      * @Assert\NotBlank()
      */
     private $nie;
@@ -88,7 +88,7 @@ class Alumno
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="email", type="string", length=150)
      * @Assert\Email(
      *      message = "The email '{{ value }}' is not a valid email.",
      *      checkMX = true
