@@ -2,6 +2,50 @@ body{
     background: #f5f5f5;
 }
 
+header a {
+    text-decoration: none;
+}
+
+header a:hover{
+    color: #38889B;
+    background-color: #FFFFFF;
+}
+
+h1{
+    color: #38889B;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
+}
+
+h2, h3, h4{
+    color: #337687;
+}
+
+i {
+    color: #38889B;
+}
+
+input[type="submit"] {
+    background-color: #38889B;
+}
+
+input[type="submit"]:hover{
+    background-color: #38889B!important;
+    color: #FFFFFF!important;
+}
+
+tr:hover{
+    background-color: #38889B!important;
+    color: #FFFFFF;
+
+}
+
+th {
+    background-color: #38889B;
+    color: #FFFFFF;
+}
+
+
 form textarea{
     min-height: 200px;
 }
@@ -29,4 +73,17 @@ form .minTextArea{
     vertical-align: top;
     width: 89%;
     margin-bottom: .7em;
+}
+
+
+@media (min-width: 768px) {
+    .w3-col.s12 {
+        width: 60%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .w3-col.s12 {
+        width: 40%;
+    }
 }

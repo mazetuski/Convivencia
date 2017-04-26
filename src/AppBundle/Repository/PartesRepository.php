@@ -43,6 +43,20 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Función que devuelve todos los partes ordenados por fecha
+     * @return array
+     */
+    public function getPartesOrdenados(){
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT p 
+             FROM AppBundle\Entity\Partes p
+             ORDER BY p.fecha DESC'
+        );
+
+        return $query->getResult();
+    }
+
+    /**
      * Función que devuelve un parte por id.
      * @param $id
      * @return mixed
@@ -64,9 +78,9 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      * @param $string
      * @return array
      */
-    public function getPartesLike($string, $estado = 'Comunicado'){
+    public function getPartesLike($string){
         if($string == '')
-            return $this->getPartesComunicado();
+            return $this->getPartesOrdenados();
         $query = $this->getEntityManager()->createQuery(
             "SELECT p
              FROM AppBundle\Entity\Partes p
@@ -76,10 +90,9 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              JOIN p.idEstado as estado
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
-             AND estado.estado = :estado"
+             ORDER BY p.fecha DESC"
         );
         $query->setParameter("string", '%'.$string.'%');
-        $query->setParameter("estado", $estado);
         return $query->getResult();
     }
 
