@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Cursos;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\Usuarios;
@@ -17,6 +18,7 @@ use AppBundle\Form\ParteFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\SancionFormType;
+use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
@@ -187,16 +189,33 @@ class ConvivenciaController extends Controller
      * @Route("/admin/import", name="admin_import")
      * @Security("has_role('ROLE_ADMIN')")
      */
-    public function importAction(Request $request){
+    public function importAlumnoAction(Request $request){
+        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(ImportFormType::class);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             /** @var File $file */
             $file = $form['importar']->getData();
-            
             if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
                 while(($row = fgetcsv($handle)) !== FALSE) {
-                    print_r($row); // process the row.
+                    if(count($row)>1) {
+                    $alumno = new Alumno();
+                    $alumno->setApellido1($row[0]);
+                    $alumno->setApellido2($row[1]);
+                    $alumno->setNombre($row[2]);
+                    //TODO: BUSCAR REPOSITORIO CURSO Y ASIGNAR ID.
+                    /** @var CursosRepository $repositoryCurso */
+                    $repositoryCurso = $em->getRepository('AppBundle:Cursos');
+                    /** @var Cursos $curso */
+                    $curso = $repositoryCurso->findOneByCurso($row[3]);
+                    $alumno->setIdCurso($curso->getId());
+                    $alumno->setTelefono($row[4]);
+                    $alumno->setEmail($row[5]);
+                    $alumno->setDireccion($row[8]);
+                    $alumno->setCodigoPostal($row[9]);
+                    $alumno->setPuntos(0);
+                        print_r($row); // process the row.
+                    }
                 }
             }
         }
