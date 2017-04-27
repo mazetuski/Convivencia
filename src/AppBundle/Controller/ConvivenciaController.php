@@ -23,6 +23,7 @@ use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Repository\UsuariosRepository;
 use AppBundle\Services\AlumnoHelper;
+use AppBundle\Services\ImportHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -197,48 +198,9 @@ class ConvivenciaController extends Controller
         if($form->isSubmitted() && $form->isValid()){
             /** @var File $file */
             $file = $form['importar']->getData();
-            /** @var CursosRepository $repositoryCurso */
-            $repositoryCurso = $em->getRepository('AppBundle:Cursos');
-            /** @var UsuariosRepository $repositoryUsuarios */
-            $repositoryUsuarios = $em->getRepository('AppBundle:Usuarios');
-            if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
-                while(($row = fgetcsv($handle)) !== FALSE) {
-                    if(count($row)>1) {
-                        $alumno = new Alumno();
-                        $alumno->setApellido1($row[0]);
-                        $alumno->setApellido2($row[1]);
-                        $alumno->setNombre($row[2]);
-                        //TODO: BUSCAR REPOSITORIO CURSO Y ASIGNAR ID.
-
-                        /** @var Cursos $curso */
-                        $curso = $repositoryCurso->findOneByCurso($row[3]);
-                        if ($curso != null) $alumno->setIdCurso($curso);
-                        $alumno->setTelefono($row[4]);
-                        $alumno->setEmail($row[5]);
-                        $alumno->setDireccion($row[8]);
-                        $alumno->setCodigoPostal($row[9]);
-                        $alumno->setPuntos(0);
-                        $alumno->setFoto('');
-                        $user = new Usuarios();
-                        $userNombre = substr($alumno->getNombre(), 0, 2) . substr($alumno->getApellido1(), 0, 2) . substr($alumno->getApellido2(), 0, 2);
-                        $userNombre = strtr($userNombre, 'ÁÀÂÄÃÅÇÉÈÊËÍÏÎÌÑÓÒÔÖÕÚÙÛÜÝ', 'AAAAAACEEEEEIIIINOOOOOUUUUY');
-                        $userNombre = strtr($userNombre, 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy');
-                        $user->setUsuario(mb_strtolower($userNombre));
-                        $password = $this->get('security.password_encoder')
-                            ->encodePassword($user, 'usuario');
-                        $user->setPassword($password);
-                        $user->setRoles(['ROLE_USER']);
-
-                        if($repositoryUsuarios->findOneByUsuario($user->getUsuario()) == null) {
-                            $em->persist($user);
-                            $em->flush();
-                            $alumno->setIdUsuario($user);
-                            $em->persist($alumno);
-                            $em->flush();
-                        }
-                    }
-                }
-            }
+            /** @var ImportHelper $importHelper */
+            $importHelper = $this->get('app.importHelper');
+            $importHelper->importarAlumnos($file);
         }
 
         return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(

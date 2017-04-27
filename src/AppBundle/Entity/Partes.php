@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Partes
@@ -13,8 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Partes
 {
-
-
 
     /**
      * @var int
@@ -77,9 +76,16 @@ class Partes
     /**
      * @var int
      *
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 12,
+     *      minMessage = "Tiene que ser un mínimo de {{ limit }} puntos",
+     *      maxMessage = "Como máximo pueden ser {{ limit }} puntos"
+     * )
+     *
      * @ORM\Column(name="puntos", type="integer")
      */
-    private $puntos;
+    private $puntos = 0;
 
     /**
      * @var integer
@@ -112,11 +118,6 @@ class Partes
      * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id")
      */
     private $idProfesor;
-
-//    /**
-//     * @ORM\OneToMany(targetEntity="rPartesConductas", mappedBy="idParte")
-//     */
-//    private $parteConducta;
 
     /**
      * @ORM\ManyToMany(targetEntity="Conductas", inversedBy="idParte")

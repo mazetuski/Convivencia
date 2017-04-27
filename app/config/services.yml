@@ -7,6 +7,9 @@ services:
     app.alumnoHelper:
         class: AppBundle\Services\AlumnoHelper
         arguments: ['@doctrine.orm.entity_manager']
+    app.importHelper:
+        class: AppBundle\Services\ImportHelper
+        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
     form.parteType:
         class: AppBundle\Form\ParteFormType
         arguments: ["@doctrine.orm.entity_manager"]
