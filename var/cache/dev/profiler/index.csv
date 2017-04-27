@@ -1,9 +1,7 @@
-95c362,127.0.0.1,GET,http://localhost:8000/,1493244156,381790,200
-381790,127.0.0.1,GET,http://localhost:8000/,1493244156,,500
-31b72d,127.0.0.1,GET,http://localhost:8000/,1493244166,,302
-ff4d45,127.0.0.1,GET,http://localhost:8000/convivencia/login,1493244167,,200
-e2ad42,127.0.0.1,POST,http://localhost:8000/convivencia/login,1493244178,,302
-30971f,127.0.0.1,GET,http://localhost:8000/convivencia/alumno,1493244178,,302
-8825a5,127.0.0.1,GET,http://localhost:8000/convivencia/admin,1493244178,,200
-c21cd1,127.0.0.1,GET,http://localhost:8000/,1493244195,,302
-0b211f,127.0.0.1,GET,http://localhost:8000/convivencia/login,1493244196,,200
+a123af,127.0.0.1,GET,http://localhost:8000/,1493323875,,302
+08ee7c,127.0.0.1,GET,http://localhost:8000/convivencia/login,1493323875,,200
+e14f11,127.0.0.1,POST,http://localhost:8000/convivencia/login,1493323888,,302
+24b490,127.0.0.1,GET,http://localhost:8000/convivencia/alumno,1493323888,,302
+78108e,127.0.0.1,GET,http://localhost:8000/convivencia/admin,1493323888,,200
+d41f86,127.0.0.1,GET,http://localhost:8000/convivencia/partes,1493323893,,200
+726898,127.0.0.1,GET,http://localhost:8000/convivencia/nuevoParte,1493323896,,200
