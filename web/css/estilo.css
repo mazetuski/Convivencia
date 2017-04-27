@@ -26,7 +26,7 @@ i {
     color: #38889B;
 }
 
-input[type="submit"], .checkAbrir, .checkCerrar {
+input[type="submit"], .checkAbrir, .checkCerrar, .azulTemaButton {
     background-color: #38889B;
 }
 
