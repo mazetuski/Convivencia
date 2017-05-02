@@ -65,6 +65,14 @@ class DiarioAulaConvivencia
      */
     private $idProfesor;
 
+    /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Sanciones")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     */
+    private $idSancion;
+
 
     /**
      * Get id
@@ -218,5 +226,29 @@ class DiarioAulaConvivencia
     public function getIdProfesor()
     {
         return $this->idProfesor;
+    }
+
+    /**
+     * Set idSancion
+     *
+     * @param \AppBundle\Entity\Sanciones $idSancion
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setIdSancion(\AppBundle\Entity\Sanciones $idSancion = null)
+    {
+        $this->idSancion = $idSancion;
+
+        return $this;
+    }
+
+    /**
+     * Get idSancion
+     *
+     * @return \AppBundle\Entity\Sanciones
+     */
+    public function getIdSancion()
+    {
+        return $this->idSancion;
     }
 }

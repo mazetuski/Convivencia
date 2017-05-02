@@ -34,6 +34,12 @@ class SancionFormType extends AbstractType
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
+            ->add('idTipo', EntityType::class, array(
+                'class' => 'AppBundle:TipoSancion',
+                'choice_label' => 'tipo',
+                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+                'label_attr' => array('class' => 'w3-text-teal')
+            ))
             ->add('FechaInicio', DateType::class, array(
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
@@ -66,12 +72,6 @@ class SancionFormType extends AbstractType
             ->add('idEstado', EntityType::class, array(
                 'class' => 'AppBundle:EstadosSancion',
                 'choice_label' => 'estado',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
-            ))
-            ->add('idTipo', EntityType::class, array(
-                'class' => 'AppBundle:TipoSancion',
-                'choice_label' => 'tipo',
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ));

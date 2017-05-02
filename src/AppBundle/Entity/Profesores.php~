@@ -65,6 +65,14 @@ class Profesores
 
 
     /**
+     * Función que devuelve el nombre completo del profesor
+     * @return string
+     */
+    public function getNombreCompleto(){
+        return $this->getNombre() . ' ' . $this->getApellido1() . ' ' . $this->getApellido2();
+    }
+
+    /**
      * Get id
      *
      * @return int

@@ -65,6 +65,14 @@ class DiarioAulaConvivencia
      */
     private $idProfesor;
 
+    /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Sanciones")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     */
+    private $idSancion;
+
 
     /**
      * Get id
