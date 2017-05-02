@@ -227,4 +227,28 @@ class DiarioAulaConvivencia
     {
         return $this->idProfesor;
     }
+
+    /**
+     * Set idSancion
+     *
+     * @param \AppBundle\Entity\Sanciones $idSancion
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setIdSancion(\AppBundle\Entity\Sanciones $idSancion = null)
+    {
+        $this->idSancion = $idSancion;
+
+        return $this;
+    }
+
+    /**
+     * Get idSancion
+     *
+     * @return \AppBundle\Entity\Sanciones
+     */
+    public function getIdSancion()
+    {
+        return $this->idSancion;
+    }
 }

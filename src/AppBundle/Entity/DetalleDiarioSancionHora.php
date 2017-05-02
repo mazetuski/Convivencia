@@ -32,7 +32,14 @@ class DetalleDiarioSancionHora
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="hora", type="time")
+     * @ORM\Column(name="fecha", type="datetime")
+     */
+    private $fecha;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="hora", type="integer")
      */
     private $hora;
 
@@ -74,7 +81,7 @@ class DetalleDiarioSancionHora
     /**
      * Set hora
      *
-     * @param \DateTime $hora
+     * @param int $hora
      *
      * @return DetalleDiarioSancionHora
      */
@@ -88,10 +95,34 @@ class DetalleDiarioSancionHora
     /**
      * Get hora
      *
-     * @return \DateTime
+     * @return int
      */
     public function getHora()
     {
         return $this->hora;
+    }
+
+    /**
+     * Set fecha
+     *
+     * @param \DateTime $fecha
+     *
+     * @return DetalleDiarioSancionHora
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    /**
+     * Get fecha
+     *
+     * @return \DateTime
+     */
+    public function getFecha()
+    {
+        return $this->fecha;
     }
 }

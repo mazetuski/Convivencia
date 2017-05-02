@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
+use AppBundle\Entity\DetalleDiarioSancionHora;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\Usuarios;
@@ -19,6 +20,7 @@ use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\SancionFormType;
 use AppBundle\Repository\CursosRepository;
+use AppBundle\Repository\DetalleDiarioSancionHoraRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Repository\UsuariosRepository;
@@ -44,6 +46,15 @@ use Symfony\Component\Serializer\Serializer;
  */
 class ConvivenciaController extends Controller
 {
+
+    const HORAS_CLASE = array(
+        '1' => '8:15 - 9:15',
+        '2' => '9:15 - 10:15',
+        '3' => '10:15 - 11-15',
+        '4' => '11:40 - 12:40',
+        '5' => '12:40 - 13:40',
+        '6' => '13:40 - 14:40',
+    );
 
     /**
      * @Route("/", name="index")
@@ -191,11 +202,12 @@ class ConvivenciaController extends Controller
      * @Route("/admin/import", name="admin_import")
      * @Security("has_role('ROLE_ADMIN')")
      */
-    public function importAlumnoAction(Request $request){
+    public function importAlumnoAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(ImportFormType::class);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var File $file */
             $file = $form['importar']->getData();
             /** @var ImportHelper $importHelper */
@@ -204,7 +216,7 @@ class ConvivenciaController extends Controller
         }
 
         return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
-            'form' =>$form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -320,14 +332,46 @@ class ConvivenciaController extends Controller
         $form = $this->createForm(SancionFormType::class, $sancion);
         $form->handleRequest($request);
 
+        /** @var DetalleDiarioSancionHoraRepository $repositoryDetalleDiario */
+        $repositoryDetalleDiario = $em->getRepository('AppBundle:DetalleDiarioSancionHora');
+        $detalles = $repositoryDetalleDiario->findByIdSancion($sancion->getId());
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($sancion);
             $em->flush();
+            if ($request->request->has('horaAc')) {
+                $horas = $request->get('horaAc');
+                $fechas = $request->get('fechaHora');
+                foreach ($horas as $key => $hora) {
+                    $detalleDiario = new DetalleDiarioSancionHora();
+                    $detalleDiario->setIdSancion($sancion);
+                    $detalleDiario->setHora($hora);
+                    $fecha = \DateTime::createFromFormat('d/m/Y', $fechas[$key]);
+                    $detalleDiario->setFecha($fecha);
+                    $em->persist($detalleDiario);
+                    $em->flush();
+                }
+            }
+            if ($request->request->has('horaAcEdit')) {
+                $horas = $request->get('horaAcEdit');
+                $fechas = $request->get('fechaHoraEdit');
+                foreach ($horas as $key => $hora) {
+                    /** @var DetalleDiarioSancionHora $detalleDiarioEdit */
+                    $detalleDiarioEdit = $repositoryDetalleDiario->findOneById($key);
+                    $detalleDiarioEdit->setHora($hora);
+                    $fecha = \DateTime::createFromFormat('d/m/Y', $fechas[$key]);
+                    $detalleDiarioEdit->setFecha($fecha);
+                    $em->persist($detalleDiarioEdit);
+                    $em->flush();
+                }
+            }
             return $this->redirectToRoute("gestion_sanciones");
         }
 
         return $this->render("convivencia/sanciones/sancionesForm.html.twig", array(
-            "form" => $form->createView(),
+            'form' => $form->createView(),
+            'detalles' => $detalles,
+            'horas' => self::HORAS_CLASE,
         ));
     }
 }

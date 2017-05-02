@@ -86,11 +86,14 @@ $(document).ready(function () {
     // SANCIONES, SI TIPO ES HORAS O JORNADA MOSTRAR NUEVOS INPUTS
 
     $('#sancion_form_idTipo').on('change', function () {
+        $('#checkEditSancion').hide();
         if ($(this).val() == SANCION_TYPE_HORAS) {
-            let buttonAdd = '<div class="w3-center w3-block"><input type="button" class="w3-button w3-margin w3-text-white checkNewSancion" value="+"></div>'
+            $('.contenedorFlexEdit').css('visibility', 'visible');
+            let buttonAdd = '<div class="w3-center w3-block"><input type="button" class="w3-button w3-margin w3-text-white checkNewSancion" value="+"></div>';
             contenedorNewHoraSancion(buttonAdd);
         } else {
             $('.contenedorFlex').hide();
+            $('.contenedorFlexEdit').css('visibility', 'hidden');
         }
     });
 
@@ -99,13 +102,15 @@ $(document).ready(function () {
      * @param text HTML que se puede añadir al final del contenedor
      */
     function contenedorNewHoraSancion(text = '') {
+        let fecha = new Date();
+        fecha = fecha.getDay()+'/'+fecha.getMonth()+'/'+fecha.getFullYear();    
         let input = '<div class="contenedorFlex">' +
             '   <div class="contenedorFlexChild">' +
             '       <label class="w3-text-teal">Fecha Hora Sanción</label>' +
-            '       <input type="text" class="w3-input w3-border w3-light-grey datepicker" name="fechaHora" contenteditable="false">' +
+            '       <input type="text" class="w3-input w3-border w3-light-grey datepicker" name="fechaHora[]" contenteditable="false" value="'+fecha+'">' +
             '   </div><div class="contenedorFlexChild">' +
             '       <label class="w3-text-teal">Hora</label>' +
-            '       <select class="w3-select w3-border w3-light-grey" name="horaAc">';
+            '       <select class="w3-select w3-border w3-light-grey" name="horaAc[]">';
         for(let key in HORAS_CLASE){
            input+='<option value="'+key+'">'+HORAS_CLASE[key]+'</option>';
         }
