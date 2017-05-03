@@ -25,7 +25,7 @@ class DetalleDiarioSancionHora
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Sanciones")
-     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id", onDelete="CASCADE")
      */
     private $idSancion;
 

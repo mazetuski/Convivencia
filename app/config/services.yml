@@ -10,6 +10,10 @@ services:
     app.importHelper:
         class: AppBundle\Services\ImportHelper
         arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
+    app.crearSancionHelper:
+        class: AppBundle\Services\CrearSancionHelper
+        arguments: ['@doctrine.orm.entity_manager']
+
     form.parteType:
         class: AppBundle\Form\ParteFormType
         arguments: ["@doctrine.orm.entity_manager"]
