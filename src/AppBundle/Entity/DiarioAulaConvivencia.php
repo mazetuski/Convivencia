@@ -49,13 +49,6 @@ class DiarioAulaConvivencia
      */
     private $actitud;
 
-    /**
-     * @var int
-     *
-     * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
-     */
-    private $idAlumno;
 
     /**
      * @var int
@@ -178,30 +171,6 @@ class DiarioAulaConvivencia
     public function getActitud()
     {
         return $this->actitud;
-    }
-
-    /**
-     * Set idAlumno
-     *
-     * @param integer $idAlumno
-     *
-     * @return DiarioAulaConvivencia
-     */
-    public function setIdAlumno($idAlumno)
-    {
-        $this->idAlumno = $idAlumno;
-
-        return $this;
-    }
-
-    /**
-     * Get idAlumno
-     *
-     * @return int
-     */
-    public function getIdAlumno()
-    {
-        return $this->idAlumno;
     }
 
     /**

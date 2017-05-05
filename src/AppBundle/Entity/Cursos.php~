@@ -31,6 +31,14 @@ class Cursos
     /**
      * @var string
      *
+     * @ORM\Column(name="grupo", type="string", length=20)
+     */
+    private $grupo;
+
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="aula", type="string", length=5)
      */
     private $aula;

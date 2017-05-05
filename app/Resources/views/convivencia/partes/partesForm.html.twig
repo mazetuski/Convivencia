@@ -5,8 +5,18 @@
     <h1 class="w3-center">Formulario Parte</h1>
 
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia', 'id':'parteForm'}}) }}
+        {% if app.request.get('idParte') is not null %}
+            <input type="hidden" value="{{ app.request.get('idParte') }}" name="parteHidden">
+            <div class="w3-center w3-margin w3-padding">
+                {% if recupera %}
+                    <input class="w3-button w3-text-white" type="submit" name="recuperaPunto" value="+1 Punto">
+                {% else %}
+                    <input class="w3-button w3-text-white" type="submit" name="recuperaPunto" value="+1 Punto" disabled>
+                {% endif %}
+            </div>
+        {% endif %}
         {{ form_widget(form) }}
-        <input class="w3-button w3-block w3-section w3-teal" type="submit" name="registrarse" value="Enviar">
+        <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="registrarse" value="Enviar">
         {{ form_end(form) }}
 
     </div>

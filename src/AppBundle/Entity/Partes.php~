@@ -107,7 +107,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id", onDelete="cascade")
      */
     private $idAlumno;
 
@@ -124,6 +124,12 @@ class Partes
      * @ORM\JoinTable(name="partes_conductas")
      */
     private $idConducta;
+
+    /**
+     * @var int
+     * @ORM\Column(name="recupera", type="integer")
+     */
+    private $recupera;
 
 
     /**
@@ -437,6 +443,7 @@ class Partes
         $this->horaSalidaAula = new \DateTime();
         $this->horaLlegadaJefatura = new \DateTime();
         $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->recupera = 0;
     }
 
     /**
@@ -471,5 +478,29 @@ class Partes
     public function getIdConducta()
     {
         return $this->idConducta;
+    }
+
+    /**
+     * Set recupera
+     *
+     * @param integer $recupera
+     *
+     * @return Partes
+     */
+    public function setRecupera($recupera)
+    {
+        $this->recupera = $recupera;
+
+        return $this;
+    }
+
+    /**
+     * Get recupera
+     *
+     * @return integer
+     */
+    public function getRecupera()
+    {
+        return $this->recupera;
     }
 }

@@ -205,6 +205,10 @@ class ConvivenciaController extends Controller
             /** @var ImportHelper $importHelper */
             $importHelper = $this->get('app.importHelper');
             $importHelper->importarAlumnos($file);
+            $this->addFlash(
+                'alumnos',
+                'El fichero ha sido importado!'
+            );
         }
 
         return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
@@ -288,11 +292,22 @@ class ConvivenciaController extends Controller
     public function crearParteAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $recupera = false;
+
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        if ($request->query->has('idParte'))
+        if ($request->get('recuperaPunto')!=null){
+            /** @var Partes $parte */
+            $parte = $repositoryPartes->getParteById($request->get('parteHidden'));
+            $parte->setRecupera(1);
+            $em->persist($parte);
+            $em->flush();
+            return $this->redirectToRoute("gestion_partes");
+        }
+        if ($request->query->has('idParte')) {
             $parte = $repositoryPartes->getParteById($request->get('idParte'));
-        else
+            if($parte->getRecupera() == 0) $recupera = true;
+        }else
             $parte = new Partes();
         $form = $this->createForm(ParteFormType::class, $parte);
         $form->handleRequest($request);
@@ -305,6 +320,7 @@ class ConvivenciaController extends Controller
 
         return $this->render('convivencia/partes/partesForm.html.twig', array(
             'form' => $form->createView(),
+            'recupera' => $recupera,
         ));
     }
 
