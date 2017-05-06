@@ -19,7 +19,7 @@ class ParteFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->traitChoices = $options['data'];
+        $this->traitChoices = $options['compound'];
 
         $builder
             ->add('idAlumno', EntityType::class, array(

@@ -8,43 +8,16 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Alumno;
-use AppBundle\Entity\Cursos;
-use AppBundle\Entity\DetalleDiarioSancionHora;
-use AppBundle\Entity\Partes;
-use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\Usuarios;
-use AppBundle\Form\ImportFormType;
-use AppBundle\Form\ParteFormType;
-use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
-use AppBundle\Form\SancionFormType;
-use AppBundle\Repository\AlumnoRepository;
-use AppBundle\Repository\CursosRepository;
-use AppBundle\Repository\DetalleDiarioSancionHoraRepository;
-use AppBundle\Repository\PartesRepository;
-use AppBundle\Repository\SancionesRepository;
-use AppBundle\Repository\UsuariosRepository;
-use AppBundle\Services\AlumnoHelper;
-use AppBundle\Services\CrearSancionHelper;
-use AppBundle\Services\ImportHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class ConvivenciaController
- * @Route("convivencia")
  */
 class ConvivenciaController extends Controller
 {
@@ -130,44 +103,6 @@ class ConvivenciaController extends Controller
     }
 
     /**
-     * @Route("/alumno", name="alumno")
-     */
-    public function alumnoAction()
-    {
-
-        /** @var AlumnoHelper $alumnoHelper */
-        $alumnoHelper = $this->get('app.alumnoHelper');
-
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
-            return $this->redirectToRoute("admin");
-
-        if (!$alumnoHelper->alumnoExists($this->getUser()))
-            return $this->redirectToRoute('registrarAlumno');
-
-        return $this->render('convivencia/alumno/alumno.html.twig', array(
-                'alumno' => $alumnoHelper->getAlumnoLogueado($this->getUser()),
-            )
-        );
-    }
-
-    /**
-     * @Route("/alumno/{id}", name="verAlumno", requirements={"id": "\d+"})
-     */
-    public function showAlumnoAction($id)
-    {
-
-        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
-            return $this->redirectToRoute("index");
-        $em = $this->getDoctrine()->getManager();
-        $alumno = $em->getRepository("AppBundle:Alumno")->findOneById($id);
-        return $this->render('convivencia/alumno/alumno.html.twig', array(
-                'alumno' => $alumno,
-                'userAdmin' => $this->getUser(),
-            )
-        );
-    }
-
-    /**
      * @Route("/profesor/{id}", name="verProfesor", requirements={"id": "\d+"})
      */
     public function showProfesorAction($id)
@@ -189,191 +124,6 @@ class ConvivenciaController extends Controller
     public function adminAction()
     {
         return $this->render('convivencia/admin/admin.html.twig');
-    }
-
-    /**
-     * @Route("/admin/import", name="admin_import")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    public function importAlumnoAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(ImportFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var File $file */
-            $file = $form['importar']->getData();
-            /** @var ImportHelper $importHelper */
-            $importHelper = $this->get('app.importHelper');
-            $importHelper->importarAlumnos($file);
-            $this->addFlash(
-                'alumnos',
-                'El fichero ha sido importado!'
-            );
-        }
-
-        return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * @Route("/partes", name="gestion_partes")
-     * @Method({"GET", "POST"})
-     */
-    public function showGestionPartes(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var PartesRepository $repositoryPartes */
-        $repositoryPartes = $em->getRepository("AppBundle:Partes");
-        if ($request->query->has('like'))
-            $partes = $repositoryPartes->getPartesLike($request->get('like'));
-        else
-            $partes = $repositoryPartes->getPartesOrdenados();
-        return $this->render('convivencia/partes/partes.html.twig', array(
-            'partes' => $partes,
-            'user' => $this->getUser(),
-        ));
-    }
-
-    /**
-     * @Route("/sanciones", name="gestion_sanciones")
-     */
-    public function showGestionSanciones()
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        /** @var SancionesRepository $sancionesRepository */
-        $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
-        $sanciones = $sancionesRepository->findAll();
-
-        return $this->render("convivencia/sanciones/sanciones.html.twig", array(
-            'sanciones' => $sanciones,
-            'user' => $this->getUser(),
-        ));
-    }
-
-
-    /**
-     * @Route("/registrarAlumno", name="registrarAlumno")
-     * @Method({"GET", "POST"})
-     */
-    public function registrarAlumnoAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var AlumnoHelper $alumnoHelper */
-        $alumnoHelper = $this->get('app.alumnoHelper');
-        if ($alumnoHelper->alumnoExists($this->getUser()))
-            $alumno = $alumnoHelper->getAlumnoLogueado($this->getUser());
-        else
-            $alumno = new Alumno();
-        $form = $this->createForm(PerfilAlumnoFormType::class, $alumno);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$alumnoHelper->alumnoExists($this->getUser())) {
-                $alumno->setIdUsuario($this->getUser());
-                $alumno->setPuntos(12);
-            } else
-                $alumno->setPuntos($alumnoHelper->getPuntosAlumnoLogin($this->getUser()));
-            $em->persist($alumno);
-            $em->flush();
-            return $this->redirectToRoute('alumno');
-        }
-
-        return $this->render('convivencia/alumno/registroAlumno.html.twig', array(
-            'alumno' => $this->getUser(),
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * @Route("/nuevoParte", name="nuevoParte")
-     * @Method({"GET", "POST"})
-     */
-    public function crearParteAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $recupera = false;
-
-        /** @var PartesRepository $repositoryPartes */
-        $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        /** @var AlumnoRepository $repositoryAlumnos */
-        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
-        /** @var CursosRepository $repositoryACursos */
-        $repositoryACursos = $em->getRepository('AppBundle:Cursos');
-        /** @var Cursos $curso */
-        $cursos = $repositoryACursos->getCursosGroupByCursos();
-        /** @var Alumno $alumnos */
-        if ($request->request->has('busqueda') && $request->get('cursos') != null) {
-            $alumnos = array();
-            foreach ($request->get('cursos') as $curso) {
-                $cursosByCurso = $repositoryACursos->getCursosByCurso($curso);
-                foreach ($cursosByCurso as $cursoByCurso) {
-                    $alumnosByCurso = $repositoryAlumnos->getAlumnosByCurso($cursoByCurso);
-                    foreach ($alumnosByCurso as $alumno)
-                        $alumnos[] = $alumno;
-                }
-            }
-        } else
-            $alumnos = $repositoryAlumnos->findAll();
-        if ($request->get('recuperaPunto') != null) {
-            /** @var Partes $parte */
-            $parte = $repositoryPartes->getParteById($request->get('parteHidden'));
-            $parte->setRecupera(1);
-            $em->persist($parte);
-            $em->flush();
-            return $this->redirectToRoute("gestion_partes");
-        }
-        if ($request->query->has('idParte')) {
-            $parte = $repositoryPartes->getParteById($request->get('idParte'));
-            if ($parte->getRecupera() == 0) $recupera = true;
-        } else
-            $parte = new Partes();
-        $form = $this->createForm(ParteFormType::class, $parte, array(
-            'data' => $alumnos,
-        ));
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($parte);
-            $em->flush();
-            return $this->redirectToRoute("gestion_partes");
-        }
-
-        return $this->render('convivencia/partes/partesForm.html.twig', array(
-            'form' => $form->createView(),
-            'recupera' => $recupera,
-            'cursos' => $cursos,
-        ));
-    }
-
-    /**
-     * @Route("/nuevaSancion", name="nueva_sancion")
-     * @Method({"GET", "POST"})
-     */
-    public function crearSancionAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var CrearSancionHelper $crearSancionHelper */
-        $crearSancionHelper = $this->get('app.crearSancionHelper');
-
-        $sancion = $crearSancionHelper->getSancionFromRequest($request);
-        $form = $this->createForm(SancionFormType::class, $sancion);
-        $form->handleRequest($request);
-        $detalles = $crearSancionHelper->getDetallesFromSancion($sancion);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($sancion);
-            $em->flush();
-            $crearSancionHelper->creaDetallesFromSancion($sancion, $request);
-            return $this->redirectToRoute("gestion_sanciones");
-        }
-
-        return $this->render("convivencia/sanciones/sancionesForm.html.twig", array(
-            'form' => $form->createView(),
-            'detalles' => $detalles,
-            'horas' => $crearSancionHelper::HORAS_CLASE,
-        ));
     }
 
     /**

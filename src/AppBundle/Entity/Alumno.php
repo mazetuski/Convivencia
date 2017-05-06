@@ -115,8 +115,7 @@ class Alumno
     /**
      * @var string
      *
-     * @ORM\Column(name="foto", type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="foto", type="string", length=255, nullable=true)
      */
     private $foto;
 

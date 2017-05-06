@@ -6,6 +6,7 @@ use AppBundle\Entity\Alumno;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,6 +23,9 @@ class PerfilAlumnoFormType extends AbstractType
             ->add('Telefono', IntegerType::class, array('label' => 'Teléfono'))
             ->add('Email', EmailType::class)
             ->add('Direccion')
+            ->add('codigoPostal', TextType::class, array(
+                'label' => 'Código Postal',
+            ))
         ;
     }
 
