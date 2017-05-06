@@ -22,4 +22,20 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleResult();
     }
 
+    /**
+     * Función que devuelve los alumnos por curso
+     * @param $curso
+     * @return array
+     */
+    public function getAlumnosByCurso($curso){
+        $qb = $this->getEntityManager()->createQuery(
+          'SELECT a
+           FROM AppBundle\Entity\Alumno a
+           WHERE a.idCurso = :curso'
+        );
+
+        $qb->setParameter('curso', $curso);
+        return $qb->getResult();
+    }
+
 }

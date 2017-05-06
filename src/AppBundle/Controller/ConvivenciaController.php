@@ -19,6 +19,7 @@ use AppBundle\Form\ParteFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\SancionFormType;
+use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\DetalleDiarioSancionHoraRepository;
 use AppBundle\Repository\PartesRepository;
@@ -296,7 +297,26 @@ class ConvivenciaController extends Controller
 
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        if ($request->get('recuperaPunto')!=null){
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var CursosRepository $repositoryACursos */
+        $repositoryACursos = $em->getRepository('AppBundle:Cursos');
+        /** @var Cursos $curso */
+        $cursos = $repositoryACursos->getCursosGroupByCursos();
+        /** @var Alumno $alumnos */
+        if ($request->request->has('busqueda') && $request->get('cursos') != null) {
+            $alumnos = array();
+            foreach ($request->get('cursos') as $curso) {
+                $cursosByCurso = $repositoryACursos->getCursosByCurso($curso);
+                foreach ($cursosByCurso as $cursoByCurso) {
+                    $alumnosByCurso = $repositoryAlumnos->getAlumnosByCurso($cursoByCurso);
+                    foreach ($alumnosByCurso as $alumno)
+                        $alumnos[] = $alumno;
+                }
+            }
+        } else
+            $alumnos = $repositoryAlumnos->findAll();
+        if ($request->get('recuperaPunto') != null) {
             /** @var Partes $parte */
             $parte = $repositoryPartes->getParteById($request->get('parteHidden'));
             $parte->setRecupera(1);
@@ -306,10 +326,12 @@ class ConvivenciaController extends Controller
         }
         if ($request->query->has('idParte')) {
             $parte = $repositoryPartes->getParteById($request->get('idParte'));
-            if($parte->getRecupera() == 0) $recupera = true;
-        }else
+            if ($parte->getRecupera() == 0) $recupera = true;
+        } else
             $parte = new Partes();
-        $form = $this->createForm(ParteFormType::class, $parte);
+        $form = $this->createForm(ParteFormType::class, $parte, array(
+            'data' => $alumnos,
+        ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -321,6 +343,7 @@ class ConvivenciaController extends Controller
         return $this->render('convivencia/partes/partesForm.html.twig', array(
             'form' => $form->createView(),
             'recupera' => $recupera,
+            'cursos' => $cursos,
         ));
     }
 

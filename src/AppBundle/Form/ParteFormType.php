@@ -19,10 +19,13 @@ class ParteFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->traitChoices = $options['data'];
+
         $builder
             ->add('idAlumno', EntityType::class, array(
                 'label' => 'Alumno',
                 'class' => 'AppBundle:Alumno',
+                'choices' => $this->traitChoices,
                 'choice_label' => function ($alumno) {
                     return $alumno->getNombreCompleto();
                 },

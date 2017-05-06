@@ -57,9 +57,11 @@ class ImportHelper
                     $alumno->setFoto('');
                     $alumno->setNie($row[6]);
                     $user = new Usuarios();
-                    $userNombre = substr($alumno->getNombre(), 0, 2) . substr($alumno->getApellido1(), 0, 2) . substr($alumno->getApellido2(), 0, 2);
-                    $userNombre = strtr($userNombre, 'ÁÀÂÄÃÅÇÉÈÊËÍÏÎÌÑÓÒÔÖÕÚÙÛÜÝ', 'AAAAAACEEEEEIIIINOOOOOUUUUY');
-                    $userNombre = strtr($userNombre, 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy');
+                    $userNombre = mb_substr($alumno->getNombre(), 0, 2) . mb_substr($alumno->getApellido1(), 0, 2) . mb_substr($alumno->getApellido2(), 0, 2);
+                    $arrayMayus = array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N');
+                    $arrayMinus = array('á' => 'a', 'é' => 'e', 'í' => 'e', 'ó' => 'o', 'ú' => 'u', 'ñ' => ',');
+                    $userNombre = strtr($userNombre, $arrayMayus);
+                    $userNombre = strtr($userNombre, $arrayMinus);
                     $user->setUsuario(mb_strtolower($userNombre));
                     $contador = 1;
                     while ($repositoryUsuarios->findOneByUsuario($user->getUsuario()) != null) {

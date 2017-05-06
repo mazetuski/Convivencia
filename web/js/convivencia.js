@@ -38,6 +38,8 @@ $(document).ready(function () {
     $.datepicker.setDefaults($.datepicker.regional['es']);
     $('.datepicker').datepicker();
 
+
+
     //PARTE FORM, CONDUCTAS MOSTRAR Y OCULTAR
     $.each($('.selectForm input'), function (key, value) {
         if ($(value).prop('checked') == true) {
@@ -81,6 +83,15 @@ $(document).ready(function () {
         }).on('click', '.checkNewSancion', function () {
             // Funcionalidad boton añadir Sanción HoraAC
         $(this).before(contenedorNewHoraSancion());
+    })
+    //PARTE FORM BÚSQUEDA AVANZADA
+    .on('click', '.busquedaMas', function () {
+        $('#cursos').show(300).css('display', 'flex');
+        $(this).removeClass('busquedaMas').addClass('busquedaMenos');
+    })
+    .on('click', '.busquedaMenos', function () {
+        $('#cursos').hide(300);
+        $(this).removeClass('busquedaMenos').addClass('busquedaMas');
     });
 
     // SANCIONES, SI TIPO ES HORAS O JORNADA MOSTRAR NUEVOS INPUTS
