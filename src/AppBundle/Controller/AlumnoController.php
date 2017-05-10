@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Alumno;
 use AppBundle\Form\ImportFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
+use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\ImportHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -111,6 +112,19 @@ class AlumnoController extends Controller
         return $this->render('convivencia/alumno/registroAlumno.html.twig', array(
             'alumno' => $this->getUser(),
             'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/carnets", name="show_carnets")
+     */
+    public function showCarnets(){
+        $emConvivencia = $this->getDoctrine()->getManager();
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
+        $alumnos = $repositoryAlumnos->getAlumnoOrderByPuntos();
+        return $this->render('convivencia/alumno/carnets.html.twig', array(
+            'alumnos' => $alumnos,
         ));
     }
 

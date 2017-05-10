@@ -6,12 +6,12 @@
                 <a href="{{ path('index') }}"
                    class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">{{ app.user.usuario }}</a>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('convivencia_registro') }}"
-                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Registro</a>
                     <a href="{{ path('gestion_partes') }}"
                        class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Partes</a>
                     <a href="{{ path('gestion_sanciones') }}"
                        class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Medidas</a>
+                    <a href="{{ path('show_carnets') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Carnets</a>
                     <div class="w3-dropdown-hover w3-padding w3-left w3-mobile w3-large">
                         <span>Administración</span> <i class="fa fa-caret-down w3-text-white"></i>
                         <div class="w3-dropdown-content w3-bar-block w3-card-1 azulTemaButton">

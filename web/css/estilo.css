@@ -114,6 +114,10 @@ form .minTextArea{
     color: #f37f00;
 }
 
+.text-darkRed{
+    color: darkred;
+}
+
 
 @media (min-width: 768px) {
     .w3-col.s12 {

@@ -28,14 +28,28 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * @return array
      */
     public function getAlumnosByCurso($curso){
-        $qb = $this->getEntityManager()->createQuery(
+        $query = $this->getEntityManager()->createQuery(
           'SELECT a
            FROM AppBundle\Entity\Alumno a
            WHERE a.idCurso = :curso'
         );
 
-        $qb->setParameter('curso', $curso);
-        return $qb->getResult();
+        $query->setParameter('curso', $curso);
+        return $query->getResult();
+    }
+
+    /**
+     * Función que devuelve los alumnos ordenados por puntos
+     * @return array
+     */
+    public function getAlumnoOrderByPuntos(){
+        $query = $this->getEntityManager()->createQuery(
+          'SELECT a
+           FROM AppBundle\Entity\Alumno a
+           ORDER BY a.puntos DESC'
+        );
+
+        return $query->getResult();
     }
 
 }

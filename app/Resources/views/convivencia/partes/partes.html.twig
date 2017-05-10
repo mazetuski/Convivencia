@@ -49,14 +49,18 @@
                                 <td>
                                     <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.nombre }}</a>
                                 </td>
-                                <td>Ninguno</td>
+                                {% if parte.idAlumno.idCurso != null %}
+                                    <td>{{ parte.idAlumno.idCurso.grupo }}</td>
+                                {% else %}
+                                    <td>Ninguno</td>
+                                {% endif %}
                                 <td>
                                     <a href="{{ path('verProfesor', {'id': parte.idProfesor.id}) }}">{{ parte.idProfesor.nombre }}</a>
                                 </td>
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>
                                 <td>{{ parte.idEstado.estado }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">edit</a></td>
+                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">editar</a></td>
                             </tr>
                         {% endfor %}
                     </table>
