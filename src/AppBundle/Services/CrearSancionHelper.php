@@ -3,8 +3,10 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\DetalleDiarioSancionHora;
+use AppBundle\Entity\DiarioAulaConvivencia;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Repository\DetalleDiarioSancionHoraRepository;
+use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\SancionesRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,8 +29,8 @@ class CrearSancionHelper
     function __construct(EntityManager $em)
     {
         $this->em = $em;
-        /** @var DetalleDiarioSancionHoraRepository $repositoryDetalleDiario */
-        $this->repositoryDetalleDiario = $this->em->getRepository('AppBundle:DetalleDiarioSancionHora');
+        /** @var DiarioAulaConvivenciaRepository $repositoryDetalleDiario */
+        $this->repositoryDiario = $this->em->getRepository('AppBundle:DiarioAulaConvivencia');
     }
 
     /**
@@ -47,32 +49,32 @@ class CrearSancionHelper
     }
 
     /**
-     * Función que devuelve los detalles segun una sanción
+     * Función que devuelve los diarios segun una sanción
      * @param Sanciones $sancion
      */
-    public function getDetallesFromSancion(Sanciones $sancion)
+    public function getDiarioFromSancion(Sanciones $sancion)
     {
         if ($sancion != null && $sancion->getIdTipo() != null && $sancion->getIdTipo()->getId() == self::SANCION_TYPE_HORAS)
-            return $this->repositoryDetalleDiario->findByIdSancion($sancion->getId());
+            return $this->repositoryDiario->findByIdSancion($sancion->getId());
         else
             return null;
     }
 
     /**
-     * Función que crea detalles a traves de una sanción
+     * Función que crea diarios a traves de una sanción
      * @param Sanciones $sancion
      * @param Request $request
      */
-    public function creaDetallesFromSancion(Sanciones $sancion, Request $request)
+    public function creaDiarioFromSancion(Sanciones $sancion, Request $request)
     {
         if ($sancion->getIdTipo()->getId() == self::SANCION_TYPE_HORAS) {
             if ($request->request->has('horaAc')) {
                 $horas = $request->get('horaAc');
                 $fechas = $request->get('fechaHora');
                 foreach ($horas as $key => $hora) {
-                    $detalleDiario = new DetalleDiarioSancionHora();
-                    $detalleDiario->setIdSancion($sancion);
-                    $this->persistDetalleDiario($detalleDiario, $hora, $fechas, $key);
+                    $diarioAula = new DiarioAulaConvivencia();
+                    $diarioAula->setIdSancion($sancion);
+                    $this->persistDiario($diarioAula, $hora, $fechas, $key);
                 }
                 $this->em->flush();
             }
@@ -80,9 +82,9 @@ class CrearSancionHelper
                 $horas = $request->get('horaAcEdit');
                 $fechas = $request->get('fechaHoraEdit');
                 foreach ($horas as $key => $hora) {
-                    /** @var DetalleDiarioSancionHora $detalleDiarioEdit */
-                    $detalleDiarioEdit = $this->repositoryDetalleDiario->findOneById($key);
-                    $this->persistDetalleDiario($detalleDiarioEdit, $hora, $fechas, $key);
+                    /** @var DiarioAulaConvivencia $diarioAulaEdit */
+                    $diarioAulaEdit = $this->repositoryDiario->findOneById($key);
+                    $this->persistDiario($diarioAulaEdit, $hora, $fechas, $key);
                 }
                 $this->em->flush();
             }
@@ -91,9 +93,9 @@ class CrearSancionHelper
                 for ($i = $sancion->getFechaInicio(); $i <= $sancion->getFechaFinal();
                      $i = date_add($i, date_interval_create_from_date_string('1 day'))) {
                     foreach (self::HORAS_CLASE as $hora => $valor) {
-                        $detalleDiario = new DetalleDiarioSancionHora();
-                        $detalleDiario->setIdSancion($sancion);
-                        $this->persistDetalleDiario($detalleDiario, $hora, $i, null, false);
+                        $diarioAula = new DiarioAulaConvivencia();
+                        $diarioAula->setIdSancion($sancion);
+                        $this->persistDiario($diarioAula, $hora, $i, null, false);
                     }
                     $this->em->flush();
                 }
@@ -101,22 +103,57 @@ class CrearSancionHelper
     }
 
     /**
-     * Función que persiste un detalle diario en función de los parámetros
-     * @param DetalleDiarioSancionHora $detalleDiario
+     * Función que persiste un diario en función de los parámetros
+     * @param DiarioAulaConvivencia $diarioAula
      * @param $hora
      * @param $fechas
      * @param $key
      * @param bool $format
      */
-    public function persistDetalleDiario(DetalleDiarioSancionHora $detalleDiario, $hora, $fechas, $key, $format = true)
+    public function persistDiario(DiarioAulaConvivencia $diarioAula, $hora, $fechas, $key, $format = true)
     {
-        $detalleDiario->setHora($hora);
+        $diarioAula->setHora($hora);
         if ($format) {
             $fecha = \DateTime::createFromFormat('d/m/Y', $fechas[$key]);
-            $detalleDiario->setFecha($fecha);
-        }else
-            $detalleDiario->setFecha($fechas);
-        $this->em->persist($detalleDiario);
+            $diarioAula->setFecha($fecha);
+        } else
+            $diarioAula->setFecha($fechas);
+        $diarioAula->setAsiste(0);
+        $this->em->persist($diarioAula);
     }
 
+    /**
+     * Función que devuelve una hora de clase a partir de una fecha
+     * @param \DateTime $fecha
+     */
+    public function getHoraFromDate(\DateTime $fecha)
+    {
+        $hora = intval($fecha->format('H'));
+        $min = intval($fecha->format('i'));
+        if ($hora < 8)
+            return 1;
+        if ($hora > 14 || ($hora == 14 && $min > 40)) {
+            $fecha = date_add($fecha, date_interval_create_from_date_string('1 day'));
+            $fecha->setTime(8, 15);
+            return $this->getHoraFromDate($fecha);
+        }
+        if (($hora == 14 && $min <= 40) || ($hora == 13 && $min >= 40))
+            return 6;
+
+        foreach (self::HORAS_CLASE as $keyHoras => $arrayhoraClase) {
+            $arrayhoraClase = explode(' - ', $arrayhoraClase);
+            foreach ($arrayhoraClase as $key => $horaClase)
+                if ($key == 0) {
+                    $horaDate = explode(':', $horaClase)[0];
+                    $minDate = explode(':', $horaClase)[1];
+                    if ($hora == $horaDate) {
+                        if ($min >= $minDate) {
+                            $horaFromDate = $keyHoras;
+                        } else
+                            $horaFromDate = ($hora != 8) ? $keyHoras - 1 : 1;
+                        return $horaFromDate;
+                    }
+                }
+        }
+    }
 }

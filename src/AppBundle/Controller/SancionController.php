@@ -25,12 +25,12 @@ class SancionController extends Controller
         $sancion = $crearSancionHelper->getSancionFromRequest($request);
         $form = $this->createForm(SancionFormType::class, $sancion);
         $form->handleRequest($request);
-        $detalles = $crearSancionHelper->getDetallesFromSancion($sancion);
+        $detalles = $crearSancionHelper->getDiarioFromSancion($sancion);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($sancion);
             $em->flush();
-            $crearSancionHelper->creaDetallesFromSancion($sancion, $request);
+            $crearSancionHelper->creaDiarioFromSancion($sancion, $request);
             return $this->redirectToRoute("gestion_sanciones");
         }
 
@@ -50,7 +50,7 @@ class SancionController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var SancionesRepository $sancionesRepository */
         $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
-        $sanciones = $sancionesRepository->findAll();
+        $sanciones = $sancionesRepository->getSancionesOrdenadas();
 
         return $this->render("convivencia/sanciones/sanciones.html.twig", array(
             'sanciones' => $sanciones,

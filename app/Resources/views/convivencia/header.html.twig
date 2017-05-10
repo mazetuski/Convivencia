@@ -9,13 +9,21 @@
                     <a href="{{ path('convivencia_registro') }}"
                        class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Registro</a>
                     <a href="{{ path('gestion_partes') }}"
-                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Gestion Partes</a>
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Partes</a>
                     <a href="{{ path('gestion_sanciones') }}"
-                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Gestion Sanciones</a>
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Medidas</a>
+                    <div class="w3-dropdown-hover w3-padding w3-left w3-mobile w3-large">
+                        <span>Administración</span> <i class="fa fa-caret-down w3-text-white"></i>
+                        <div class="w3-dropdown-content w3-bar-block w3-card-1 azulTemaButton">
+                            <a href="{{ path('admin_import') }}" class=" w3-margin-top w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Alumnos</a>
+                            <a href="#" class="w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Profesores</a>
+                            <a href="#" class="w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Conductas</a>
+                        </div>
+                    </div>
                     <a href="{{ path('admin_import') }}"
                        class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Gestión alumnos</a>
-                    <a href="{{ path('admin_diario_aula') }}"
-                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Diario Aula</a>
+                    <a href="{{ path('show_diario') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Diario</a>
                 {% elseif is_granted('ROLE_USER') %}
                     <a href="{{ path('registrarAlumno') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Perfil</a>
                 {% endif %}

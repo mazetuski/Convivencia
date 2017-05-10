@@ -10,4 +10,22 @@ namespace AppBundle\Repository;
  */
 class DiarioAulaConvivenciaRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Función que devuelve las sanciones ordenadas por fecha
+     * @return array
+     */
+    public function getDiarioByFechaYHora(\DateTime $fecha, $hora){
+        $from = new \DateTime($fecha->format("Y-m-d")." 00:00:00");
+        $to   = new \DateTime($fecha->format("Y-m-d")." 23:59:59");
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT d
+             FROM AppBundle\Entity\DiarioAulaConvivencia d
+             WHERE d.hora = :hora AND d.fecha BETWEEN :fechaFrom AND :fechaTo 
+             ORDER BY d.fecha DESC'
+        );
+        $query->setParameter('fechaFrom', $from);
+        $query->setParameter('fechaTo', $to);
+        $query->setParameter('hora', $hora);
+        return $query->getResult();
+    }
 }

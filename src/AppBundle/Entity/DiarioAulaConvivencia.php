@@ -38,14 +38,14 @@ class DiarioAulaConvivencia
     /**
      * @var string
      *
-     * @ORM\Column(name="observaciones", type="string", length=255)
+     * @ORM\Column(name="observaciones", type="string", length=255, nullable=true)
      */
     private $observaciones;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')")
+     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')", nullable=true)
      */
     private $actitud;
 
@@ -65,6 +65,13 @@ class DiarioAulaConvivencia
      * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
      */
     private $idSancion;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="asiste", type="integer")
+     */
+    private $asiste;
 
 
     /**
@@ -219,5 +226,29 @@ class DiarioAulaConvivencia
     public function getIdSancion()
     {
         return $this->idSancion;
+    }
+
+    /**
+     * Set asiste
+     *
+     * @param integer $asiste
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setAsiste($asiste)
+    {
+        $this->asiste = $asiste;
+
+        return $this;
+    }
+
+    /**
+     * Get asiste
+     *
+     * @return integer
+     */
+    public function getAsiste()
+    {
+        return $this->asiste;
     }
 }

@@ -9,7 +9,8 @@
             <form action="">
                 <div class="w3-col m3 w3-section">
                     <input type="text" name="like" id="partesSearchBar"> <i
-                            class="fa fa-search fa-lg fa-flip-horizontal"></i> <input type="submit" value="Buscar" class="w3-button w3-text-white"/>
+                            class="fa fa-search fa-lg fa-flip-horizontal"></i> <input type="submit" value="Buscar"
+                                                                                      class="w3-button w3-text-white"/>
                 </div>
                 <div class="w3-col m3 w3-section">
                     {#TODO: enlaces#}
@@ -32,7 +33,17 @@
                             <th></th>
                         </tr>
                         {% for parte in partes %}
-                            <tr>
+                            {% if parte.idTipo.tipo == 'Grave' %}
+                                {% set colorClass = 'w3-text-red' %}
+                            {% elseif parte.idTipo.tipo  == 'Leve' %}
+                                {% set colorClass = 'text-orange' %}
+                            {% else %}
+                                {% set colorClass = 'w3-text-black' %}
+                            {% endif %}
+                            {% if parte.idEstado.estado == 'Caducado' %}
+                                {% set colorClass = 'w3-text-grey' %}
+                            {% endif %}
+                            <tr class="{{ colorClass }}">
                                 <td>{{ parte.id }}</td>
                                 <td>{{ parte.fecha|date("d/m/Y") }}</td>
                                 <td>

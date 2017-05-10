@@ -13,6 +13,9 @@ services:
     app.crearSancionHelper:
         class: AppBundle\Services\CrearSancionHelper
         arguments: ['@doctrine.orm.entity_manager']
+    app.diarioHelper:
+        class: AppBundle\Services\DiarioHelper
+        arguments: ['@doctrine.orm.entity_manager']
 
     form.parteType:
         class: AppBundle\Form\ParteFormType

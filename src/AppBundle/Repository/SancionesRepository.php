@@ -41,4 +41,17 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * Función que devuelve las sanciones ordenadas por fecha
+     * @return array
+     */
+    public function getSancionesOrdenadas(){
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s
+                 FROM AppBundle\Entity\Sanciones s
+                 ORDER BY s.fecha DESC'
+        );
+        return $query->getResult();
+    }
+
 }

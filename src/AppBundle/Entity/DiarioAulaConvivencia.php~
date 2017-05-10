@@ -38,24 +38,17 @@ class DiarioAulaConvivencia
     /**
      * @var string
      *
-     * @ORM\Column(name="observaciones", type="string", length=255)
+     * @ORM\Column(name="observaciones", type="string", length=255, nullable=true)
      */
     private $observaciones;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')")
+     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')", nullable=true)
      */
     private $actitud;
 
-    /**
-     * @var int
-     *
-     * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
-     */
-    private $idAlumno;
 
     /**
      * @var int
@@ -72,6 +65,13 @@ class DiarioAulaConvivencia
      * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
      */
     private $idSancion;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="asiste", type="integer")
+     */
+    private $asiste;
 
 
     /**
@@ -178,30 +178,6 @@ class DiarioAulaConvivencia
     public function getActitud()
     {
         return $this->actitud;
-    }
-
-    /**
-     * Set idAlumno
-     *
-     * @param integer $idAlumno
-     *
-     * @return DiarioAulaConvivencia
-     */
-    public function setIdAlumno($idAlumno)
-    {
-        $this->idAlumno = $idAlumno;
-
-        return $this;
-    }
-
-    /**
-     * Get idAlumno
-     *
-     * @return int
-     */
-    public function getIdAlumno()
-    {
-        return $this->idAlumno;
     }
 
     /**
