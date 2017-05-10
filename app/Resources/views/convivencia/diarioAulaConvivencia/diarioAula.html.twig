@@ -6,44 +6,64 @@
     {% block header %}
         <main class="w3-container">
             <h1>Diario Aula Convivencia</h1>
-            {#TODO: ajustar form#}
-            <form action="">
-                <div class="w3-col m3 w3-section">
-                    <input type="text" name="like" id="partesSearchBar"> <i
-                            class="fa fa-search fa-lg fa-flip-horizontal"></i> <input type="submit" value="Buscar" class="w3-button w3-text-white"/>
+            <form method="post">
+                <div class="w3-row-padding">
+                    <div class="contenedorFlexInput">
+                        <label class="w3-left">Fecha</label><input type="text"
+                                                                   class="datepicker w3-input w3-border w3-quarter"
+                                                                   name="likeFecha" id="diarioFechaSearchBar"
+                                                                   value="{{ diarioData.fecha|date('d/m/Y') }}">
+                    </div>
+                    <div class="contenedorFlexInput">
+                        <label>Horas</label><select class="chosen-select w3-col m12" name="likeHora[]"
+                                                    id="diarioHorasSearchBar" multiple>
+                            {% for key, hora in diarioData.horas %}
+                                {% if key in diarioData.horasElegidas %}
+                                    <option value="{{ key }}" selected>{{ hora }}</option>
+                                {% else %}
+                                    <option value="{{ key }}">{{ hora }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="w3-row-padding">
+                        <input type="submit" value="Buscar" class="w3-button w3-text-white"/>
+                    </div>
                 </div>
-                <div class="w3-col m3 w3-section">
-                    {#TODO: enlaces#}
-                    <a href="{{ path('nuevoParte') }}" class="w3-margin-right" title="Nuevo Parte"><i
-                                class="fa fa-plus-circle fa-2x"></i></a>
-                    <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
-                    <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
-                </div>
+
                 <div class="w3-col m12 w3-responsive w3-section">
                     <table class="w3-table-all w3-centered w3-margin-top">
                         <tr>
-                            <th>Hora</th>
                             <th>Fecha</th>
+                            <th>Hora</th>
                             <th>Alumno</th>
                             <th>Profesor</th>
-                            <th>Curso</th>
+                            <th>Observaciones</th>
+                            <th>Actitud</th>
+                            <th>Asiste</th>
                             <th></th>
                         </tr>
-                        {% for parte in partes %}
+                        {% for diario in diarioData.diariosAula %}
                             <tr>
-                                <td>{{ parte.id }}</td>
-                                <td>{{ parte.fecha|date("d/m/Y") }}</td>
+                                <td>{{ diario.fecha|date('d/m/Y') }}</td>
+                                <td>{{ diario.hora }}</td>
                                 <td>
-                                    <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.nombre }}</a>
+                                    <a href="{{ path('verAlumno', {'id': diario.idSancion.idAlumno.id}) }}">{{ diario.idSancion.idAlumno.getNombreCompleto() }}</a>
                                 </td>
-                                <td>Ninguno</td>
-                                <td>
-                                    <a href="{{ path('verProfesor', {'id': parte.idProfesor.id}) }}">{{ parte.idProfesor.nombre }}</a>
-                                </td>
-                                <td>{{ parte.idTipo.tipo }}</td>
-                                <td>{{ parte.puntos }}</td>
-                                <td>{{ parte.idEstado.estado }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">edit</a></td>
+                                {% if diario.idProfesor == null %}
+                                    <td>Ninguno</td>
+                                {% else %}
+                                    <td>{{ diario.idProfesor.getNombreCompleto() }}</td>
+                                {% endif %}
+                                <td>{{ diario.observaciones }}</td>
+                                <td>{{ diario.actitud }}</td>
+                                {% if diario.asiste == 0 %}
+                                    <td>Pendiente</td>
+                                {% else %}
+                                    <td>Ha asistido</td>
+                                {% endif %}
+                                <td><a href="{{ path('edit_diario', {'id': diario.id}) }}">edit</a></td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -51,5 +71,4 @@
             </form>
         </main>
     {% endblock %}
-
 {% endblock %}

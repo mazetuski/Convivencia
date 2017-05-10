@@ -97,7 +97,7 @@ class ConvivenciaController extends Controller
     /**
      * @Route("/logout", name="logout")
      */
-    public function logoutAction(Request $request)
+    public function logoutAction()
     {
 
     }
