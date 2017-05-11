@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Alumno;
 
 /**
  * SancionesRepository
@@ -16,9 +17,10 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
      * @param string $estado
      * @return array
      */
-    public function getSancionesPorEstado($estado = 'Iniciada', $sortDate = true){
+    public function getSancionesPorEstado($estado = 'Iniciada', $sortDate = true)
+    {
 
-        if($sortDate)
+        if ($sortDate)
             $query = $this->getEntityManager()->createQuery(
                 'SELECT s
                  FROM AppBundle\Entity\Sanciones s
@@ -30,7 +32,7 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
             );
         else
             $query = $this->getEntityManager()->createQuery(
-              'SELECT s
+                'SELECT s
                FROM AppBundle\Entity\Sanciones s
                WHERE s.idEstado in 
                (SELECT e.id
@@ -45,12 +47,33 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
      * Función que devuelve las sanciones ordenadas por fecha
      * @return array
      */
-    public function getSancionesOrdenadas(){
+    public function getSancionesOrdenadas()
+    {
         $query = $this->getEntityManager()->createQuery(
             'SELECT s
                  FROM AppBundle\Entity\Sanciones s
                  ORDER BY s.fecha DESC'
         );
+        return $query->getResult();
+    }
+
+    /**
+     * Función que devuelve las sanciones no finalizadas de un alumno
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getSancionesNoFinalizadas(Alumno $alumno)
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s
+                 FROM AppBundle\Entity\Sanciones s
+                 WHERE s.idAlumno = :alumno AND s.idEstado IN
+                  (SELECT e.id
+                FROM AppBundle\Entity\EstadosSancion e
+                WHERE e.estado != :estadoFinalizado)'
+        );
+        $query->setParameter('alumno', $alumno->getId());
+        $query->setParameter('estadoFinalizado', 'Finalizada');
         return $query->getResult();
     }
 

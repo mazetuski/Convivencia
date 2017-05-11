@@ -21,32 +21,47 @@
                             <th>Alumno</th>
                             <th>Puntos</th>
                             <th>Grupo</th>
+                            <th>Sanción</th>
                         </tr>
-                        {% for alumno in alumnos %}
-                            {% if alumno.puntos == 0 %}
+                        {% for carnet in arrayCarnetData %}
+                            {% if carnet.alumno.puntos == 0 %}
                                 {% set colorClass = 'w3-text-green' %}
-                            {% elseif alumno.puntos > 0 and alumno.puntos <7 %}
+                            {% elseif carnet.alumno.puntos > 0 and carnet.alumno.puntos <7 %}
                                 {% set colorClass = 'text-orange' %}
-                            {% elseif alumno.puntos == 7 %}
+                            {% elseif carnet.alumno.puntos == 7 %}
                                 {% set colorClass = 'w3-text-pink' %}
-                            {% elseif alumno.puntos > 7 and alumno.puntos <10 %}
+                            {% elseif carnet.alumno.puntos > 7 and carnet.alumno.puntos <10 %}
                                 {% set colorClass = 'text-darkRed' %}
-                            {% elseif alumno.puntos >= 10 %}
+                            {% elseif carnet.alumno.puntos >= 10 %}
                                 {% set colorClass = 'w3-text-red' %}
                             {% else %}
                                 {% set colorClass = 'w3-text-black' %}
                             {% endif %}
                             <tr class="{{ colorClass }}">
                                 <td>
-                                    <a href="{{ path('verAlumno', {'id': alumno.id}) }}">{{ alumno.getNombreCompleto() }}</a>
+                                    <a href="{{ path('verAlumno', {'id': carnet.alumno.id}) }}">{{ carnet.alumno.getNombreCompleto() }}</a>
                                 </td>
-                                <td>{{ alumno.puntos }}</td>
-                                {% if alumno.idCurso != null %}
-                                    <td>{{ alumno.idCurso.grupo }}</td>
+                                <td>{{ carnet.alumno.puntos }}</td>
+                                {% if carnet.alumno.idCurso != null %}
+                                    <td>{{ carnet.alumno.idCurso.grupo }}</td>
                                 {% else %}
                                     <td>Ninguno</td>
                                 {% endif %}
-                                {#<td><a href="{{ path('edit_alumno', {'id': alumno.id}) }}">editar</a></td>#}
+                                {% if carnet.arraySanciones|length > 0 %}
+                                    <td>
+                                        {% for sancion in carnet.arraySanciones %}
+                                            {% if loop.index != loop.last %}
+                                                {% set sancionName = sancion.sancion~',' %}
+                                            {% else %}
+                                                {% set sancionName = sancion.sancion %}
+                                            {% endif %}
+                                            <a href="{{ path('nueva_sancion', {'idSancion':sancion.id}) }}"> {{ sancionName }}</a>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    {#<td> <a href="{{ path }}">Crear Sanción</a></td>#}
+                                    <td>No sancionado(implementar crear sanción)</td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </table>

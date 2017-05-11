@@ -4,8 +4,10 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
+use AppBundle\Model\CarnetData;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\SancionesRepository;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Entity\Usuarios;
@@ -85,5 +87,32 @@ class AlumnoHelper
         } else
             $alumnos = $this->repositoryAlumno->findAll();
         return $alumnos;
+    }
+
+    /**
+     * Función que devuelve las sanciones de un alumno
+     * @param Alumno $alumno
+     * @return mixed
+     */
+    public function getSancionesByAlumno(Alumno $alumno){
+        /** @var SancionesRepository $repositorySanciones */
+        $repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
+        $sanciones = $repositorySanciones->getSancionesNoFinalizadas($alumno);
+        return $sanciones;
+    }
+
+    /**
+     * Función que devuelve un array del modelo CarnetData
+     * @param $alumnos
+     * @return array
+     */
+    public function getArrayCarnetsData($alumnos){
+        $arrCarnetsData = [];
+        /** @var Alumno $alumno */
+        foreach ($alumnos as $alumno){
+            $sanciones = $this->getSancionesByAlumno($alumno);
+            $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
+        }
+        return $arrCarnetsData;
     }
 }

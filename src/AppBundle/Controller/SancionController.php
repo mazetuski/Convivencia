@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Sanciones;
 use AppBundle\Form\SancionFormType;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\CrearSancionHelper;

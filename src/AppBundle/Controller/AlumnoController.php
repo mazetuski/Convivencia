@@ -123,8 +123,11 @@ class AlumnoController extends Controller
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
         $alumnos = $repositoryAlumnos->getAlumnoOrderByPuntos();
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
         return $this->render('convivencia/alumno/carnets.html.twig', array(
-            'alumnos' => $alumnos,
+            'arrayCarnetData' => $arrayCarnetData,
         ));
     }
 
