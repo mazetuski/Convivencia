@@ -46,12 +46,24 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      * Función que devuelve todos los partes ordenados por fecha
      * @return array
      */
-    public function getPartesOrdenados(){
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT p 
+    public function getPartesOrdenados($historico = false)
+    {
+        if(!$historico) {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT p 
+             FROM AppBundle\Entity\Partes p
+             JOIN p.idEstado as estado
+             WHERE estado.estado != 'Caducado'
+             ORDER BY p.fecha DESC"
+            );
+        }
+        else {
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT p 
              FROM AppBundle\Entity\Partes p
              ORDER BY p.fecha DESC'
-        );
+            );
+        }
 
         return $query->getResult();
     }
@@ -78,11 +90,27 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      * @param $string
      * @return array
      */
-    public function getPartesLike($string){
-        if($string == '')
-            return $this->getPartesOrdenados();
-        $query = $this->getEntityManager()->createQuery(
-            "SELECT p
+    public function getPartesLike($string, $historico = false)
+    {
+        if ($string == '')
+            return $this->getPartesOrdenados($historico);
+        if (!$historico) {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT p
+             FROM AppBundle\Entity\Partes p
+             JOIN p.idAlumno as alumno
+             JOIN p.idProfesor as profesor
+             JOIN p.idTipo as tipo
+             JOIN p.idEstado as estado
+             WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
+             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
+             AND estado.estado != 'Caducado'
+             ORDER BY p.fecha DESC"
+            );
+        }
+        else{
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT p
              FROM AppBundle\Entity\Partes p
              JOIN p.idAlumno as alumno
              JOIN p.idProfesor as profesor
@@ -91,8 +119,9 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
              ORDER BY p.fecha DESC"
-        );
-        $query->setParameter("string", '%'.$string.'%');
+            );
+        }
+        $query->setParameter("string", '%' . $string . '%');
         return $query->getResult();
     }
 

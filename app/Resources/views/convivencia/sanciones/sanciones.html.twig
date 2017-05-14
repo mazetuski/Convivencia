@@ -8,29 +8,49 @@
             <h1>Gestion Sanciones</h1>
             {#TODO: ajustar form#}
             <form action="">
-                <div class="w3-col m3 w3-section">
-                    <input type="text" name="like" id="partesSearchBar"> <i
-                            class="fa fa-search fa-lg fa-flip-horizontal"></i> <input type="submit" value="Buscar" class="w3-button w3-text-white"/>
+                <div class="w3-col m4 w3-section">
+                    <input type="text" name="like" id="partesSearchBar" value="{{ app.request.get('like') }}">
+                    <i class=" fa fa-search fa-lg fa-flip-horizontal"></i>
+                    <div class="i-checks">
+                        {% if app.request.get('historico') == 'on' %}
+                            <input type="checkbox" name="historico" checked>
+                        {% else %}
+                            <input type="checkbox" name="historico">
+                        {% endif %}
+                        <span> Histórico</span>
+                    </div>
+                    <input type="submit" value="Buscar" class="w3-button w3-text-white"/>
                 </div>
                 <div class="w3-col m3 w3-section">
                     {#TODO: enlaces#}
-                    <a href="{{ path('nueva_sancion') }}" class="w3-margin-right" title="Nueva Sanción"><i class="fa fa-plus-circle fa-2x"></i></a>
+                    <a href="{{ path('nueva_sancion') }}" class="w3-margin-right" title="Nueva Sanción"><i
+                                class="fa fa-plus-circle fa-2x"></i></a>
                     <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
                     <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
                 </div>
                 <div class="w3-col m12 w3-responsive w3-section">
                     <table class="w3-table-all w3-centered w3-margin-top">
                         <tr>
-                            <th>NumSanción</th><th>Fecha</th><th>Alumno</th><th>Fecha Inicio</th><th>Fecha Final</th><th>Estado</th><th>Puntos</th><th>Estado</th><th></th>
+                            <th>NumSanción</th>
+                            <th>Fecha</th>
+                            <th>Alumno</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Final</th>
+                            <th>Tipo</th>
+                            <th>Puntos</th>
+                            <th>Estado</th>
+                            <th></th>
                         </tr>
                         {% for sancion in sanciones %}
                             <tr>
                                 <td>{{ sancion.id }}</td>
                                 <td>{{ sancion.fecha|date("d/m/Y") }}</td>
-                                <td><a href="{{ path('verAlumno', {'id': sancion.idAlumno.id}) }}">{{ sancion.idAlumno.nombre }}</a></td>
+                                <td>
+                                    <a href="{{ path('verAlumno', {'id': sancion.idAlumno.id}) }}">{{ sancion.idAlumno.nombre }}</a>
+                                </td>
                                 <td>{{ sancion.fechaInicio|date("d/m/Y") }}</td>
                                 <td>{{ sancion.fechaFinal|date("d/m/Y") }}</td>
-                                <td>{{ sancion.idEstado.estado }}</td>
+                                <td>{{ sancion.idTipo.tipo }}</td>
                                 <td>{{ sancion.puntosRecuperados }}</td>
                                 <td>{{ sancion.idEstado.estado }}</td>
                                 <td><a href="{{ path('nueva_sancion') }}?idSancion={{ sancion.id }}">editar</a></td>

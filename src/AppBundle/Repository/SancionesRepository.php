@@ -47,15 +47,64 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
      * Función que devuelve las sanciones ordenadas por fecha
      * @return array
      */
-    public function getSancionesOrdenadas()
+    public function getSancionesOrdenadas($historico = false)
     {
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT s
+        if(!$historico) {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT s
+                 FROM AppBundle\Entity\Sanciones s
+                 JOIN s.idEstado as estado
+                 WHERE estado.estado != 'Finalizada'
+                 ORDER BY s.fecha DESC"
+            );
+        }else{
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT s
                  FROM AppBundle\Entity\Sanciones s
                  ORDER BY s.fecha DESC'
-        );
+            );
+        }
         return $query->getResult();
     }
+
+    /**
+     * Función que devuelve las sanciones que contienen la cadena pasada por parámetro
+     * @param $string
+     * @return array
+     */
+    public function getSancionesLike($string, $historico = false)
+    {
+        if ($string == '')
+            return $this->getSancionesOrdenadas($historico);
+        if (!$historico) {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT s
+             FROM AppBundle\Entity\Sanciones s
+             JOIN s.idAlumno as alumno
+             JOIN s.idTipo as tipo
+             JOIN s.idEstado as estado
+             WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
+             OR tipo.tipo LIKE :string)
+             AND estado.estado != 'Finalizada'
+             ORDER BY s.fecha DESC"
+            );
+        }
+        else{
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT s
+             FROM AppBundle\Entity\Sanciones s
+             JOIN s.idAlumno as alumno
+             JOIN s.idTipo as tipo
+             JOIN s.idEstado as estado
+             WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
+             OR tipo.tipo LIKE :string)
+             ORDER BY s.fecha DESC"
+            );
+        }
+        $query->setParameter("string", '%' . $string . '%');
+        return $query->getResult();
+    }
+
 
     /**
      * Función que devuelve las sanciones no finalizadas de un alumno

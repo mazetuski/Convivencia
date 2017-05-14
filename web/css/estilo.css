@@ -59,6 +59,11 @@ i, .contenedorFlexInput label {
     color: #38889B;
 }
 
+.i-checks{
+    display: inline-block;
+    margin: 0 .5em;
+}
+
 input[type="submit"], .checkAbrir, .checkCerrar, .azulTemaButton, .checkNewSancion, #busqueda {
     background-color: #38889B;
     text-indent: 0;

@@ -44,14 +44,25 @@ class SancionController extends Controller
 
     /**
      * @Route("/sanciones", name="gestion_sanciones")
+     * @Method({"GET", "POST"})
      */
-    public function showGestionSanciones()
+    public function showGestionSanciones(Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
         /** @var SancionesRepository $sancionesRepository */
         $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
-        $sanciones = $sancionesRepository->getSancionesOrdenadas();
+        if ($request->query->has('like')) {
+            if ($request->get('historico') != null)
+                $sanciones = $sancionesRepository->getSancionesLike($request->get('like'), true);
+            else
+                $sanciones = $sancionesRepository->getSancionesLike($request->get('like'));
+        } else {
+            if ($request->get('historico') != null)
+                $sanciones = $sancionesRepository->getSancionesOrdenadas(true);
+            else
+                $sanciones = $sancionesRepository->getSancionesOrdenadas();
+        }
 
         return $this->render("convivencia/sanciones/sanciones.html.twig", array(
             'sanciones' => $sanciones,

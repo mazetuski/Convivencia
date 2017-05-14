@@ -23,19 +23,26 @@ class DiarioHelper
     }
 
     /**
-     * Función que devuelve los diarios de una fecha y unas horas
+     * Función que devuelve los diarios de una fecha y unas horas sin repetir alumno
      * @param \DateTime $fecha
      * @param $horas
      * @return array
      */
-    public function getDiariosAula(\DateTime $fecha, $horas){
+    public function getDiariosAula(\DateTime $fecha, $horas)
+    {
         /** @var DiarioAulaConvivenciaRepository $repositoryDiario */
         $repositoryDiario = $this->em->getRepository('AppBundle:DiarioAulaConvivencia');
         $arrDiariosAula = array();
+        $arrIdSancion = array();
         foreach ($horas as $hora) {
             $diariosAula = $repositoryDiario->getDiarioByFechaYHora($fecha, $hora);
-            foreach ($diariosAula as $diario)
-                $arrDiariosAula[] = $diario;
+            /** @var DiarioAulaConvivencia $diario */
+            foreach ($diariosAula as $diario) {
+                if (!in_array($diario->getIdSancion()->getIdAlumno()->getId(), $arrIdSancion)) {
+                    $arrDiariosAula[] = $diario;
+                    $arrIdSancion[] = $diario->getIdSancion()->getIdAlumno()->getId();
+                }
+            }
         }
         return $arrDiariosAula;
     }
@@ -47,7 +54,8 @@ class DiarioHelper
      * @param $horasElegidas
      * @return DiarioData
      */
-    public function getDiarioData(\DateTime $fecha, $horasElegidas, $horas){
+    public function getDiarioData(\DateTime $fecha, $horasElegidas, $horas)
+    {
         $diariosAula = $this->getDiariosAula($fecha, $horasElegidas);
         return new DiarioData($diariosAula, $horas, $horasElegidas, $fecha);
     }

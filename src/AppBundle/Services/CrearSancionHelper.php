@@ -5,6 +5,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\DetalleDiarioSancionHora;
 use AppBundle\Entity\DiarioAulaConvivencia;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Repository\DetalleDiarioSancionHoraRepository;
 use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\SancionesRepository;
@@ -42,10 +43,17 @@ class CrearSancionHelper
     {
         /** @var SancionesRepository $repositorySancion */
         $repositorySancion = $this->em->getRepository("AppBundle:Sanciones");
+        /** @var AlumnoRepository $repositoryAlumno */
+        $repositoryAlumno = $this->em->getRepository('AppBundle:Alumno');
         if ($request->query->has('idSancion'))
             return $repositorySancion->findOneById($request->get('idSancion'));
-        else
-            return new Sanciones();
+        elseif ($request->query->has('idAlumno')) {
+            $sancion = new Sanciones();
+            $alumno = $repositoryAlumno->findOneById($request->get('idAlumno'));
+            $sancion->setIdAlumno($alumno);
+        } else
+            $sancion = new Sanciones();
+        return $sancion;
     }
 
     /**
@@ -67,14 +75,13 @@ class CrearSancionHelper
      */
     public function creaDiarioFromSancion(Sanciones $sancion, Request $request)
     {
+        $this->DeleteDiarioBySancion($sancion);
         if ($sancion->getIdTipo()->getId() == self::SANCION_TYPE_HORAS) {
             if ($request->request->has('horaAc')) {
                 $horas = $request->get('horaAc');
                 $fechas = $request->get('fechaHora');
                 foreach ($horas as $key => $hora) {
-                    $diarioAula = new DiarioAulaConvivencia();
-                    $diarioAula->setIdSancion($sancion);
-                    $this->persistDiario($diarioAula, $hora, $fechas, $key);
+                    $this->persistDiario($sancion, $hora, $fechas, $key);
                 }
                 $this->em->flush();
             }
@@ -82,20 +89,16 @@ class CrearSancionHelper
                 $horas = $request->get('horaAcEdit');
                 $fechas = $request->get('fechaHoraEdit');
                 foreach ($horas as $key => $hora) {
-                    /** @var DiarioAulaConvivencia $diarioAulaEdit */
-                    $diarioAulaEdit = $this->repositoryDiario->findOneById($key);
-                    $this->persistDiario($diarioAulaEdit, $hora, $fechas, $key);
+                    $this->persistDiario($sancion, $hora, $fechas, $key);
                 }
                 $this->em->flush();
             }
         } elseif ($sancion->getIdTipo()->getId() == self::SANCION_TYPE_JORNADA) {
-            if ($sancion->getFechaInicio() < $sancion->getFechaFinal())
+            if ($sancion->getFechaInicio() <= $sancion->getFechaFinal())
                 for ($i = $sancion->getFechaInicio(); $i <= $sancion->getFechaFinal();
                      $i = date_add($i, date_interval_create_from_date_string('1 day'))) {
                     foreach (self::HORAS_CLASE as $hora => $valor) {
-                        $diarioAula = new DiarioAulaConvivencia();
-                        $diarioAula->setIdSancion($sancion);
-                        $this->persistDiario($diarioAula, $hora, $i, null, false);
+                        $this->persistDiario($sancion, $hora, $i, null, false);
                     }
                     $this->em->flush();
                 }
@@ -110,8 +113,10 @@ class CrearSancionHelper
      * @param $key
      * @param bool $format
      */
-    public function persistDiario(DiarioAulaConvivencia $diarioAula, $hora, $fechas, $key, $format = true)
+    public function persistDiario(Sanciones $sancion, $hora, $fechas, $key, $format = true)
     {
+        $diarioAula = new DiarioAulaConvivencia();
+        $diarioAula->setIdSancion($sancion);
         $diarioAula->setHora($hora);
         if ($format) {
             $fecha = \DateTime::createFromFormat('d/m/Y', $fechas[$key]);
@@ -120,6 +125,20 @@ class CrearSancionHelper
             $diarioAula->setFecha($fechas);
         $diarioAula->setAsiste(0);
         $this->em->persist($diarioAula);
+    }
+
+    /**
+     * Función que elimina los diarios de una sanción
+     * @param Sanciones $sancion
+     */
+    public function DeleteDiarioBySancion(Sanciones $sancion)
+    {
+        $diarios = $this->repositoryDiario->findByIdSancion($sancion);
+        if ($diarios != null) {
+            foreach ($diarios as $diario)
+                $this->em->remove($diario);
+        }
+        $this->em->flush();
     }
 
     /**

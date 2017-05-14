@@ -23,13 +23,21 @@ class PartesController extends Controller
      */
     public function showGestionPartes(Request $request)
     {
+
         $em = $this->getDoctrine()->getManager();
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository("AppBundle:Partes");
-        if ($request->query->has('like'))
-            $partes = $repositoryPartes->getPartesLike($request->get('like'));
-        else
-            $partes = $repositoryPartes->getPartesOrdenados();
+        if ($request->query->has('like')) {
+            if ($request->get('historico') != null)
+                $partes = $repositoryPartes->getPartesLike($request->get('like'), true);
+            else
+                $partes = $repositoryPartes->getPartesLike($request->get('like'));
+        } else {
+            if ($request->get('historico') != null)
+                $partes = $repositoryPartes->getPartesOrdenados(true);
+            else
+                $partes = $repositoryPartes->getPartesOrdenados();
+        }
         return $this->render('convivencia/partes/partes.html.twig', array(
             'partes' => $partes,
             'user' => $this->getUser(),

@@ -59,8 +59,8 @@
                                         {% endfor %}
                                     </td>
                                 {% else %}
-                                    {#<td> <a href="{{ path }}">Crear Sanción</a></td>#}
-                                    <td>No sancionado(implementar crear sanción)</td>
+                                    <td> <a href="{{ path('nueva_sancion', {'idAlumno': carnet.alumno.id}) }}">Crear Sanción</a></td>
+                                    {#<td>No sancionado(implementar crear sanción)</td>#}
                                 {% endif %}
                             </tr>
                         {% endfor %}
