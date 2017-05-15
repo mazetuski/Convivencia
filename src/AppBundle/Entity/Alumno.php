@@ -135,6 +135,11 @@ class Alumno
         return $this->getNombre() . ' ' . $this->getApellido1() . ' ' . $this->getApellido2();
     }
 
+    public function getNombreCompletoYCurso(){
+        return $this->getNombre() . ' ' . $this->getApellido1()
+            . ' ' . $this->getApellido2(). ' - '. $this->getIdCurso()->getGrupo();
+    }
+
     /**
      * Get id
      *

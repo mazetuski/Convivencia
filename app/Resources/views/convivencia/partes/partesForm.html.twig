@@ -15,6 +15,13 @@
                         <input class="w3-button w3-text-white" type="submit" name="recuperaPunto" value="+1 Punto"
                                disabled>
                     {% endif %}
+                    {% if accion != 'Inhabilitada' %}
+                        <input class="w3-button w3-text-white"
+                               type="submit" name="estadoParte" value="{{ accion }}">
+                    {% else %}
+                        <input class="w3-button w3-text-white botonSubmit"
+                               type="button" value="{{ parte.getIdEstado().getEstado() }}" disabled>
+                    {% endif %}
                 {% endif %}
             </div>
             <div id="cursos">

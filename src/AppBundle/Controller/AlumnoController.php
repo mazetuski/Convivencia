@@ -117,18 +117,23 @@ class AlumnoController extends Controller
 
     /**
      * @Route("/carnets", name="show_carnets")
+     * @Method({"GET", "POST"})
      */
-    public function showCarnets(){
+    public function showCarnets(Request $request)
+    {
         $emConvivencia = $this->getDoctrine()->getManager();
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
-        $alumnos = $repositoryAlumnos->getAlumnoOrderByPuntos();
-        /** @var AlumnoHelper $alumnoHelper */
-        $alumnoHelper = $this->get('app.alumnoHelper');
-        $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
-        return $this->render('convivencia/alumno/carnets.html.twig', array(
-            'arrayCarnetData' => $arrayCarnetData,
-        ));
-    }
+        if ($request->get('like')!=null AND $request->get('like')!='')
+            $alumnos = $repositoryAlumnos->getAlumnosLike($request->get('like'));
+        else
+            $alumnos = $repositoryAlumnos->getAlumnoOrderByPuntos();
+            /** @var AlumnoHelper $alumnoHelper */
+            $alumnoHelper = $this->get('app.alumnoHelper');
+            $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
+            return $this->render('convivencia/alumno/carnets.html.twig', array(
+                'arrayCarnetData' => $arrayCarnetData,
+            ));
+        }
 
-}
+    }

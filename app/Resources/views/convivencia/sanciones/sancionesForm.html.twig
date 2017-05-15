@@ -5,6 +5,20 @@
     <div class="w3-row w3-container w3-white w3-margin-bottom">
 
         <h1 class="w3-center">Formulario Sanciones</h1>
+        <form method="post" class="w3-content" name="formBusqueda">
+            <div class="w3-center w3-margin w3-padding">
+                <input class="w3-button w3-text-white busquedaMas" id="busqueda" type="button"
+                       value="Búsqueda Avanzada">
+            </div>
+            <div id="cursos">
+                {% for curso in cursos %}
+                    <label><input type="checkbox" name="cursos[]" value="{{ curso.curso }}"> {{ curso.curso }}</label>
+                {% endfor %}
+                <div class="w3-center w3-block">
+                    <input class="w3-button w3-text-white" type="submit" name="busqueda" value="Buscar">
+                </div>
+            </div>
+        </form>
 
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia'}}) }}
         {{ form_row(form.idAlumno) }}
@@ -33,7 +47,8 @@
                     </div>
                 {% endfor %}
                 <div class="w3-center w3-block"><input type="button" id="checkEditSancion"
-                                                       class="w3-button w3-margin w3-text-white checkNewSancion" value="+">
+                                                       class="w3-button w3-margin w3-text-white checkNewSancion"
+                                                       value="+">
                 </div>
             </div>
         {% endif %}

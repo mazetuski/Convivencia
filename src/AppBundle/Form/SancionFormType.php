@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Sanciones;
 use AppBundle\Repository\SancionesRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -10,18 +11,22 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SancionFormType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->alumnos = $options['compound'];
+
         $builder
             ->add('idAlumno', EntityType::class, array(
                 'label' => 'Alumno',
                 'class' => 'AppBundle:Alumno',
+                'choices' => $this->alumnos,
                 'choice_label' => function ($alumno) {
-                    return $alumno->getNombreCompleto();
+                    return $alumno->getNombreCompletoYCurso();
                 },
                 'attr' => array(
                     'class' => 'w3-select w3-border w3-light-grey chosen-select',
@@ -80,7 +85,7 @@ class SancionFormType extends AbstractType
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault(array(
-            'data_class' => Partes::class,
+            'data_class' => Sanciones::class,
         ));
     }
 

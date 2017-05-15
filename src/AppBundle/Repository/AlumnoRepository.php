@@ -52,4 +52,25 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * Función que devuelve los alumnos ordenados por puntos, y que coincidan con el parámetro
+     * @param $string
+     * @return array
+     */
+    public function getAlumnosLike($string){
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT a
+           FROM AppBundle\Entity\Alumno a
+           JOIN a.idCurso as curso
+           WHERE a.nombre LIKE :string OR a.apellido1 LIKE :string
+           OR a.apellido2 LIKE :string OR a.puntos LIKE :string 
+           OR curso.grupo LIKE :string
+           OR (SELECT count(s.sancion) FROM AppBundle\Entity\Sanciones s WHERE s.idAlumno = a.id AND s.sancion LIKE :string)>0
+           ORDER BY a.puntos DESC'
+        );
+        $query->setParameter('string', '%'.$string.'%');
+
+        return $query->getResult();
+    }
+
 }

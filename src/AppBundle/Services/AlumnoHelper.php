@@ -84,6 +84,8 @@ class AlumnoHelper
                         $alumnos[] = $alumno;
                 }
             }
+            if(count($alumnos)==0)
+                $alumnos = $this->repositoryAlumno->findAll();
         } else
             $alumnos = $this->repositoryAlumno->findAll();
         return $alumnos;

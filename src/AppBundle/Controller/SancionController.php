@@ -2,9 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Cursos;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Form\SancionFormType;
+use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\SancionesRepository;
+use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\CrearSancionHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,9 +25,18 @@ class SancionController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var CrearSancionHelper $crearSancionHelper */
         $crearSancionHelper = $this->get('app.crearSancionHelper');
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        /** @var CursosRepository $repositoryACursos */
+        $repositoryACursos = $em->getRepository('AppBundle:Cursos');
+        /** @var Cursos $curso */
+        $cursos = $repositoryACursos->getCursosGroupByCursos();
 
+        $alumnos = $alumnoHelper->getAlumnosByRequest($request);
         $sancion = $crearSancionHelper->getSancionFromRequest($request);
-        $form = $this->createForm(SancionFormType::class, $sancion);
+        $form = $this->createForm(SancionFormType::class, $sancion, array(
+            'compound' => $alumnos,
+        ));
         $form->handleRequest($request);
         $detalles = $crearSancionHelper->getDiarioFromSancion($sancion);
 
@@ -39,6 +51,7 @@ class SancionController extends Controller
             'form' => $form->createView(),
             'detalles' => $detalles,
             'horas' => $crearSancionHelper::HORAS_CLASE,
+            'cursos' => $cursos,
         ));
     }
 

@@ -27,7 +27,7 @@ class ParteFormType extends AbstractType
                 'class' => 'AppBundle:Alumno',
                 'choices' => $this->traitChoices,
                 'choice_label' => function ($alumno) {
-                    return $alumno->getNombreCompleto();
+                    return $alumno->getNombreCompletoYCurso();
                 },
                 'attr' => array(
                     'class' => 'w3-select w3-border w3-light-grey chosen-select',
@@ -103,12 +103,12 @@ class ParteFormType extends AbstractType
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
-            ->add('idEstado', EntityType::class, array(
-                'class' => 'AppBundle:EstadosParte',
-                'choice_label' => 'estado',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
-            ))
+//            ->add('idEstado', EntityType::class, array(
+//                'class' => 'AppBundle:EstadosParte',
+//                'choice_label' => 'estado',
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
             ->add('idTipo', EntityType::class, array(
                 'class' => 'AppBundle:TipoParte',
                 'choice_label' => 'tipo',

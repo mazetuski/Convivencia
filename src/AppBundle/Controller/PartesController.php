@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
+use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Repository\CursosRepository;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PartesController extends Controller
 {
+
+    const ESTADO_INICIADO = 'Iniciado';
 
     /**
      * @Route("/partes", name="gestion_partes")
@@ -54,7 +57,8 @@ class PartesController extends Controller
         $recupera = false;
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
-
+        $repositoryEstadoPartes = $em->getRepository('AppBundle:EstadosParte');
+        $repositoryAccionPartes = $em->getRepository('AppBundle:AccionEstadoParte');
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository('AppBundle:Partes');
         /** @var CursosRepository $repositoryACursos */
@@ -69,13 +73,30 @@ class PartesController extends Controller
             $parte->setRecupera(1);
             $em->persist($parte);
             $em->flush();
-            return $this->redirectToRoute("gestion_partes");
+            return $this->redirectToRoute("nuevoParte", array('idParte' => $parte->getId()));
         }
+
         if ($request->query->has('idParte')) {
             $parte = $repositoryPartes->getParteById($request->get('idParte'));
             if ($parte->getRecupera() == 0) $recupera = true;
-        } else
+        } else {
             $parte = new Partes();
+            $estadoIniciado = $repositoryEstadoPartes->findOneByEstado(self::ESTADO_INICIADO);
+            $parte->setIdEstado($estadoIniciado);
+        }
+        if ($request->get('estadoParte') != null) {
+            $allEstados = $repositoryEstadoPartes->findAll();
+            foreach ($allEstados as $key => $valueEstado) {
+                if ($valueEstado->getId() == $parte->getIdEstado()->getId())
+                    if ($key < count($allEstados) - 1) {
+                        $nextEstado = $repositoryEstadoPartes->findOneById($valueEstado->getId() + 1);
+                        $parte->setIdEstado($nextEstado);
+                        $em->persist($parte);
+                        $em->flush();
+                        return $this->redirectToRoute("nuevoParte", array('idParte' => $parte->getId()));
+                    }
+            }
+        }
         $form = $this->createForm(ParteFormType::class, $parte, array(
             'compound' => $alumnos,
         ));
@@ -87,10 +108,14 @@ class PartesController extends Controller
             return $this->redirectToRoute("gestion_partes");
         }
 
+        $accion = $repositoryAccionPartes->findOneByEstado($parte->getIdEstado());
+
         return $this->render('convivencia/partes/partesForm.html.twig', array(
             'form' => $form->createView(),
             'recupera' => $recupera,
             'cursos' => $cursos,
+            'accion' => $accion,
+            'parte' => $parte,
         ));
     }
 
