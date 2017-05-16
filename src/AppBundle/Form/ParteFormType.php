@@ -97,12 +97,12 @@ class ParteFormType extends AbstractType
                 'attr' => array('class' => 'w3-input w3-border w3-light-grey minTextArea'),
                 'label_attr' => array('class' => 'w3-text-teal'),
             ))
-            ->add('Puntos', IntegerType::class, array(
-                'required' =>false,
-                'empty_data' => 0,
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
-            ))
+//            ->add('Puntos', IntegerType::class, array(
+//                'required' =>false,
+//                'empty_data' => 0,
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
 //            ->add('idEstado', EntityType::class, array(
 //                'class' => 'AppBundle:EstadosParte',
 //                'choice_label' => 'estado',

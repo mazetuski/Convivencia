@@ -80,7 +80,7 @@ class Alumno
     /**
      * @var string
      *
-     * @ORM\Column(name="telefono", type="string", length=10)
+     * @ORM\Column(name="telefono", type="string", length=70)
      * @Assert\NotBlank()
      */
     private $telefono;
@@ -131,13 +131,18 @@ class Alumno
      * Función que devuelve el nombre completo del alumno
      * @return string
      */
-    public function getNombreCompleto(){
+    public function getNombreCompleto()
+    {
         return $this->getNombre() . ' ' . $this->getApellido1() . ' ' . $this->getApellido2();
     }
 
-    public function getNombreCompletoYCurso(){
-        return $this->getNombre() . ' ' . $this->getApellido1()
-            . ' ' . $this->getApellido2(). ' - '. $this->getIdCurso()->getGrupo();
+    public function getNombreCompletoYCurso()
+    {
+        if ($this->getIdCurso() != null && $this->getIdCurso()->getGrupo())
+            return $this->getNombre() . ' ' . $this->getApellido1()
+                . ' ' . $this->getApellido2() . ' - ' . $this->getIdCurso()->getGrupo();
+        else
+            return $this->getNombreCompleto();
     }
 
     /**

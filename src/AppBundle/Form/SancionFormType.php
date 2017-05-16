@@ -73,13 +73,13 @@ class SancionFormType extends AbstractType
                 'label' => 'Puntos Recuperados',
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
-            ))
-            ->add('idEstado', EntityType::class, array(
-                'class' => 'AppBundle:EstadosSancion',
-                'choice_label' => 'estado',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
             ));
+//            ->add('idEstado', EntityType::class, array(
+//                'class' => 'AppBundle:EstadosSancion',
+//                'choice_label' => 'estado',
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ));
     }
 
     public function setDefaultOptions(OptionsResolver $resolver)

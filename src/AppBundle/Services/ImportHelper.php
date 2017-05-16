@@ -33,11 +33,14 @@ class ImportHelper
      */
     function importarAlumnos(File $file)
     {
+        ini_set('max_execution_time', 300);
         /** @var CursosRepository $repositoryCurso */
         $repositoryCurso = $this->em->getRepository('AppBundle:Cursos');
         /** @var UsuariosRepository $repositoryUsuarios */
         $repositoryUsuarios = $this->em->getRepository('AppBundle:Usuarios');
         $contadorLineas = 0;
+        $arrayMayus = array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N');
+        $arrayMinus = array('á' => 'a', 'é' => 'e', 'í' => 'e', 'ó' => 'o', 'ú' => 'u', 'ñ' => ',');
         if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
             while (($row = fgetcsv($handle)) !== FALSE) {
                 if (count($row) > 1) {
@@ -63,8 +66,6 @@ class ImportHelper
                         $alumno->setNie($row[6]);
                         $user = new Usuarios();
                         $userNombre = mb_substr($alumno->getNombre(), 0, 2) . mb_substr($alumno->getApellido1(), 0, 2) . mb_substr($alumno->getApellido2(), 0, 2);
-                        $arrayMayus = array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N');
-                        $arrayMinus = array('á' => 'a', 'é' => 'e', 'í' => 'e', 'ó' => 'o', 'ú' => 'u', 'ñ' => ',');
                         $userNombre = strtr($userNombre, $arrayMayus);
                         $userNombre = strtr($userNombre, $arrayMinus);
                         $user->setUsuario(mb_strtolower($userNombre));
@@ -79,7 +80,6 @@ class ImportHelper
                         $user->setRoles(['ROLE_USER']);
 
                         $this->em->persist($user);
-                        $this->em->flush();
                         $alumno->setIdUsuario($user);
                         $this->em->persist($alumno);
                         $this->em->flush();

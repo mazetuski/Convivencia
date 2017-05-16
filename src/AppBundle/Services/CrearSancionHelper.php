@@ -23,7 +23,7 @@ class CrearSancionHelper
         '5' => '12:40 - 13:40',
         '6' => '13:40 - 14:40',
     );
-
+    const ESTADO_INICIADO = 'Iniciada';
     const SANCION_TYPE_HORAS = 5;
     const SANCION_TYPE_JORNADA = 2;
 
@@ -43,6 +43,7 @@ class CrearSancionHelper
     {
         /** @var SancionesRepository $repositorySancion */
         $repositorySancion = $this->em->getRepository("AppBundle:Sanciones");
+        $repositoryEstadoSanciones = $this->em->getRepository("AppBundle:EstadosSancion");
         /** @var AlumnoRepository $repositoryAlumno */
         $repositoryAlumno = $this->em->getRepository('AppBundle:Alumno');
         if ($request->query->has('idSancion'))
@@ -51,9 +52,36 @@ class CrearSancionHelper
             $sancion = new Sanciones();
             $alumno = $repositoryAlumno->findOneById($request->get('idAlumno'));
             $sancion->setIdAlumno($alumno);
-        } else
+        } else {
+            $estadoIniciado = $repositoryEstadoSanciones->findOneByEstado(self::ESTADO_INICIADO);
             $sancion = new Sanciones();
+            $sancion->setIdEstado($estadoIniciado);
+        }
         return $sancion;
+    }
+
+    /**
+     * Función que cambia el estado de la sancion a la siguiente
+     * @param Request $request
+     * @param Sanciones $sancion
+     * @return mixed
+     */
+    public function changeEstado(Request $request, Sanciones $sancion){
+        if ($request->get('estadoSancion') != null) {
+            $repositoryEstadoSanciones = $this->em->getRepository("AppBundle:EstadosSancion");
+            $allEstados = $repositoryEstadoSanciones->findAll();
+            foreach ($allEstados as $key => $valueEstado) {
+                if ($valueEstado->getId() == $sancion->getIdEstado()->getId())
+                    if ($key < count($allEstados) - 1) {
+                        $nextEstado = $repositoryEstadoSanciones->findOneById($valueEstado->getId() + 1);
+                        $sancion->setIdEstado($nextEstado);
+                        $this->em->persist($sancion);
+                        $this->em->flush();
+                        return true;
+                    }
+            }
+        }
+        return false;
     }
 
     /**

@@ -29,11 +29,14 @@ class SancionController extends Controller
         $alumnoHelper = $this->get('app.alumnoHelper');
         /** @var CursosRepository $repositoryACursos */
         $repositoryACursos = $em->getRepository('AppBundle:Cursos');
+        $repositoryAccionSanciones = $em->getRepository('AppBundle:AccionEstadoSancion');
         /** @var Cursos $curso */
         $cursos = $repositoryACursos->getCursosGroupByCursos();
 
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
         $sancion = $crearSancionHelper->getSancionFromRequest($request);
+        if($crearSancionHelper->changeEstado($request, $sancion))
+            $this->redirectToRoute("nueva_sancion", array('idSancion' => $sancion->getId()));
         $form = $this->createForm(SancionFormType::class, $sancion, array(
             'compound' => $alumnos,
         ));
@@ -46,12 +49,15 @@ class SancionController extends Controller
             $crearSancionHelper->creaDiarioFromSancion($sancion, $request);
             return $this->redirectToRoute("gestion_sanciones");
         }
+        $accion = $repositoryAccionSanciones->findOneByEstado($sancion->getIdEstado());
 
         return $this->render("convivencia/sanciones/sancionesForm.html.twig", array(
             'form' => $form->createView(),
             'detalles' => $detalles,
             'horas' => $crearSancionHelper::HORAS_CLASE,
             'cursos' => $cursos,
+            'accion' => $accion,
+            'sancion' => $sancion,
         ));
     }
 

@@ -16,6 +16,9 @@ services:
     app.diarioHelper:
         class: AppBundle\Services\DiarioHelper
         arguments: ['@doctrine.orm.entity_manager']
+    app.partesHelper:
+        class: AppBundle\Services\PartesHelper
+        arguments: ['@doctrine.orm.entity_manager']
 
     form.parteType:
         class: AppBundle\Form\ParteFormType

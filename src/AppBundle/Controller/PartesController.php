@@ -10,6 +10,7 @@ use AppBundle\Form\ParteFormType;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Services\AlumnoHelper;
+use AppBundle\Services\PartesHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -54,49 +55,25 @@ class PartesController extends Controller
     public function crearParteAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $recupera = false;
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
-        $repositoryEstadoPartes = $em->getRepository('AppBundle:EstadosParte');
+        /** @var PartesHelper $parteHelper */
+        $parteHelper = $this->get('app.partesHelper');
         $repositoryAccionPartes = $em->getRepository('AppBundle:AccionEstadoParte');
-        /** @var PartesRepository $repositoryPartes */
-        $repositoryPartes = $em->getRepository('AppBundle:Partes');
         /** @var CursosRepository $repositoryACursos */
         $repositoryACursos = $em->getRepository('AppBundle:Cursos');
         /** @var Cursos $curso */
         $cursos = $repositoryACursos->getCursosGroupByCursos();
         /** @var Alumno $alumnos */
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
-        if ($request->get('recuperaPunto') != null) {
-            /** @var Partes $parte */
-            $parte = $repositoryPartes->getParteById($request->get('parteHidden'));
-            $parte->setRecupera(1);
-            $em->persist($parte);
-            $em->flush();
-            return $this->redirectToRoute("nuevoParte", array('idParte' => $parte->getId()));
-        }
+        $parte = $parteHelper->getParteFromRequest($request);
+        if ($parteHelper->recuperarPuntos($request) ||
+            $parteHelper->changeEstado($request, $parte))
+            return $this->redirectToRoute("nuevoParte", array(
+                'idParte' => $parte->getId()));
+        if ($request->query->has('idParte'))
+            $recupera = $parteHelper->parteRecupera($parte);
 
-        if ($request->query->has('idParte')) {
-            $parte = $repositoryPartes->getParteById($request->get('idParte'));
-            if ($parte->getRecupera() == 0) $recupera = true;
-        } else {
-            $parte = new Partes();
-            $estadoIniciado = $repositoryEstadoPartes->findOneByEstado(self::ESTADO_INICIADO);
-            $parte->setIdEstado($estadoIniciado);
-        }
-        if ($request->get('estadoParte') != null) {
-            $allEstados = $repositoryEstadoPartes->findAll();
-            foreach ($allEstados as $key => $valueEstado) {
-                if ($valueEstado->getId() == $parte->getIdEstado()->getId())
-                    if ($key < count($allEstados) - 1) {
-                        $nextEstado = $repositoryEstadoPartes->findOneById($valueEstado->getId() + 1);
-                        $parte->setIdEstado($nextEstado);
-                        $em->persist($parte);
-                        $em->flush();
-                        return $this->redirectToRoute("nuevoParte", array('idParte' => $parte->getId()));
-                    }
-            }
-        }
         $form = $this->createForm(ParteFormType::class, $parte, array(
             'compound' => $alumnos,
         ));
