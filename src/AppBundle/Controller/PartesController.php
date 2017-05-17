@@ -29,19 +29,25 @@ class PartesController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        $paginator  = $this->get('knp_paginator');
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository("AppBundle:Partes");
         if ($request->query->has('like')) {
             if ($request->get('historico') != null)
-                $partes = $repositoryPartes->getPartesLike($request->get('like'), true);
+                $query = $repositoryPartes->getPartesLike($request->get('like'), true);
             else
-                $partes = $repositoryPartes->getPartesLike($request->get('like'));
+                $query = $repositoryPartes->getPartesLike($request->get('like'));
         } else {
             if ($request->get('historico') != null)
-                $partes = $repositoryPartes->getPartesOrdenados(true);
+                $query = $repositoryPartes->getPartesOrdenados(true);
             else
-                $partes = $repositoryPartes->getPartesOrdenados();
+                $query = $repositoryPartes->getPartesOrdenados();
         }
+        $partes = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
         return $this->render('convivencia/partes/partes.html.twig', array(
             'partes' => $partes,
             'user' => $this->getUser(),

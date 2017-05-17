@@ -114,7 +114,10 @@ $(document).ready(function () {
      */
     function contenedorNewHoraSancion(text = '') {
         let fecha = new Date();
-        fecha = fecha.getDay()+'/'+fecha.getMonth()+'/'+fecha.getFullYear();    
+        var options = {
+            day: "numeric", month: "2-digit", year: "numeric"
+        };
+        fecha = fecha.toLocaleString('es-Es', options);
         let input = '<div class="contenedorFlex">' +
             '   <div class="contenedorFlexChild">' +
             '       <label class="w3-text-teal">Fecha Hora Sanción</label>' +

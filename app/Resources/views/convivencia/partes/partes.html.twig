@@ -73,6 +73,9 @@
                         {% endfor %}
                     </table>
                 </div>
+                <div class="paginator w3-col m12">
+                    {{ knp_pagination_render(partes) }}
+                </div>
             </form>
         </main>
     {% endblock %}

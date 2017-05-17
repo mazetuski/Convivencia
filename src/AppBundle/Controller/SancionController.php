@@ -69,6 +69,7 @@ class SancionController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        $paginator  = $this->get('knp_paginator');
         /** @var SancionesRepository $sancionesRepository */
         $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
         if ($request->query->has('like')) {
@@ -83,8 +84,14 @@ class SancionController extends Controller
                 $sanciones = $sancionesRepository->getSancionesOrdenadas();
         }
 
+        $sancionesPagination = $paginator->paginate(
+            $sanciones, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
+
         return $this->render("convivencia/sanciones/sanciones.html.twig", array(
-            'sanciones' => $sanciones,
+            'sanciones' => $sancionesPagination,
             'user' => $this->getUser(),
         ));
     }

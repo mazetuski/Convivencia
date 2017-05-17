@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * PartesRepository
@@ -49,23 +51,21 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
     public function getPartesOrdenados($historico = false)
     {
         if(!$historico) {
-            $query = $this->getEntityManager()->createQuery(
-                "SELECT p 
-             FROM AppBundle\Entity\Partes p
-             JOIN p.idEstado as estado
-             WHERE estado.estado != 'Caducado'
-             ORDER BY p.fecha DESC"
-            );
+            $query = $this->createQueryBuilder('partes');
+            $query->select('partes');
+            $query->join('partes.idEstado', 'estado');
+            $query->where("estado.estado != 'Caducado' ");
+            $query->orderBy('partes.fecha', 'DESC');
         }
         else {
-            $query = $this->getEntityManager()->createQuery(
-                'SELECT p 
-             FROM AppBundle\Entity\Partes p
-             ORDER BY p.fecha DESC'
-            );
+            $query = $this->createQueryBuilder('partes');
+            $query->select('partes');
+            $query->orderBy('partes.fecha', 'DESC');
         }
-
+        $query = $query->getQuery();
         return $query->getResult();
+
+//        return $query->getResult();
     }
 
     /**

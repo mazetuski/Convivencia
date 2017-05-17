@@ -102,6 +102,12 @@ form .minTextArea{
     margin: 15px 0;
 }
 
+.paginator{
+    color: #316f80;
+    text-align: center;
+    padding: 1em;
+}
+
 .selectForm input{
     display: inline-block;
     vertical-align: middle;
