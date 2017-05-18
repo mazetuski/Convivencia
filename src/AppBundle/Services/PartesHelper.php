@@ -9,6 +9,7 @@
 namespace AppBundle\Services;
 
 
+use AppBundle\Controller\PartesController;
 use AppBundle\Entity\Partes;
 use AppBundle\Repository\EstadosParteRepository;
 use AppBundle\Repository\PartesRepository;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PartesHelper
 {
+
+
     function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -37,7 +40,7 @@ class PartesHelper
             $parte = $this->repositoryPartes->getParteById($request->get('idParte'));
         } else {
             $parte = new Partes();
-            $estadoIniciado = $this->repositoryEstadoPartes->findOneByEstado(self::ESTADO_INICIADO);
+            $estadoIniciado = $this->repositoryEstadoPartes->findOneByEstado(PartesController::ESTADO_INICIADO);
             $parte->setIdEstado($estadoIniciado);
         }
         return $parte;

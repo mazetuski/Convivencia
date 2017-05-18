@@ -73,6 +73,7 @@ class PartesController extends Controller
         /** @var Alumno $alumnos */
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
         $parte = $parteHelper->getParteFromRequest($request);
+        $recupera = false;
         if ($parteHelper->recuperarPuntos($request) ||
             $parteHelper->changeEstado($request, $parte))
             return $this->redirectToRoute("nuevoParte", array(
