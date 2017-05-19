@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Partes;
 
 /**
  * SancionesRepository
@@ -124,6 +125,16 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('alumno', $alumno->getId());
         $query->setParameter('estadoFinalizado', 'Finalizada');
         return $query->getResult();
+    }
+
+    public function getSancionesByPartes(Partes $parte){
+        $query = $this->getEntityManager()->createQuery('SELECT s
+                 FROM AppBundle\Entity\Sanciones s
+                 JOIN s.idParte as parte
+                 WHERE parte.id = :parte');
+
+        $query->setParameter('parte', $parte->getId());
+         return $query->getResult();
     }
 
 }

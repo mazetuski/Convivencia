@@ -62,7 +62,7 @@ class DiarioAulaConvivencia
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Sanciones")
-     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id", onDelete="cascade")
      */
     private $idSancion;
 

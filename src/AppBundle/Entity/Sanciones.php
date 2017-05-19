@@ -81,8 +81,8 @@ class Sanciones
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="TipoSancion")
-     * @ORM\JoinColumn(name="idTipo", referencedColumnName="id")
+         * @ORM\ManyToOne(targetEntity="TipoSancion")
+         * @ORM\JoinColumn(name="idTipo", referencedColumnName="id")
      */
     private $idTipo;
 

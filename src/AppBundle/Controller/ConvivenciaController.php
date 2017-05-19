@@ -138,8 +138,9 @@ class ConvivenciaController extends Controller
         $repositoryDiario = $em->getRepository('AppBundle:DiarioAulaConvivencia');
         $partesIniciados = $repositoryPartes->getPartesByEstado('Iniciado');
         $sancionesIniciadas = $repositorySanciones->getSancionesPorEstado();
-        $diarioNow = $repositoryDiario->getDiarioByFechaYHora
-        (new \DateTime(), $sancionHelper->getHoraFromDate(new \DateTime()));
+        $fecha = new \DateTime();
+        $hora = $sancionHelper->getHoraFromDate($fecha);
+        $diarioNow = $repositoryDiario->getDiarioByFechaYHora($fecha, $hora);
         return $this->render('convivencia/admin/admin.html.twig', array(
             'partesIniciados' => count($partesIniciados),
             'sancionesIniciadas' => count($sancionesIniciadas),

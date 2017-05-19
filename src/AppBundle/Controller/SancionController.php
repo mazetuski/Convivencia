@@ -30,12 +30,13 @@ class SancionController extends Controller
         /** @var CursosRepository $repositoryACursos */
         $repositoryACursos = $em->getRepository('AppBundle:Cursos');
         $repositoryAccionSanciones = $em->getRepository('AppBundle:AccionEstadoSancion');
+        $repositoryPartes = $em->getRepository('AppBundle:Partes');
         /** @var Cursos $curso */
         $cursos = $repositoryACursos->getCursosGroupByCursos();
 
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
         $sancion = $crearSancionHelper->getSancionFromRequest($request);
-        if($crearSancionHelper->changeEstado($request, $sancion))
+        if ($crearSancionHelper->changeEstado($request, $sancion))
             $this->redirectToRoute("nueva_sancion", array('idSancion' => $sancion->getId()));
         $form = $this->createForm(SancionFormType::class, $sancion, array(
             'compound' => $alumnos,
@@ -44,6 +45,10 @@ class SancionController extends Controller
         $detalles = $crearSancionHelper->getDiarioFromSancion($sancion);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($request->get('idParte') != null) {
+                $parte = $repositoryPartes->findOneById($request->get('idParte'));
+                $sancion->setIdParte([$parte]);
+            }
             $em->persist($sancion);
             $em->flush();
             $crearSancionHelper->creaDiarioFromSancion($sancion, $request);
@@ -69,7 +74,7 @@ class SancionController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         /** @var SancionesRepository $sancionesRepository */
         $sancionesRepository = $em->getRepository('AppBundle:Sanciones');
         if ($request->query->has('like')) {

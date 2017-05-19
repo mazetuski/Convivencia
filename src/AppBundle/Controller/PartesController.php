@@ -9,6 +9,7 @@ use AppBundle\Entity\Partes;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\PartesHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -68,6 +69,8 @@ class PartesController extends Controller
         $repositoryAccionPartes = $em->getRepository('AppBundle:AccionEstadoParte');
         /** @var CursosRepository $repositoryACursos */
         $repositoryACursos = $em->getRepository('AppBundle:Cursos');
+        /** @var SancionesRepository $repositorySanciones */
+        $repositorySanciones = $em->getRepository('AppBundle:Sanciones');
         /** @var Cursos $curso */
         $cursos = $repositoryACursos->getCursosGroupByCursos();
         /** @var Alumno $alumnos */
@@ -93,6 +96,7 @@ class PartesController extends Controller
         }
 
         $accion = $repositoryAccionPartes->findOneByEstado($parte->getIdEstado());
+        $sanciones = $repositorySanciones->getSancionesByPartes($parte);
 
         return $this->render('convivencia/partes/partesForm.html.twig', array(
             'form' => $form->createView(),
@@ -100,6 +104,7 @@ class PartesController extends Controller
             'cursos' => $cursos,
             'accion' => $accion,
             'parte' => $parte,
+            'sanciones' => $sanciones
         ));
     }
 

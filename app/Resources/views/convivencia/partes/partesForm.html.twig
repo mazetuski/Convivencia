@@ -12,7 +12,8 @@
                     {% if recupera %}
                         <input class="w3-button w3-text-white" type="submit" name="recuperaPunto" value="+1 Punto">
                     {% else %}
-                        <input class="w3-button w3-text-white botonSubmit" type="button" name="recuperaPunto" value="+1 Punto"
+                        <input class="w3-button w3-text-white botonSubmit" type="button" name="recuperaPunto"
+                               value="+1 Punto"
                                disabled>
                     {% endif %}
                     {% if accion != 'Inhabilitada' %}
@@ -34,6 +35,23 @@
             </div>
         </form>
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia', 'id':'parteForm'}}) }}
+        {{ form_row(form.idAlumno) }}
+        {{ form_row(form.idProfesor) }}
+        {{ form_row(form.Fecha) }}
+        {{ form_row(form.idConducta) }}
+        {{ form_row(form.Descripcion) }}
+        <br/>
+        {{ form_row(form.Tareas) }}
+        <br/>
+        <div class="w3-select w3-border w3-light-grey">
+            {% if sanciones != null and sanciones|length>0 %}
+                {% for sancion in sanciones %}
+                    <p><a href="{{ path('nueva_sancion', {'idSancion': sancion.id}) }}">{{ sancion.sancion }}</a></p>
+                {% endfor %}
+            {% endif %}
+            <a href="{{ path('nueva_sancion', {'idParte': parte.id, 'idAlumno': parte.idAlumno.id}) }}">Crear Sanción</a></p>
+        </div>
+        <label class="w3-text-teal">Sanciones</label>
         {{ form_widget(form) }}
         <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="registrarse" value="Enviar">
         {{ form_end(form) }}
