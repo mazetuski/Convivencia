@@ -10,6 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Usuarios;
 use AppBundle\Form\RegistroFormType;
+use AppBundle\Repository\DiarioAulaConvivenciaRepository;
+use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\SancionesRepository;
+use AppBundle\Services\CrearSancionHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -123,7 +127,24 @@ class ConvivenciaController extends Controller
      */
     public function adminAction()
     {
-        return $this->render('convivencia/admin/admin.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        /** @var CrearSancionHelper $sancionHelper */
+        $sancionHelper = $this->get('app.crearSancionHelper');
+        /** @var PartesRepository $repositoryPartes */
+        $repositoryPartes = $em->getRepository('AppBundle:Partes');
+        /** @var SancionesRepository $repositorySanciones */
+        $repositorySanciones = $em->getRepository('AppBundle:Sanciones');
+        /** @var DiarioAulaConvivenciaRepository $repositoryDiario */
+        $repositoryDiario = $em->getRepository('AppBundle:DiarioAulaConvivencia');
+        $partesIniciados = $repositoryPartes->getPartesByEstado('Iniciado');
+        $sancionesIniciadas = $repositorySanciones->getSancionesPorEstado();
+        $diarioNow = $repositoryDiario->getDiarioByFechaYHora
+        (new \DateTime(), $sancionHelper->getHoraFromDate(new \DateTime()));
+        return $this->render('convivencia/admin/admin.html.twig', array(
+            'partesIniciados' => count($partesIniciados),
+            'sancionesIniciadas' => count($sancionesIniciadas),
+            'diarioNow' => count($diarioNow),
+        ));
     }
 
     /**
