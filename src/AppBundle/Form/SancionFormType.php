@@ -65,11 +65,15 @@ class SancionFormType extends AbstractType
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('Evaluacion', TextType::class, array(
+                'required' =>false,
+                'empty_data' => '',
                 'label' => 'Evaluación',
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('PuntosRecuperados', IntegerType::class, array(
+                'required' =>false,
+                'empty_data' => 0,
                 'label' => 'Puntos Recuperados',
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')

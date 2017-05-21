@@ -67,14 +67,14 @@ class Sanciones
     /**
      * @var string
      *
-     * @ORM\Column(name="evaluacion", type="string", length=255)
+     * @ORM\Column(name="evaluacion", type="string", length=255, nullable=true)
      */
     private $evaluacion;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="puntosRecuperados", type="integer")
+     * @ORM\Column(name="puntosRecuperados", type="integer", nullable=true)
      */
     private $puntosRecuperados;
 

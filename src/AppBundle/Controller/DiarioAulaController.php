@@ -55,7 +55,7 @@ class DiarioAulaController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $emConvivencia->persist($diario);
             $emConvivencia->flush();
-            $this->redirectToRoute('show_diario');
+            return $this->redirectToRoute('show_diario');
         }
         return $this->render(
             'convivencia/diarioAulaConvivencia/diarioAulaForm.html.twig', array(

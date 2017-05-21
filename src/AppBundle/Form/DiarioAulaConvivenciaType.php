@@ -17,6 +17,8 @@ class DiarioAulaConvivenciaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('observaciones', TextType::class, array(
+            'required' =>false,
+            'empty_data' => '',
             'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
             'label_attr' => array('class' => 'w3-text-teal'),
         ))
