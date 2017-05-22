@@ -2,10 +2,18 @@
     {% if app.user.usuario is defined %}
         <header class="w3-container" style="background-color: #38889B; color: #FFFFFF">
             <div style="text-align: center;">
-                <a href="{{ path('index') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">ShikOba</a>
-                <a href="{{ path('logout') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Logout</a>
+                <a href="{{ path('logout') }}" class="w3-padding w3-mobile w3-right w3-hover-grey w3-large">Logout</a>
+                <a href="{{ path('index') }}" class="w3-padding w3-mobile w3-right w3-hover-grey w3-large">ShikOba</a>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <div class="w3-dropdown-hover w3-padding w3-right w3-mobile w3-large">
+                    <a href="{{ path('show_carnets') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Carnets</a>
+                    <a href="{{ path('gestion_partes') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Partes</a>
+                    <a href="{{ path('gestion_sanciones') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Medidas</a>
+                    <a href="{{ path('show_diario') }}"
+                       class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Diario</a>
+                    <div class="w3-dropdown-hover w3-padding w3-left w3-mobile w3-large">
                         <span>Administración</span> <i class="fa fa-caret-down w3-text-white"></i>
                         <div class="w3-dropdown-content w3-bar-block w3-card-1 azulTemaButton">
                             <a href="{{ path('admin_import') }}" class=" w3-margin-top w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Alumnos</a>
@@ -13,16 +21,8 @@
                             <a href="#" class="w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Conductas</a>
                         </div>
                     </div>
-                    <a href="{{ path('show_diario') }}"
-                       class="w3-padding w3-right w3-hover-grey w3-mobile w3-large">Diario</a>
-                    <a href="{{ path('gestion_sanciones') }}"
-                       class="w3-padding w3-right w3-hover-grey w3-mobile w3-large">Medidas</a>
-                    <a href="{{ path('gestion_partes') }}"
-                       class="w3-padding w3-right w3-hover-grey w3-mobile w3-large">Partes</a>
-                    <a href="{{ path('show_carnets') }}"
-                       class="w3-padding w3-right w3-hover-grey w3-mobile w3-large">Carnets</a>
                 {% elseif is_granted('ROLE_USER') %}
-                    <a href="{{ path('registrarAlumno') }}" class="w3-padding w3-mobile w3-right w3-hover-grey w3-large">Perfil</a>
+                    <a href="{{ path('registrarAlumno') }}" class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Perfil</a>
                 {% endif %}
             </div>
         </header>

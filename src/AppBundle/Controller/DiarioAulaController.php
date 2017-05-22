@@ -34,7 +34,7 @@ class DiarioAulaController extends Controller
 
         return $this->render(
             'convivencia/diarioAulaConvivencia/diarioAula.html.twig', array(
-            'diarioData' => $diarioData,
+                'diarioData' => $diarioData,
             )
         );
     }
@@ -59,7 +59,8 @@ class DiarioAulaController extends Controller
         }
         return $this->render(
             'convivencia/diarioAulaConvivencia/diarioAulaForm.html.twig', array(
-            'form' => $form->createView(),
+                'form' => $form->createView(),
+                'diario' => $diario,
             )
         );
     }

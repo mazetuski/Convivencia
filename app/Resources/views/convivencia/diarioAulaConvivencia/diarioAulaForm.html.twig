@@ -10,6 +10,7 @@
 
     <div class="w3-row w3-container w3-white w3-margin-bottom">
         <h1 class="w3-center">Editar Diario Aula Convivencia</h1>
+        <h2 class="w3-center">{{ diario.idSancion.idAlumno.getNombreCompleto() }}</h2>
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia', 'id':'diarioAulaForm'}}) }}
         {{ form_widget(form) }}
         <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="editarDiario" value="Editar">

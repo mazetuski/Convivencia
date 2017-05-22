@@ -102,8 +102,10 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              JOIN p.idProfesor as profesor
              JOIN p.idTipo as tipo
              JOIN p.idEstado as estado
+             JOIN alumno.idCurso as curso
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
-             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
+             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
+             OR curso.grupo LIKE :string)
              AND estado.estado != 'Caducado'
              ORDER BY p.fecha DESC"
             );
@@ -116,8 +118,10 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              JOIN p.idProfesor as profesor
              JOIN p.idTipo as tipo
              JOIN p.idEstado as estado
+             JOIN alumno.idCurso as curso
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
-             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
+             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
+             OR curso.grupo LIKE :string)
              ORDER BY p.fecha DESC"
             );
         }

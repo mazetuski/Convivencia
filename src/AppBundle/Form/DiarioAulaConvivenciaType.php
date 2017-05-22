@@ -16,21 +16,16 @@ class DiarioAulaConvivenciaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('observaciones', TextType::class, array(
-            'required' =>false,
-            'empty_data' => '',
-            'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-            'label_attr' => array('class' => 'w3-text-teal'),
-        ))
-            ->add('actitud', ChoiceType::class, array(
-                'choices' => array(
-                    'Positiva - A' => 'A',
-                    'Normal - B' => 'B',
-                    'Negativa - C' => 'C',
-                ),
+        $builder
+            ->add('idProfesor', EntityType::class, array(
+                'label' => 'Profesor',
+                'class' => 'AppBundle:Profesores',
+                'choice_label' => function ($profesor) {
+                    return $profesor->getNombreCompleto();
+                },
                 'attr' => array(
-                    'class' => 'w3-select w3-border w3-light-grey',
-                    'data-placeholder' => 'Selecciona un tipo de actitud...',
+                    'class' => 'w3-select w3-border w3-light-grey chosen-select',
+                    'data-placeholder' => 'Selecciona un profesor...',
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
@@ -44,17 +39,23 @@ class DiarioAulaConvivenciaType extends AbstractType
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
-            ->add('idProfesor', EntityType::class, array(
-                'label' => 'Profesor',
-                'class' => 'AppBundle:Profesores',
-                'choice_label' => function ($profesor) {
-                    return $profesor->getNombreCompleto();
-                },
+            ->add('actitud', ChoiceType::class, array(
+                'choices' => array(
+                    'Positiva - A' => 'A',
+                    'Normal - B' => 'B',
+                    'Negativa - C' => 'C',
+                ),
                 'attr' => array(
-                    'class' => 'w3-select w3-border w3-light-grey chosen-select',
-                    'data-placeholder' => 'Selecciona un profesor...',
+                    'class' => 'w3-select w3-border w3-light-grey',
+                    'data-placeholder' => 'Selecciona un tipo de actitud...',
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
+            ))
+            ->add('observaciones', TextType::class, array(
+                'required' =>false,
+                'empty_data' => '',
+                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+                'label_attr' => array('class' => 'w3-text-teal'),
             ));
     }
 

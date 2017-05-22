@@ -46,14 +46,15 @@ class CrearSancionHelper
         $repositoryEstadoSanciones = $this->em->getRepository("AppBundle:EstadosSancion");
         /** @var AlumnoRepository $repositoryAlumno */
         $repositoryAlumno = $this->em->getRepository('AppBundle:Alumno');
+        $estadoIniciado = $repositoryEstadoSanciones->findOneByEstado(self::ESTADO_INICIADO);
         if ($request->query->has('idSancion'))
             return $repositorySancion->findOneById($request->get('idSancion'));
         elseif ($request->query->has('idAlumno')) {
             $sancion = new Sanciones();
             $alumno = $repositoryAlumno->findOneById($request->get('idAlumno'));
             $sancion->setIdAlumno($alumno);
+            $sancion->setIdEstado($estadoIniciado);
         } else {
-            $estadoIniciado = $repositoryEstadoSanciones->findOneByEstado(self::ESTADO_INICIADO);
             $sancion = new Sanciones();
             $sancion->setIdEstado($estadoIniciado);
         }

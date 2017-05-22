@@ -76,7 +76,7 @@ class Sanciones
      *
      * @ORM\Column(name="puntosRecuperados", type="integer", nullable=true)
      */
-    private $puntosRecuperados;
+    private $puntosRecuperados = 0;
 
     /**
      * @var int
