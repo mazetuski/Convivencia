@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 class CrearSancionHelper
 {
 
+    const VALUE_INICIADO = 'Iniciada';
+    const VALUE_COMUNICADO = 'Comunicada';
+
     const HORAS_CLASE = array(
         '1' => '8:15 - 9:15',
         '2' => '9:15 - 10:15',
@@ -72,7 +75,14 @@ class CrearSancionHelper
             $repositoryEstadoSanciones = $this->em->getRepository("AppBundle:EstadosSancion");
             $allEstados = $repositoryEstadoSanciones->findAll();
             foreach ($allEstados as $key => $valueEstado) {
-                if ($valueEstado->getId() == $sancion->getIdEstado()->getId())
+                if ($valueEstado->getId() == $sancion->getIdEstado()->getId()) {
+                    $fecha = new \DateTime();
+                    if ($valueEstado->getEstado() == self::VALUE_INICIADO) {
+                        $sancion->setFechaComunicacion($fecha->format('d/m/Y'));
+                    }
+                    elseif ($valueEstado->getEstado() == self::VALUE_COMUNICADO) {
+                        $sancion->setFechaConfirmacion($fecha->format('d/m/Y'));
+                    }
                     if ($key < count($allEstados) - 1) {
                         $nextEstado = $repositoryEstadoSanciones->findOneById($valueEstado->getId() + 1);
                         $sancion->setIdEstado($nextEstado);
@@ -80,6 +90,7 @@ class CrearSancionHelper
                         $this->em->flush();
                         return true;
                     }
+                }
             }
         }
         return false;

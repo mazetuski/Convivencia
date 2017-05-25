@@ -100,4 +100,3 @@ class AccionEstadoParte
         return $this->accion;
     }
 }
-

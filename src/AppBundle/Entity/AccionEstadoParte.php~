@@ -5,12 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * AccionEstadoSancion
+ * AccionEstadoParte
  *
- * @ORM\Table(name="accion_estado_sancion")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\AccionEstadoSancionRepository")
+ * @ORM\Table(name="accion_estado_parte")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AccionEstadoParteRepository")
  */
-class AccionEstadoSancion
+class AccionEstadoParte
 {
     /**
      * @var int
@@ -24,7 +24,7 @@ class AccionEstadoSancion
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="EstadosSancion")
+     * @ORM\ManyToOne(targetEntity="EstadosParte")
      * @ORM\JoinColumn(name="estado", referencedColumnName="id")
      */
     private $estado;
@@ -52,7 +52,7 @@ class AccionEstadoSancion
      *
      * @param string $estado
      *
-     * @return AccionEstadoSancion
+     * @return AccionEstadoParte
      */
     public function setEstado($estado)
     {
@@ -76,7 +76,7 @@ class AccionEstadoSancion
      *
      * @param string $accion
      *
-     * @return AccionEstadoSancion
+     * @return AccionEstadoParte
      */
     public function setAccion($accion)
     {
@@ -100,3 +100,4 @@ class AccionEstadoSancion
         return $this->accion;
     }
 }
+

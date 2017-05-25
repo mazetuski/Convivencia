@@ -18,6 +18,8 @@ class Sanciones
         $this->fecha = new \DateTime();
         $this->fechaFinal = new \DateTime();
         $this->fechaInicio = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
     }
 
     /**
@@ -77,6 +79,20 @@ class Sanciones
      * @ORM\Column(name="puntosRecuperados", type="integer", nullable=true)
      */
     private $puntosRecuperados = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="string", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
+     */
+    private $fechaComunicacion;
 
     /**
      * @var int
@@ -383,5 +399,53 @@ class Sanciones
     public function removeIdParte(\AppBundle\Entity\Partes $idParte)
     {
         $this->idParte->removeElement($idParte);
+    }
+
+    /**
+     * Set fechaConfirmacion
+     *
+     * @param string $fechaConfirmacion
+     *
+     * @return Sanciones
+     */
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaConfirmacion
+     *
+     * @return string
+     */
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    /**
+     * Set fechaComunicacion
+     *
+     * @param string $fechaComunicacion
+     *
+     * @return Sanciones
+     */
+    public function setFechaComunicacion($fechaComunicacion)
+    {
+        $this->fechaComunicacion = $fechaComunicacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaComunicacion
+     *
+     * @return string
+     */
+    public function getFechaComunicacion()
+    {
+        return $this->fechaComunicacion;
     }
 }

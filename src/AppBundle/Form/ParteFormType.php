@@ -97,6 +97,14 @@ class ParteFormType extends AbstractType
                 'attr' => array('class' => 'w3-input w3-border w3-light-grey minTextArea'),
                 'label_attr' => array('class' => 'w3-text-teal'),
             ))
+            ->add('fechaConfirmacion', TextType::class, array(
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey'),
+                'label_attr' => array('class' => 'w3-text-teal')
+            ))
+            ->add('fechaComunicacion', TextType::class, array(
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey marginBottom'),
+                'label_attr' => array('class' => 'w3-text-teal')
+            ))
 //            ->add('Puntos', IntegerType::class, array(
 //                'required' =>false,
 //                'empty_data' => 0,

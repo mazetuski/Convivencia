@@ -10,15 +10,18 @@ namespace AppBundle\Services;
 
 
 use AppBundle\Controller\PartesController;
+use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
 use AppBundle\Repository\EstadosParteRepository;
 use AppBundle\Repository\PartesRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class PartesHelper
 {
-
+    const VALUE_INICIADO = 'Iniciado';
+    const VALUE_COMUNICADO = 'Comunicado';
 
     function __construct(EntityManager $em)
     {
@@ -34,7 +37,8 @@ class PartesHelper
      * @param Request $request
      * @return Partes $parte
      */
-    public function getParteFromRequest(Request $request){
+    public function getParteFromRequest(Request $request)
+    {
 
         if ($request->query->has('idParte')) {
             $parte = $this->repositoryPartes->getParteById($request->get('idParte'));
@@ -51,7 +55,8 @@ class PartesHelper
      * @param Partes $parte
      * @return bool
      */
-    public function parteRecupera(Partes $parte){
+    public function parteRecupera(Partes $parte)
+    {
         if ($parte->getRecupera() == 0)
             return true;
         return false;
@@ -62,7 +67,8 @@ class PartesHelper
      * @param Request $request
      * @return bool
      */
-    public function recuperarPuntos(Request $request){
+    public function recuperarPuntos(Request $request)
+    {
         if ($request->get('recuperaPunto') != null && $request->get('parteHidden') != null) {
             /** @var Partes $parte */
             $parte = $this->repositoryPartes->getParteById($request->get('parteHidden'));
@@ -80,11 +86,20 @@ class PartesHelper
      * @param Partes $parte
      * @return bool
      */
-    public function changeEstado(Request $request, Partes $parte){
+    public function changeEstado(Request $request, Partes $parte)
+    {
         if ($request->get('estadoParte') != null) {
             $allEstados = $this->repositoryEstadoPartes->findAll();
+            /** @var EstadosParte $valueEstado */
             foreach ($allEstados as $key => $valueEstado) {
-                if ($valueEstado->getId() == $parte->getIdEstado()->getId())
+                if ($valueEstado->getId() == $parte->getIdEstado()->getId()) {
+                    $fecha = new \DateTime();
+                    if ($valueEstado->getEstado() == self::VALUE_INICIADO) {
+                        $parte->setFechaComunicacion($fecha->format('d/m/Y'));
+                    }
+                    elseif ($valueEstado->getEstado() == self::VALUE_COMUNICADO) {
+                        $parte->setFechaConfirmacion($fecha->format('d/m/Y'));
+                    }
                     if ($key < count($allEstados) - 1) {
                         $nextEstado = $this->repositoryEstadoPartes->findOneById($valueEstado->getId() + 1);
                         $parte->setIdEstado($nextEstado);
@@ -92,6 +107,7 @@ class PartesHelper
                         $this->em->flush();
                         return true;
                     }
+                }
             }
         }
         return false;

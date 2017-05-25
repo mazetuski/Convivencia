@@ -42,7 +42,7 @@ class SancionFormType extends AbstractType
             ->add('idTipo', EntityType::class, array(
                 'class' => 'AppBundle:TipoSancion',
                 'choice_label' => 'tipo',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+                'attr' => array('class' => 'w3-select w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('FechaInicio', DateType::class, array(
@@ -69,6 +69,14 @@ class SancionFormType extends AbstractType
                 'empty_data' => '',
                 'label' => 'Evaluación',
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+                'label_attr' => array('class' => 'w3-text-teal')
+            ))
+            ->add('fechaConfirmacion', TextType::class, array(
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey'),
+                'label_attr' => array('class' => 'w3-text-teal')
+            ))
+            ->add('fechaComunicacion', TextType::class, array(
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('PuntosRecuperados', IntegerType::class, array(

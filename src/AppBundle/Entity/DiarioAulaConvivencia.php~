@@ -62,7 +62,7 @@ class DiarioAulaConvivencia
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Sanciones")
-     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id", onDelete="cascade")
      */
     private $idSancion;
 
@@ -226,5 +226,29 @@ class DiarioAulaConvivencia
     public function getIdSancion()
     {
         return $this->idSancion;
+    }
+
+    /**
+     * Set asiste
+     *
+     * @param integer $asiste
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setAsiste($asiste)
+    {
+        $this->asiste = $asiste;
+
+        return $this;
+    }
+
+    /**
+     * Get asiste
+     *
+     * @return integer
+     */
+    public function getAsiste()
+    {
+        return $this->asiste;
     }
 }

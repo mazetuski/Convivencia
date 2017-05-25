@@ -175,6 +175,10 @@ form .minTextArea{
     margin-top: 2em;
 }
 
+.marginBottom{
+    margin-bottom: 10px;
+}
+
 
 @media (min-width: 768px) {
     .w3-col.s12 {

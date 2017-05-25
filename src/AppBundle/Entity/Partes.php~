@@ -131,6 +131,20 @@ class Partes
      */
     private $recupera;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="datetime", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaComunicacion", type="datetime", nullable=true)
+     */
+    private $fechaComunicacion;
+
 
     /**
      * Get id
@@ -440,6 +454,8 @@ class Partes
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
         $this->horaSalidaAula = new \DateTime();
         $this->horaLlegadaJefatura = new \DateTime();
         $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();

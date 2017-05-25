@@ -18,6 +18,8 @@ class Sanciones
         $this->fecha = new \DateTime();
         $this->fechaFinal = new \DateTime();
         $this->fechaInicio = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
     }
 
     /**
@@ -67,22 +69,36 @@ class Sanciones
     /**
      * @var string
      *
-     * @ORM\Column(name="evaluacion", type="string", length=255)
+     * @ORM\Column(name="evaluacion", type="string", length=255, nullable=true)
      */
     private $evaluacion;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="puntosRecuperados", type="integer")
+     * @ORM\Column(name="puntosRecuperados", type="integer", nullable=true)
      */
-    private $puntosRecuperados;
+    private $puntosRecuperados = 0;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="datetime", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaComunicacion", type="datetime", nullable=true)
+     */
+    private $fechaComunicacion;
 
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="TipoSancion")
-     * @ORM\JoinColumn(name="idTipo", referencedColumnName="id")
+         * @ORM\ManyToOne(targetEntity="TipoSancion")
+         * @ORM\JoinColumn(name="idTipo", referencedColumnName="id")
      */
     private $idTipo;
 

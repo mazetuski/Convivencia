@@ -131,6 +131,20 @@ class Partes
      */
     private $recupera;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="string", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
+     */
+    private $fechaComunicacion;
+
 
     /**
      * Get id
@@ -440,6 +454,8 @@ class Partes
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
         $this->horaSalidaAula = new \DateTime();
         $this->horaLlegadaJefatura = new \DateTime();
         $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();
@@ -502,5 +518,53 @@ class Partes
     public function getRecupera()
     {
         return $this->recupera;
+    }
+
+    /**
+     * Set fechaConfirmacion
+     *
+     * @param string $fechaConfirmacion
+     *
+     * @return Partes
+     */
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaConfirmacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    /**
+     * Set fechaComunicacion
+     *
+     * @param string $fechaComunicacion
+     *
+     * @return Partes
+     */
+    public function setFechaComunicacion($fechaComunicacion)
+    {
+        $this->fechaComunicacion = $fechaComunicacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaComunicacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaComunicacion()
+    {
+        return $this->fechaComunicacion;
     }
 }

@@ -61,6 +61,8 @@
                 </div>
             </div>
         {% endif %}
+        {{ form_row(form.fechaComunicacion) }}
+        {{ form_row(form.fechaConfirmacion) }}
         {{ form_widget(form) }}
         <input class="w3-button w3-block w3-section w3-teal" type="submit" name="registrarSancion" value="Enviar">
         {{ form_end(form) }}
