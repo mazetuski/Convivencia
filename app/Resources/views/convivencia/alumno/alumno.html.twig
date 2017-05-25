@@ -5,14 +5,53 @@
 
     <main class="w3-container w3-margin-top w3-center">
         {#TODO: AÑADIR NOMBRE DEL ALUMNO#}
-            <header class="w3-container">
-                <h2 class="w3-center w3-padding w3-margin">{{ alumno.getNombreCompleto() }}</h2>
-                <img class="w3-circle" src="https://www.w3schools.com/w3css/img_avatar3.png" style="width: 300px" alt="avatar">
-                <h4 class="w3-center">Puntos: {{ alumno.puntos }}/12 </h4>
-            </header>
-            <div class="w3-container w3-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/EAN13.svg/220px-EAN13.svg.png" style="width:150px;">
+        <div class="row">
+            <h2 class="w3-center w3-padding w3-margin">{{ alumnoData.alumno.getNombreCompleto() }}</h2>
+            <div class="w3-col l6 marginTopNoMobile">
+                <header class="w3-container marginTopNoMobile">
+                    <img class="w3-circle" src="https://www.w3schools.com/w3css/img_avatar3.png" style="width: 300px"
+                         alt="avatar">
+                    <h4 class="w3-center">Puntos: {{ alumnoData.alumno.puntos }}/12 </h4>
+                </header>
+                <div class="w3-container w3-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/EAN13.svg/220px-EAN13.svg.png"
+                         style="width:150px;">
+                </div>
             </div>
+            <div class="w3-col l6">
+                <div class="w3-row w3-center w3-text-center widthChartMobile">
+                    <div class="w3-content marginBottom marginTopNoMobile">
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: [{{ alumnoData.numPartes }}, {{ alumnoData.numSanciones }}, {{ alumnoData.numVisitasConvivencia }}],
+                        backgroundColor: [
+                            'rgba(56, 136, 155, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                    }],
+
+
+                    labels: [
+                        'Partes',
+                        'Sanciones',
+                        'Visitas Aula Convivencia'
+                    ]
+                }
+            });
+        </script>
     </main>
 
 

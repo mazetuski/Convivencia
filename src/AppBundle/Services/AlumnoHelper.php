@@ -5,7 +5,9 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
 use AppBundle\Model\CarnetData;
+use AppBundle\Model\UserData;
 use AppBundle\Repository\CursosRepository;
+use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use Doctrine\ORM\EntityManager;
@@ -24,7 +26,11 @@ class AlumnoHelper
         /** @var CursosRepository $repositoryACursos */
         $this->repositoryACursos = $this->emConvivencia->getRepository('AppBundle:Cursos');
         /** @var PartesRepository $repositoryPartes */
-        $this->repositoryPartes =  $this->emConvivencia->getRepository('AppBundle:Partes');
+        $this->repositoryPartes = $this->emConvivencia->getRepository('AppBundle:Partes');
+        /** @var SancionesRepository $repositorySanciones */
+        $this->repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
+        /** @var DiarioAulaConvivenciaRepository repositoryAulaConvivencia */
+        $this->repositoryAulaConvivencia = $this->emConvivencia->getRepository('AppBundle:DiarioAulaConvivencia');
     }
 
     /**
@@ -84,7 +90,7 @@ class AlumnoHelper
                         $alumnos[] = $alumno;
                 }
             }
-            if(count($alumnos)==0)
+            if (count($alumnos) == 0)
                 $alumnos = $this->repositoryAlumno->findAll();
         } else
             $alumnos = $this->repositoryAlumno->findAll();
@@ -96,7 +102,8 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return mixed
      */
-    public function getSancionesByAlumno(Alumno $alumno){
+    public function getSancionesByAlumno(Alumno $alumno)
+    {
         /** @var SancionesRepository $repositorySanciones */
         $repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
         $sanciones = $repositorySanciones->getSancionesNoFinalizadas($alumno);
@@ -108,13 +115,61 @@ class AlumnoHelper
      * @param $alumnos
      * @return array
      */
-    public function getArrayCarnetsData($alumnos){
+    public function getArrayCarnetsData($alumnos)
+    {
         $arrCarnetsData = [];
         /** @var Alumno $alumno */
-        foreach ($alumnos as $alumno){
+        foreach ($alumnos as $alumno) {
             $sanciones = $this->getSancionesByAlumno($alumno);
             $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
         }
         return $arrCarnetsData;
+    }
+
+    /**
+     * Función que devuelve el número de partes de un alumno
+     * @param Alumno $alumno
+     * @return int
+     */
+    public function getNumPartes(Alumno $alumno)
+    {
+        $numPartes = $this->repositoryPartes->findByIdAlumno($alumno);
+        return count($numPartes);
+    }
+
+    /**
+     * Función que devuelve el número de sanciones de un alumno
+     * @param Alumno $alumno
+     * @return int
+     */
+    public function getNumSanciones(Alumno $alumno)
+    {
+        $numSanciones = $this->repositorySanciones->findByIdAlumno($alumno);
+        return count($numSanciones);
+    }
+
+    /**
+     * Función que devuelve el número de visitas al aula de convivencia de un alumno
+     * @param Alumno $alumno
+     * @return int
+     */
+    public function getNumVisitasConvivencia(Alumno $alumno)
+    {
+        $numVisitas = 0;
+        $sanciones = $this->getSancionesByAlumno($alumno);
+        foreach ($sanciones as $sancion)
+            $numVisitas += count($this->repositoryAulaConvivencia->findByIdSancion($sancion));
+        return $numVisitas;
+    }
+
+    /**
+     * Función que devuelve un nuevo modelo UserData
+     * @param Alumno $alumno
+     * @return UserData
+     */
+    public function getUserData(Alumno $alumno)
+    {
+        return new UserData($alumno, $this->getNumPartes($alumno),
+            $this->getNumSanciones($alumno), $this->getNumVisitasConvivencia($alumno));
     }
 }

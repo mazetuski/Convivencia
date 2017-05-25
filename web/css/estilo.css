@@ -175,8 +175,17 @@ form .minTextArea{
     margin-top: 2em;
 }
 
+.marginTop{
+    margin-top: 2em;
+}
+
 .marginBottom{
     margin-bottom: 10px;
+}
+
+.widthChartMobile{
+    width: 80%;
+    margin: 20px auto;
 }
 
 
@@ -184,11 +193,18 @@ form .minTextArea{
     .w3-col.s12 {
         width: 60%;
     }
+    .widthChartMobile{
+        width: 80%;
+    }
+
+    .marginTopNoMobile{
+        margin-top: 20px;
+    }
 }
 
 @media (min-width: 1024px) {
     .w3-col.s12 {
-        width: 40%;
+        width: 100%;
     }
 
     .cardAdminIndex{
@@ -201,6 +217,13 @@ form .minTextArea{
         margin-top: 0;
     }
 }
+
+@media only screen and (min-width: 1500px) {
+    .widthChartMobile{
+        width: 60%;
+    }
+}
+
 
 
 

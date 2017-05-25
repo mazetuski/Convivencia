@@ -72,10 +72,12 @@ class SancionFormType extends AbstractType
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('fechaConfirmacion', TextType::class, array(
+                'required' =>false,
                 'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
             ->add('fechaComunicacion', TextType::class, array(
+                'required' =>false,
                 'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))

@@ -7,6 +7,7 @@ use AppBundle\Entity\Alumno;
 use AppBundle\Form\ImportFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Repository\AlumnoRepository;
+use AppBundle\Repository\PartesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\ImportHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,8 +35,10 @@ class AlumnoController extends Controller
         if (!$alumnoHelper->alumnoExists($this->getUser()))
             return $this->redirectToRoute('registrarAlumno');
 
+        $userData = $alumnoHelper->getUserData(
+            $alumnoHelper->getAlumnoLogueado($this->getUser()));
         return $this->render('convivencia/alumno/alumno.html.twig', array(
-                'alumno' => $alumnoHelper->getAlumnoLogueado($this->getUser()),
+                'alumnoData' => $userData,
             )
         );
     }
@@ -45,13 +48,15 @@ class AlumnoController extends Controller
      */
     public function showAlumnoAction($id)
     {
-
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
         if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
             return $this->redirectToRoute("index");
         $em = $this->getDoctrine()->getManager();
         $alumno = $em->getRepository("AppBundle:Alumno")->findOneById($id);
+        $userData = $alumnoHelper->getUserData($alumno);
         return $this->render('convivencia/alumno/alumno.html.twig', array(
-                'alumno' => $alumno,
+                'alumnoData' => $userData,
                 'userAdmin' => $this->getUser(),
             )
         );
