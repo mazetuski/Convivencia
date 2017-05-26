@@ -10,10 +10,14 @@ namespace AppBundle\Services;
 
 
 use AppBundle\Controller\PartesController;
+use AppBundle\Entity\DiarioAulaConvivencia;
 use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
+use AppBundle\Entity\Sanciones;
 use AppBundle\Repository\EstadosParteRepository;
+use AppBundle\Repository\EstadosSancionRepository;
 use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\TipoSancionRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -23,13 +27,18 @@ class PartesHelper
     const VALUE_INICIADO = 'Iniciado';
     const VALUE_COMUNICADO = 'Comunicado';
 
-    function __construct(EntityManager $em)
+    function __construct(EntityManager $em, CrearSancionHelper $sancionHelper)
     {
         $this->em = $em;
         /** @var PartesRepository repositoryPartes */
         $this->repositoryPartes = $this->em->getRepository('AppBundle:Partes');
         /** @var EstadosParteRepository repositoryEstadoPartes */
         $this->repositoryEstadoPartes = $this->em->getRepository('AppBundle:EstadosParte');
+        /** @var EstadosSancionRepository repositoryEstadoSanciones */
+        $this->repositoryEstadoSanciones = $this->em->getRepository('AppBundle:EstadosSancion');
+        /** @var TipoSancionRepository repositoryTipoSancion */
+        $this->repositoryTipoSancion = $this->em->getRepository('AppBundle:TipoSancion');
+        $this->sancionHelper = $sancionHelper;
     }
 
     /**
@@ -111,5 +120,34 @@ class PartesHelper
             }
         }
         return false;
+    }
+
+    /**
+     * Función que crea una sancion y un diario aula dependiendo de la hora actual y del request del parte
+     * @param Request $request
+     * @param Partes $parte
+     */
+    public function createSancionFromRequest(Request $request, Partes $parte){
+        if($request->get('expulsion')!=null){
+            $sancion = new Sanciones();
+            $sancion->setIdParte([$parte]);
+            $sancion->setIdAlumno($parte->getIdAlumno());
+            $sancion->setFecha(new \DateTime());
+            $estado = $this->repositoryEstadoSanciones->findOneByEstado(CrearSancionHelper::ESTADO_INICIADO);
+            $sancion->setIdEstado($estado);
+            $tipo = $this->repositoryTipoSancion->findOneById(CrearSancionHelper::SANCION_TYPE_HORAS);
+            $sancion->setIdTipo($tipo);
+            $sancion->setFechaInicio(new \DateTime());
+            $sancion->setFechaFinal(new \DateTime());
+            $sancion->setSancion('Expulsión Aula Convivencia');
+            $this->em->persist($sancion);
+            $this->em->flush();
+            $diarioAula = new DiarioAulaConvivencia();
+            $diarioAula->setFecha($sancion->getFecha());
+            $diarioAula->setHora($this->sancionHelper->getHoraFromDate($sancion->getFecha()));
+            $diarioAula->setIdSancion($sancion);
+            $this->em->persist($diarioAula);
+            $this->em->flush();
+        }
     }
 }

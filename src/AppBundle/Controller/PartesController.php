@@ -6,6 +6,7 @@ use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
 use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
+use AppBundle\Entity\Sanciones;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
@@ -92,6 +93,7 @@ class PartesController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($parte);
             $em->flush();
+            $parteHelper->createSancionFromRequest($request, $parte);
             return $this->redirectToRoute("gestion_partes");
         }
 
