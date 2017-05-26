@@ -150,5 +150,11 @@ $(document).ready(function () {
         $('.overlay').css('min-height', $(window).height());
 
     })
+    
+    // Hamburguer Nav
+    
+    $("#hamburguer").on('click', function () {
+        $("nav").toggle();
+    })
 
 });

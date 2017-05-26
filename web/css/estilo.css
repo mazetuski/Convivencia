@@ -62,6 +62,10 @@ body{
     flex: 0 0 45%;
 }
 
+#hamburguer{
+    cursor: pointer;
+}
+
 header a {
     text-decoration: none;
 }
@@ -144,6 +148,10 @@ form .minTextArea{
     margin: 15px 0;
 }
 
+nav{
+    display: none;
+}
+
 .paginator{
     color: #316f80;
     text-align: center;
@@ -213,8 +221,16 @@ form .minTextArea{
         align-items: center;
     }
 
+    #hamburguer{
+        display: none;
+    }
+
     .marginTopMobile{
         margin-top: 0;
+    }
+
+    nav{
+        display: block!important;
     }
 }
 
