@@ -4,6 +4,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
+use AppBundle\Entity\Sanciones;
 use AppBundle\Model\CarnetData;
 use AppBundle\Model\UserData;
 use AppBundle\Repository\CursosRepository;
@@ -163,6 +164,66 @@ class AlumnoHelper
     }
 
     /**
+     * Devuelve el numero de partes de un alumno por meses
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getNumPartesByMeses(Alumno $alumno){
+        $numPartes = $this->repositoryPartes->getPartesByAlumnoOrdenado($alumno);
+        $arrPartes = [];
+        $fechaActual = new \DateTime();
+        /** @var Partes $parte */
+        foreach ($numPartes as $parte){
+            $fechaParte = $parte->getFecha();
+            if($fechaParte->format('Y') == $fechaActual->format('Y')) {
+                $mes = $this->SpanishMonth($fechaParte);
+                if (!isset($arrPartes[$mes]))
+                    $arrPartes[$mes] = 1;
+                else
+                    $arrPartes[$mes] += 1;
+            }
+        }
+        return $arrPartes;
+    }
+
+    /**
+     * Devuelve el número de sanciones de un alumno por meses
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getNumSancionesByMeses(Alumno $alumno){
+        $numSanciones = $this->repositorySanciones->getSancionesByAlumnoOrdenado($alumno);
+        $arrSanciones = [];
+        $fechaActual = new \DateTime();
+        /** @var Sanciones $sancion */
+        foreach ($numSanciones as $sancion){
+            $fechaSancion = $sancion->getFecha();
+            if($fechaSancion->format('Y') == $fechaActual->format('Y')) {
+                $mes = $this->SpanishMonth($fechaSancion);
+                if (!isset($arrSanciones[$mes]))
+                    $arrSanciones[$mes] = 1;
+                else
+                    $arrSanciones[$mes] += 1;
+            }
+        }
+        return $arrSanciones;
+    }
+
+    /**
+     * Función que devuelve el mes en español
+     * @param $FechaStamp
+     * @return mixed
+     */
+    function SpanishMonth(\DateTime $fecha)
+    {
+        $mes = $fecha->format('n');
+
+        $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
+            "Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        return $mesesN[$mes];
+    }
+
+    /**
      * Función que devuelve un nuevo modelo UserData
      * @param Alumno $alumno
      * @return UserData
@@ -170,6 +231,7 @@ class AlumnoHelper
     public function getUserData(Alumno $alumno)
     {
         return new UserData($alumno, $this->getNumPartes($alumno),
-            $this->getNumSanciones($alumno), $this->getNumVisitasConvivencia($alumno));
+            $this->getNumSanciones($alumno), $this->getNumVisitasConvivencia($alumno),
+            $this->getNumPartesByMeses($alumno), $this->getNumSancionesByMeses($alumno));
     }
 }

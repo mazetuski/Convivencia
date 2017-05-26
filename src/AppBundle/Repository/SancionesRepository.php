@@ -56,17 +56,36 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
                  FROM AppBundle\Entity\Sanciones s
                  JOIN s.idEstado as estado
                  WHERE estado.estado != 'Finalizada'
-                 ORDER BY s.fecha DESC"
+                 ORDER BY s.fecha DESC, s.id DESC"
             );
         }else{
             $query = $this->getEntityManager()->createQuery(
                 'SELECT s
                  FROM AppBundle\Entity\Sanciones s
-                 ORDER BY s.fecha DESC'
+                 ORDER BY s.fecha DESC, s.id DESC'
             );
         }
         return $query->getResult();
     }
+
+    /**
+     * Función que devuelve las sanciones de un alumno ordenados por fecha
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getSancionesByAlumnoOrdenado(Alumno $alumno)
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s
+             FROM AppBundle\Entity\Sanciones s
+             WHERE s.idAlumno = :alumno 
+             ORDER BY s.fecha'
+        );
+
+        $query->setParameter('alumno', $alumno);
+        return $query->getResult();
+    }
+
 
     /**
      * Función que devuelve las sanciones que contienen la cadena pasada por parámetro
@@ -87,7 +106,7 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
              OR tipo.tipo LIKE :string)
              AND estado.estado != 'Finalizada'
-             ORDER BY s.fecha DESC"
+             ORDER BY s.fecha DESC, s.id DESC"
             );
         }
         else{
@@ -99,7 +118,7 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              JOIN s.idEstado as estado
              WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
              OR tipo.tipo LIKE :string)
-             ORDER BY s.fecha DESC"
+             ORDER BY s.fecha DESC, s.id DESC"
             );
         }
         $query->setParameter("string", '%' . $string . '%');

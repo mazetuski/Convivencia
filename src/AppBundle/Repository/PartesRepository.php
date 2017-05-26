@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Alumno;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -45,6 +46,24 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Función que devuelve los partes de un alumno ordenados por fecha
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getPartesByAlumnoOrdenado(Alumno $alumno)
+    {
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT p 
+             FROM AppBundle\Entity\Partes p
+             WHERE p.idAlumno = :alumno 
+             ORDER BY p.fecha'
+            );
+
+        $query->setParameter('alumno', $alumno);
+        return $query->getResult();
+    }
+
+    /**
      * Función que devuelve todos los partes ordenados por fecha
      * @return array
      */
@@ -55,13 +74,13 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
             $query->select('partes');
             $query->join('partes.idEstado', 'estado');
             $query->where("estado.estado != 'Caducado' ");
-            $query->orderBy('partes.fecha', 'DESC');
         }
         else {
             $query = $this->createQueryBuilder('partes');
             $query->select('partes');
-            $query->orderBy('partes.fecha', 'DESC');
         }
+        $query->orderBy('partes.fecha', 'DESC');
+        $query->addOrderBy('partes.id', 'DESC');
         $query = $query->getQuery();
         return $query->getResult();
 
@@ -107,7 +126,7 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
              OR curso.grupo LIKE :string)
              AND estado.estado != 'Caducado'
-             ORDER BY p.fecha DESC"
+             ORDER BY p.fecha DESC, p.id DESC"
             );
         }
         else{
@@ -122,7 +141,7 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
              OR curso.grupo LIKE :string)
-             ORDER BY p.fecha DESC"
+             ORDER BY p.fecha DESC, p.id DESC"
             );
         }
         $query->setParameter("string", '%' . $string . '%');

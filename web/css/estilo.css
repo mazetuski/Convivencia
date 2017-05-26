@@ -116,10 +116,6 @@ input::-moz-placeholder{
     background-color:rgba(0, 0 , 0 , .9) ;
 }
 
-.labelCheck{
-    margin: 10px 15px 10px 0;
-}
-
 table a {
     text-decoration: underline;
 }
@@ -251,7 +247,7 @@ nav{
 
 
 /* label focus color */
-.input-field input[type=text]:focus + label, .colorForm {
+.input-field input[type=text]:focus + label {
     color: #38889B;
 }
 /* label underline focus color */

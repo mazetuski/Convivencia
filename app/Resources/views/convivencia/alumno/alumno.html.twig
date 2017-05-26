@@ -21,11 +21,39 @@
             <div class="w3-col l6">
                 <div class="w3-row w3-center w3-text-center widthChartMobile">
                     <div class="w3-content marginBottom marginTopNoMobile">
+                        <h4>Estadísticas Totales {{ alumnoData.getYear() }}</h4>
                         <canvas id="myChart" width="400" height="400"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row w3-margin w3-padding">
+            <div class="w3-col l6 marginBottom">
+                <h4 class="w3-padding">Partes {{ alumnoData.getYear() }}</h4>
+                <canvas id="myChart2"></canvas>
+            </div>
+            <div class="w3-col l6 marginBottom">
+                <h4 class="w3-padding">Sanciones {{ alumnoData.getYear() }}</h4>
+                <canvas id="myChart3"></canvas>
+            </div>
+        </div>
+        {% set arrMeses = [] %}
+        {% set arrPartes = [] %}
+        {% for mes, partesMes in alumnoData.numPartesMeses %}
+            {% set arrMeses = arrMeses|merge([mes]) %}
+            {% set arrPartes = arrPartes|merge([partesMes]) %}
+        {% endfor %}
+        {% set arrMesesSanciones= [] %}
+        {% set arrSanciones = [] %}
+        {% for mes, sancionesMes in alumnoData.numSancionesMeses %}
+            {% set arrMesesSanciones = arrMesesSanciones|merge([mes]) %}
+            {% set arrSanciones = arrSanciones|merge([sancionesMes]) %}
+        {% endfor %}
+        {% if arrMeses|length > 4 %}
+            {% set barPercentage = 0.4 %}
+        {% else %}
+            {% set barPercentage = 0.2 %}
+        {% endif %}
         <script>
             var ctx = document.getElementById("myChart").getContext('2d');
             var myChart = new Chart(ctx, {
@@ -51,6 +79,74 @@
                     ]
                 }
             });
+
+            ctx = document.getElementById("myChart2").getContext('2d');
+            var myChart2 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ arrMeses|json_encode|raw }},
+                    datasets: [
+                        {
+                            label: 'Partes',
+                            data: {{ arrPartes|json_encode|raw }},
+                            backgroundColor: 'rgba(56, 136, 155, 0.5)',
+//                         backgroundColor: [
+//                            'rgba(56, 136, 155, 0.5)',
+//                            'rgba(255, 206, 86, 0.5)',
+//                            'rgba(75, 192, 192, 0.5)',
+//                            'rgba(153, 102, 255, 0.5)',
+//                            'rgba(54, 162, 235, 0.5)',
+//                            'rgba(255, 159, 64, 0.5)'
+//                    ],
+                        },
+                        {#{#}
+                        {#label: 'Visitas Aula Convivencia',#}
+                        {#data: {{ arrPartes|json_encode|raw }},#}
+                        {#backgroundColor: 'rgba(75, 192, 192, 0.5)',#}
+                        {#}#}
+                    ],
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            barPercentage: {{ barPercentage }}
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            },
+                        }],
+                    }
+                }
+            });
+
+            ctx = document.getElementById("myChart3").getContext('2d');
+            var myChart3 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ arrMesesSanciones|json_encode|raw }},
+                    datasets: [
+                        {
+                            label: 'Sanciones',
+                            data: {{ arrSanciones|json_encode|raw }},
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            barPercentage: {{ barPercentage }}
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            },
+                        }],
+                    }
+                }
+            });
+
         </script>
     </main>
 

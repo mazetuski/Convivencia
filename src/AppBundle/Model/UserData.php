@@ -14,12 +14,14 @@ use AppBundle\Entity\Alumno;
 class UserData
 {
 
-    function __construct(Alumno $alumno, $numPartes, $numSanciones, $numVisitasConvivencia)
+    function __construct(Alumno $alumno, $numPartes, $numSanciones, $numVisitasConvivencia, $numPartesMeses, $numSancionesMeses)
     {
         $this->alumno = $alumno;
         $this->numPartes = $numPartes;
         $this->numSanciones = $numSanciones;
         $this->numVisitasConvivencia = $numVisitasConvivencia;
+        $this->numPartesMeses = $numPartesMeses;
+        $this->numSancionesMeses = $numSancionesMeses;
     }
 
     /**
@@ -52,6 +54,27 @@ class UserData
     public function getNumVisitasConvivencia()
     {
         return $this->numVisitasConvivencia;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumPartesMeses()
+    {
+        return $this->numPartesMeses;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumSancionesMeses()
+    {
+        return $this->numSancionesMeses;
+    }
+
+    public function getYear(){
+        $fecha = new \DateTime();
+        return $fecha->format('Y');
     }
 
 }
