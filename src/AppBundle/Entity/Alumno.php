@@ -126,6 +126,13 @@ class Alumno
      */
     private $puntos;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="puntosIniciales", type="integer")
+     */
+    private $puntosIniciales;
+
 
     /**
      * Función que devuelve el nombre completo del alumno
@@ -444,4 +451,28 @@ class Alumno
     }
 
 
+
+    /**
+     * Set puntosIniciales
+     *
+     * @param integer $puntosIniciales
+     *
+     * @return Alumno
+     */
+    public function setPuntosIniciales($puntosIniciales)
+    {
+        $this->puntosIniciales = $puntosIniciales;
+
+        return $this;
+    }
+
+    /**
+     * Get puntosIniciales
+     *
+     * @return integer
+     */
+    public function getPuntosIniciales()
+    {
+        return $this->puntosIniciales;
+    }
 }

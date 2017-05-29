@@ -37,9 +37,12 @@
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia', 'id':'parteForm'}}) }}
         {{ form_row(form.idAlumno) }}
         {{ form_row(form.idProfesor) }}
-        <div class="w3-col marginBottom">
-            <label class="w3-text-teal labelCheck">¿Expulsión?</label><input class="i-checks" type="checkbox" name="expulsion">
-        </div>
+        {% if app.request.get('idParte') is null %}
+            <div class="w3-col marginBottom">
+                <label class="w3-text-teal labelCheck">Expulsión Aula Convivencia </label><input class="i-checks" type="checkbox"
+                                                                                 name="expulsion">
+            </div>
+        {% endif %}
         {{ form_row(form.Fecha) }}
         {{ form_row(form.idConducta) }}
         {{ form_row(form.Descripcion) }}

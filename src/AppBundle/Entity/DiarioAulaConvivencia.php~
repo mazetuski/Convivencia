@@ -74,6 +74,11 @@ class DiarioAulaConvivencia
     private $asiste;
 
 
+    function __construct()
+    {
+        $this->asiste = 0;
+    }
+
     /**
      * Get id
      *

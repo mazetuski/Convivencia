@@ -56,7 +56,7 @@
                                 <td>{{ parte.id }}</td>
                                 <td>{{ parte.fecha|date("d/m/Y") }}</td>
                                 <td>
-                                    <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.nombre }}</a>
+                                    <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.getNombreCompleto() }}</a>
                                 </td>
                                 {% if parte.idAlumno.idCurso != null %}
                                     <td>{{ parte.idAlumno.idCurso.grupo }}</td>

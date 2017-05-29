@@ -46,7 +46,7 @@
                                 <td>{{ sancion.id }}</td>
                                 <td>{{ sancion.fecha|date("d/m/Y") }}</td>
                                 <td>
-                                    <a href="{{ path('verAlumno', {'id': sancion.idAlumno.id}) }}">{{ sancion.idAlumno.nombre }}</a>
+                                    <a href="{{ path('verAlumno', {'id': sancion.idAlumno.id}) }}">{{ sancion.idAlumno.getNombreCompleto() }}</a>
                                 </td>
                                 <td>{{ sancion.fechaInicio|date("d/m/Y") }}</td>
                                 <td>{{ sancion.fechaFinal|date("d/m/Y") }}</td>

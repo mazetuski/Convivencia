@@ -132,16 +132,16 @@ class Partes
     private $recupera;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="fechaConfirmacion", type="datetime", nullable=true)
+     * @ORM\Column(name="fechaConfirmacion", type="string", nullable=true)
      */
     private $fechaConfirmacion;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="fechaComunicacion", type="datetime", nullable=true)
+     * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
      */
     private $fechaComunicacion;
 
@@ -518,5 +518,53 @@ class Partes
     public function getRecupera()
     {
         return $this->recupera;
+    }
+
+    /**
+     * Set fechaConfirmacion
+     *
+     * @param string $fechaConfirmacion
+     *
+     * @return Partes
+     */
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaConfirmacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    /**
+     * Set fechaComunicacion
+     *
+     * @param string $fechaComunicacion
+     *
+     * @return Partes
+     */
+    public function setFechaComunicacion($fechaComunicacion)
+    {
+        $this->fechaComunicacion = $fechaComunicacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaComunicacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaComunicacion()
+    {
+        return $this->fechaComunicacion;
     }
 }

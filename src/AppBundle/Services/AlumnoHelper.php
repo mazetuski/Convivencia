@@ -134,8 +134,15 @@ class AlumnoHelper
      */
     public function getNumPartes(Alumno $alumno)
     {
-        $numPartes = $this->repositoryPartes->findByIdAlumno($alumno);
-        return count($numPartes);
+        $partes = $this->repositoryPartes->findByIdAlumno($alumno);
+        $fechaActual = new \DateTime();
+        $numPartes = 0;
+        foreach ($partes as $parte) {
+            $fechaParte = $parte->getFecha();
+            if ($fechaParte->format('Y') == $fechaActual->format('Y'))
+                $numPartes++;
+        }
+        return $numPartes;
     }
 
     /**
@@ -145,8 +152,15 @@ class AlumnoHelper
      */
     public function getNumSanciones(Alumno $alumno)
     {
-        $numSanciones = $this->repositorySanciones->findByIdAlumno($alumno);
-        return count($numSanciones);
+        $sanciones = $this->repositorySanciones->findByIdAlumno($alumno);
+        $fechaActual = new \DateTime();
+        $numSanciones = 0;
+        foreach ($sanciones as $sancion) {
+            $fechaSancion = $sancion->getFecha();
+            if ($fechaSancion->format('Y') == $fechaActual->format('Y'))
+                $numSanciones++;
+        }
+        return $numSanciones;
     }
 
     /**
@@ -157,9 +171,13 @@ class AlumnoHelper
     public function getNumVisitasConvivencia(Alumno $alumno)
     {
         $numVisitas = 0;
-        $sanciones = $this->getSancionesByAlumno($alumno);
-        foreach ($sanciones as $sancion)
-            $numVisitas += count($this->repositoryAulaConvivencia->findByIdSancion($sancion));
+        $sanciones = $this->repositorySanciones->findByIdAlumno($alumno);
+        $fechaActual = new \DateTime();
+        foreach ($sanciones as $sancion) {
+            $fechaSancion = $sancion->getFecha();
+            if ($fechaSancion->format('Y') == $fechaActual->format('Y'))
+                $numVisitas += count($this->repositoryAulaConvivencia->findByIdSancion($sancion));
+        }
         return $numVisitas;
     }
 
@@ -168,14 +186,15 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return array
      */
-    public function getNumPartesByMeses(Alumno $alumno){
+    public function getNumPartesByMeses(Alumno $alumno)
+    {
         $numPartes = $this->repositoryPartes->getPartesByAlumnoOrdenado($alumno);
         $arrPartes = [];
         $fechaActual = new \DateTime();
         /** @var Partes $parte */
-        foreach ($numPartes as $parte){
+        foreach ($numPartes as $parte) {
             $fechaParte = $parte->getFecha();
-            if($fechaParte->format('Y') == $fechaActual->format('Y')) {
+            if ($fechaParte->format('Y') == $fechaActual->format('Y')) {
                 $mes = $this->SpanishMonth($fechaParte);
                 if (!isset($arrPartes[$mes]))
                     $arrPartes[$mes] = 1;
@@ -191,14 +210,15 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return array
      */
-    public function getNumSancionesByMeses(Alumno $alumno){
+    public function getNumSancionesByMeses(Alumno $alumno)
+    {
         $numSanciones = $this->repositorySanciones->getSancionesByAlumnoOrdenado($alumno);
         $arrSanciones = [];
         $fechaActual = new \DateTime();
         /** @var Sanciones $sancion */
-        foreach ($numSanciones as $sancion){
+        foreach ($numSanciones as $sancion) {
             $fechaSancion = $sancion->getFecha();
-            if($fechaSancion->format('Y') == $fechaActual->format('Y')) {
+            if ($fechaSancion->format('Y') == $fechaActual->format('Y')) {
                 $mes = $this->SpanishMonth($fechaSancion);
                 if (!isset($arrSanciones[$mes]))
                     $arrSanciones[$mes] = 1;
@@ -218,8 +238,8 @@ class AlumnoHelper
     {
         $mes = $fecha->format('n');
 
-        $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
-            "Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $mesesN = array(1 => "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+            "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
         return $mesesN[$mes];
     }
 

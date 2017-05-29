@@ -157,4 +157,8 @@ $(document).ready(function () {
         $("nav").toggle();
     })
 
+    // Tooltipster
+    $('.tooltip').tooltipster({
+        theme: 'tooltipster-light'
+    });
 });

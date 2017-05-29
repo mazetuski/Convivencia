@@ -126,6 +126,13 @@ class Alumno
      */
     private $puntos;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="puntosIniciales", type="integer")
+     */
+    private $puntosIniciales;
+
 
     /**
      * Función que devuelve el nombre completo del alumno

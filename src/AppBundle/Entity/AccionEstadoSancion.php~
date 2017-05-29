@@ -100,4 +100,3 @@ class AccionEstadoSancion
         return $this->accion;
     }
 }
-
