@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+
+use AppBundle\AppBundle;
 use AppBundle\Entity\Alumno;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -50,17 +52,21 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      * @param Alumno $alumno
      * @return array
      */
-    public function getPartesByAlumnoOrdenado(Alumno $alumno)
+    public function getPartesByAlumnoOrdenado(Alumno $alumno, $orderDesc = false)
     {
-            $query = $this->getEntityManager()->createQuery(
-                'SELECT p 
-             FROM AppBundle\Entity\Partes p
-             WHERE p.idAlumno = :alumno 
-             ORDER BY p.fecha'
-            );
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('p')
+            ->from('AppBundle:Partes', 'p')
+            ->where('p.idAlumno = :alumno');
+
+        if (!$orderDesc)
+            $query->orderBy('p.fecha');
+        else
+            $query->orderBy('p.fecha', 'DESC');
+
 
         $query->setParameter('alumno', $alumno);
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
     /**
@@ -69,13 +75,12 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getPartesOrdenados($historico = false)
     {
-        if(!$historico) {
+        if (!$historico) {
             $query = $this->createQueryBuilder('partes');
             $query->select('partes');
             $query->join('partes.idEstado', 'estado');
             $query->where("estado.estado != 'Caducado' ");
-        }
-        else {
+        } else {
             $query = $this->createQueryBuilder('partes');
             $query->select('partes');
         }
@@ -128,8 +133,7 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              AND estado.estado != 'Caducado'
              ORDER BY p.fecha DESC, p.id DESC"
             );
-        }
-        else{
+        } else {
             $query = $this->getEntityManager()->createQuery(
                 "SELECT p
              FROM AppBundle\Entity\Partes p

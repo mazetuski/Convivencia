@@ -103,12 +103,21 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return mixed
      */
-    public function getSancionesByAlumno(Alumno $alumno)
+    public function getSancionesByAlumno(Alumno $alumno, $orderDesc = false)
     {
-        /** @var SancionesRepository $repositorySanciones */
-        $repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
-        $sanciones = $repositorySanciones->getSancionesNoFinalizadas($alumno);
+        $sanciones = $this->repositorySanciones->getSancionesByAlumnoOrdenado($alumno, $orderDesc);
         return $sanciones;
+    }
+
+    /**
+     * Función que devuelve las sanciones de un alumno
+     * @param Alumno $alumno
+     * @return mixed
+     */
+    public function getPartesByAlumno(Alumno $alumno, $orderDesc = false)
+    {
+        $partes = $this->repositoryPartes->getPartesByAlumnoOrdenado($alumno, $orderDesc);
+        return $partes;
     }
 
     /**
@@ -248,10 +257,11 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return UserData
      */
-    public function getUserData(Alumno $alumno)
+    public function getUserData(Alumno $alumno, $orderDesc = false)
     {
         return new UserData($alumno, $this->getNumPartes($alumno),
             $this->getNumSanciones($alumno), $this->getNumVisitasConvivencia($alumno),
-            $this->getNumPartesByMeses($alumno), $this->getNumSancionesByMeses($alumno));
+            $this->getNumPartesByMeses($alumno), $this->getNumSancionesByMeses($alumno),
+            $this->getSancionesByAlumno($alumno, $orderDesc), $this->getPartesByAlumno($alumno, $orderDesc));
     }
 }

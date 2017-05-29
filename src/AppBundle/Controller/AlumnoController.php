@@ -36,7 +36,7 @@ class AlumnoController extends Controller
             return $this->redirectToRoute('registrarAlumno');
 
         $userData = $alumnoHelper->getUserData(
-            $alumnoHelper->getAlumnoLogueado($this->getUser()));
+            $alumnoHelper->getAlumnoLogueado($this->getUser()), true);
         return $this->render('convivencia/alumno/alumno.html.twig', array(
                 'alumnoData' => $userData,
             )
@@ -54,7 +54,7 @@ class AlumnoController extends Controller
             return $this->redirectToRoute("index");
         $em = $this->getDoctrine()->getManager();
         $alumno = $em->getRepository("AppBundle:Alumno")->findOneById($id);
-        $userData = $alumnoHelper->getUserData($alumno);
+        $userData = $alumnoHelper->getUserData($alumno, true);
         return $this->render('convivencia/alumno/alumno.html.twig', array(
                 'alumnoData' => $userData,
                 'userAdmin' => $this->getUser(),
@@ -127,10 +127,10 @@ class AlumnoController extends Controller
     public function showCarnets(Request $request)
     {
         $emConvivencia = $this->getDoctrine()->getManager();
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
-        if ($request->get('like')!=null AND $request->get('like')!='')
+        if ($request->get('like') != null AND $request->get('like') != '')
             $alumnos = $repositoryAlumnos->getAlumnosLike($request->get('like'));
         else
             $alumnos = $repositoryAlumnos->getAlumnoOrderByPuntos();
@@ -143,9 +143,56 @@ class AlumnoController extends Controller
             $request->query->getInt('page', 1)/*page number*/,
             13/*limit per page*/
         );
-            return $this->render('convivencia/alumno/carnets.html.twig', array(
-                'arrayCarnetData' => $arrayCarnetDataPaginator,
-            ));
-        }
-
+        return $this->render('convivencia/alumno/carnets.html.twig', array(
+            'arrayCarnetData' => $arrayCarnetDataPaginator,
+        ));
     }
+
+    /**
+     * @Route("/partes/{id}", name="show_partesAlumno")
+     */
+    public function mostrarTodosPartes(Alumno $alumno)
+    {
+
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        if (!$this->comprobarIsThisAlumno($alumno)) return $this->redirectToRoute('index');
+
+        $partes = $alumnoHelper->getPartesByAlumno($alumno, true);
+
+        return $this->render('convivencia/alumno/informe.html.twig', array(
+            'partes' => $partes,
+        ));
+    }
+
+    /**
+     * @Route("/sanciones/{id}", name="show_partesSanciones")
+     */
+    public function mostrarTodasSanciones(Alumno $alumno)
+    {
+
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        if (!$this->comprobarIsThisAlumno($alumno)) return $this->redirectToRoute('index');
+
+        $sanciones = $alumnoHelper->getSancionesByAlumno($alumno, true);
+
+        return $this->render('convivencia/alumno/informe.html.twig', array(
+            'sanciones' => $sanciones,
+        ));
+    }
+
+    public function comprobarIsThisAlumno(Alumno $alumno){
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        $thisAlumno = $alumnoHelper->getAlumnoLogueado($this->getUser());
+        $isThisAlumno = false;
+        if ($thisAlumno != null && $thisAlumno->getId() == $alumno->getId())
+            $isThisAlumno = true;
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && $isThisAlumno == false)
+            return false;
+        return true;
+    }
+
+}
+

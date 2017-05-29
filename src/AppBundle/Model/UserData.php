@@ -14,7 +14,7 @@ use AppBundle\Entity\Alumno;
 class UserData
 {
 
-    function __construct(Alumno $alumno, $numPartes, $numSanciones, $numVisitasConvivencia, $numPartesMeses, $numSancionesMeses)
+    function __construct(Alumno $alumno, $numPartes, $numSanciones, $numVisitasConvivencia, $numPartesMeses, $numSancionesMeses, $sanciones, $partes)
     {
         $this->alumno = $alumno;
         $this->numPartes = $numPartes;
@@ -22,6 +22,8 @@ class UserData
         $this->numVisitasConvivencia = $numVisitasConvivencia;
         $this->numPartesMeses = $numPartesMeses;
         $this->numSancionesMeses = $numSancionesMeses;
+        $this->sanciones = $sanciones;
+        $this->partes = $partes;
     }
 
     /**
@@ -75,6 +77,22 @@ class UserData
     public function getYear(){
         $fecha = new \DateTime();
         return $fecha->format('Y');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPartes()
+    {
+        return $this->partes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSanciones()
+    {
+        return $this->sanciones;
     }
 
 }

@@ -24,6 +24,43 @@ body {
     margin: 20px;
 }
 
+.cartaAlumno header, .cartaAlumno footer {
+    background-color: #38889B;
+    color: #ffffff;
+    padding: 2em;
+}
+
+.cartaAlumno a, .cartaAlumno h2 {
+    background-color: #38889B;
+    color: #ffffff;
+}
+
+.cartaInforme{
+    width: 90%;
+    margin: 40px auto; !important;
+}
+
+.cartaInformeCuerpo{
+    padding: 20px 0;
+    text-indent:3em;
+}
+
+.cartaInformeCuerpo div{
+    margin: 40px 0;
+}
+
+.contenedorCartaAlumno {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+
+.cartaAlumno {
+    flex: 0 0 90%;
+    margin: 40px 0;
+}
+
 .contenedorFlex, .contenedorFlexEdit, #cursos {
     display: flex;
     flex-wrap: wrap;
@@ -200,6 +237,7 @@ nav {
 }
 
 @media (min-width: 768px) {
+
     .w3-col.s12 {
         width: 60%;
     }
@@ -213,6 +251,18 @@ nav {
     }
 }
 
+@media (min-width: 900px) {
+
+    .cartaAlumno {
+        flex: 0 0 40%;
+    }
+
+    .cartaInforme{
+        width: 60%;
+        margin: 40px auto; !important;
+    }
+}
+
 @media (min-width: 1024px) {
     .w3-col.s12 {
         width: 100%;
@@ -222,6 +272,10 @@ nav {
         min-height: 500px;
         display: flex;
         align-items: center;
+    }
+
+    .contenedorCartaAlumno {
+        margin-top: 50px;
     }
 
     #hamburguer {

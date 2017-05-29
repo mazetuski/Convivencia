@@ -3,9 +3,9 @@
 {% block body %}
 
 
-    <main class="w3-container w3-margin-top w3-center">
+    <main class="w3-container w3-margin-top">
         {#TODO: AÑADIR NOMBRE DEL ALUMNO#}
-        <div class="row">
+        <div class="row w3-center">
             <h2 class="w3-center w3-padding w3-margin">{{ alumnoData.alumno.getNombreCompleto() }}</h2>
             <div class="w3-col l6 marginTopNoMobile">
                 <header class="w3-container marginTopNoMobile">
@@ -149,6 +149,55 @@
             });
 
         </script>
+
+        <div class="w3-row w3-padding">
+            <div class="w3-col contenedorCartaAlumno">
+                <div class="w3-card-2 cartaAlumno">
+                    <header class="w3-container w3-center">
+                        <h2>Historico Partes</h2>
+                    </header>
+                    <div class="w3-container">
+                        {% set contadorPartes = 0 %}
+                        {% set break = false %}
+                        {% for parte in alumnoData.partes if not break %}
+                            {% set contadorPartes = contadorPartes + 1 %}
+                            <p>El {{ parte.fecha|date('d/m/Y') }} tuvo una falta {{ parte.idTipo.tipo }}
+                                , {{ parte.idProfesor.getNombreCompleto() }} indicó: <br/>
+                                {{ parte.descripcion }}</p>
+                            {% if contadorPartes > 9 %}
+                                <div class="w3-footer w3-center">
+                                    <p>...</p>
+                                    <a href="{{ path('show_partesAlumno', {'id': alumnoData.alumno.id}) }}" class="w3-button w3-margin">Mostrar Todos</a>
+                                </div>
+                                {% set break = true %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="w3-card-2 cartaAlumno">
+                    <header class="w3-container w3-center">
+                        <h2>Historico Sanciones</h2>
+                    </header>
+                    <div class="w3-container">
+                        {% set contadorSanciones = 0 %}
+                        {% set break = false %}
+                        {% for sancion in alumnoData.sanciones if not break %}
+                            {% set contadorSanciones = contadorSanciones + 1 %}
+                            <p>El {{ sancion.fecha|date('d/m/Y') }} tuvo una sanción de tipo {{ sancion.idTipo.tipo }}</p>
+                            {% if contadorSanciones > 9 %}
+                                <div class="w3-footer w3-center">
+                                    <p>...</p>
+                                    <a href="" class="w3-button w3-margin">Mostrar Todas</a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+
     </main>
 
 

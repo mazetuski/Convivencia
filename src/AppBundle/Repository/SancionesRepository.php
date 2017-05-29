@@ -73,17 +73,20 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
      * @param Alumno $alumno
      * @return array
      */
-    public function getSancionesByAlumnoOrdenado(Alumno $alumno)
+    public function getSancionesByAlumnoOrdenado(Alumno $alumno, $orderDesc = false)
     {
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT s
-             FROM AppBundle\Entity\Sanciones s
-             WHERE s.idAlumno = :alumno 
-             ORDER BY s.fecha'
-        );
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('s')
+            ->from('AppBundle:Sanciones', 's')
+            ->where('s.idAlumno = :alumno');
+
+        if (!$orderDesc)
+            $query->orderBy('s.fecha');
+        else
+            $query->orderBy('s.fecha', 'DESC');
 
         $query->setParameter('alumno', $alumno);
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
 
