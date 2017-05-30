@@ -107,7 +107,7 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              JOIN s.idTipo as tipo
              JOIN s.idEstado as estado
              WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
-             OR tipo.tipo LIKE :string)
+             OR tipo.tipo LIKE :string OR estado.estado LIKE :string)
              AND estado.estado != 'Finalizada'
              ORDER BY s.fecha DESC, s.id DESC"
             );
@@ -120,7 +120,7 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              JOIN s.idTipo as tipo
              JOIN s.idEstado as estado
              WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
-             OR tipo.tipo LIKE :string)
+             OR tipo.tipo LIKE :string OR estado.estado LIKE :string)
              ORDER BY s.fecha DESC, s.id DESC"
             );
         }
