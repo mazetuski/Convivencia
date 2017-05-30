@@ -24,6 +24,10 @@ body {
     margin: 20px;
 }
 
+#carnetFilterPuntos{
+    margin: 0 10px;
+}
+
 .cartaAlumno header, .cartaAlumno footer {
     background-color: #38889B;
     color: #ffffff;
@@ -329,4 +333,8 @@ nav {
 
 .input[type=select] {
     display: block !important;
+}
+
+.w3-input{
+    background-color: #F5F5F5;
 }

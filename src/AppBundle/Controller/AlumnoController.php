@@ -137,7 +137,10 @@ class AlumnoController extends Controller
 
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
-        $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
+        if ($request->get('puntosFiltro') != null)
+            $arrayCarnetData = $alumnoHelper->filtrarPorPuntos($request->get('puntosFiltro'), $alumnos);
+        else
+            $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
         $arrayCarnetDataPaginator = $paginator->paginate(
             $arrayCarnetData, /* query NOT result */
             $request->query->getInt('page', 1)/*page number*/,
@@ -145,6 +148,7 @@ class AlumnoController extends Controller
         );
         return $this->render('convivencia/alumno/carnets.html.twig', array(
             'arrayCarnetData' => $arrayCarnetDataPaginator,
+            'puntosSelect' => AlumnoHelper::SELECT_PUNTOS,
         ));
     }
 
@@ -158,7 +162,7 @@ class AlumnoController extends Controller
         $alumnoHelper = $this->get('app.alumnoHelper');
         if (!$this->comprobarIsThisAlumno($alumno)) return $this->redirectToRoute('index');
 
-        $partes = $alumnoHelper->getPartesByAlumno($alumno, true);
+        $partes = $alumnoHelper->getPartesByAlumno($alumno, true, true);
 
         return $this->render('convivencia/alumno/informe.html.twig', array(
             'partes' => $partes,
@@ -175,14 +179,15 @@ class AlumnoController extends Controller
         $alumnoHelper = $this->get('app.alumnoHelper');
         if (!$this->comprobarIsThisAlumno($alumno)) return $this->redirectToRoute('index');
 
-        $sanciones = $alumnoHelper->getSancionesByAlumno($alumno, true);
+        $sanciones = $alumnoHelper->getSancionesByAlumno($alumno, true, true);
 
         return $this->render('convivencia/alumno/informe.html.twig', array(
             'sanciones' => $sanciones,
         ));
     }
 
-    public function comprobarIsThisAlumno(Alumno $alumno){
+    public function comprobarIsThisAlumno(Alumno $alumno)
+    {
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
         $thisAlumno = $alumnoHelper->getAlumnoLogueado($this->getUser());

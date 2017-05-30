@@ -69,6 +69,7 @@ class ParteFormType extends AbstractType
             ))
             ->add('Tareas', TextareaType::class, array(
                 'label' => 'Tareas',
+                'required' =>false,
                 'attr' => array('class' => 'w3-input w3-border w3-light-grey minTextArea'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))

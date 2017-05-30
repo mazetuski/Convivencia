@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Alumno;
+
 /**
  * AlumnoRepository
  *
@@ -11,7 +13,8 @@ namespace AppBundle\Repository;
 class AlumnoRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function getAlumno($userId){
+    public function getAlumno($userId)
+    {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select("a")
@@ -27,9 +30,10 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * @param $curso
      * @return array
      */
-    public function getAlumnosByCurso($curso){
+    public function getAlumnosByCurso($curso)
+    {
         $query = $this->getEntityManager()->createQuery(
-          'SELECT a
+            'SELECT a
            FROM AppBundle\Entity\Alumno a
            WHERE a.idCurso = :curso'
         );
@@ -42,9 +46,10 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * Función que devuelve los alumnos ordenados por puntos
      * @return array
      */
-    public function getAlumnoOrderByPuntos(){
+    public function getAlumnoOrderByPuntos()
+    {
         $query = $this->getEntityManager()->createQuery(
-          'SELECT a
+            'SELECT a
            FROM AppBundle\Entity\Alumno a
            ORDER BY a.puntos DESC'
         );
@@ -57,7 +62,8 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * @param $string
      * @return array
      */
-    public function getAlumnosLike($string){
+    public function getAlumnosLike($string)
+    {
         $query = $this->getEntityManager()->createQuery(
             'SELECT a
            FROM AppBundle\Entity\Alumno a
@@ -68,9 +74,38 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
            OR (SELECT count(s.sancion) FROM AppBundle\Entity\Sanciones s WHERE s.idAlumno = a.id AND s.sancion LIKE :string)>0
            ORDER BY a.puntos DESC'
         );
-        $query->setParameter('string', '%'.$string.'%');
+        $query->setParameter('string', '%' . $string . '%');
 
         return $query->getResult();
+    }
+
+    /**
+     * Función que devuelve un array con los alumnos que tengas los puntos del parámetro
+     * @param $puntos
+     * @param $alumnos
+     * @return array
+     */
+    public function findByPuntosAndAlumnos($puntos, $alumnos)
+    {
+        $arrAlumnos = [];
+        $arrAlumnosFiltrados = [];
+        /** @var Alumno $alumno */
+        foreach ($alumnos as $alumno) {
+            $query = $this->getEntityManager()->createQueryBuilder()
+                ->select('a')
+                ->from('AppBundle:Alumno', 'a')
+                ->where('a.id = :idAlumno')
+                ->andWhere('a.puntos = :puntos');
+            $query->setParameter('puntos', $puntos);
+            $query->setParameter('idAlumno', $alumno->getId());
+            $arrAlumnos[] = $query->getQuery()->getResult();
+        }
+        foreach ($arrAlumnos as $alumnosFiltrados) {
+            foreach ($alumnosFiltrados as $alumnoFiltrado)
+                $arrAlumnosFiltrados[] = $alumnoFiltrado;
+        }
+
+        return $arrAlumnosFiltrados;
     }
 
 }

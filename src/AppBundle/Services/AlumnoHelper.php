@@ -19,6 +19,10 @@ use Symfony\Component\HttpFoundation\Request;
 class AlumnoHelper
 {
 
+    const SELECT_PUNTOS = array(
+        'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 12',
+    );
+
     function __construct(EntityManager $emConvivencia)
     {
         $this->emConvivencia = $emConvivencia;
@@ -103,9 +107,19 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return mixed
      */
-    public function getSancionesByAlumno(Alumno $alumno, $orderDesc = false)
+    public function getSancionesByAlumno(Alumno $alumno, $orderDesc = false, $lastYear = false)
     {
         $sanciones = $this->repositorySanciones->getSancionesByAlumnoOrdenado($alumno, $orderDesc);
+        if ($lastYear) {
+            $arrSanciones = [];
+            $fechaActual = new \DateTime();
+            foreach ($sanciones as $sancion) {
+                $fechaSancion = $sancion->getFecha();
+                if ($fechaSancion->format('Y') == $fechaActual->format('Y'))
+                    $arrSanciones[] = $sancion;
+            }
+            $sanciones = $arrSanciones;
+        }
         return $sanciones;
     }
 
@@ -114,9 +128,19 @@ class AlumnoHelper
      * @param Alumno $alumno
      * @return mixed
      */
-    public function getPartesByAlumno(Alumno $alumno, $orderDesc = false)
+    public function getPartesByAlumno(Alumno $alumno, $orderDesc = false, $lastYear = false)
     {
         $partes = $this->repositoryPartes->getPartesByAlumnoOrdenado($alumno, $orderDesc);
+        if ($lastYear) {
+            $arrPartes = [];
+            $fechaActual = new \DateTime();
+            foreach ($partes as $parte) {
+                $fechaParte = $parte->getFecha();
+                if ($fechaParte->format('Y') == $fechaActual->format('Y'))
+                    $arrPartes[] = $parte;
+            }
+            $partes = $arrPartes;
+        }
         return $partes;
     }
 
@@ -262,6 +286,47 @@ class AlumnoHelper
         return new UserData($alumno, $this->getNumPartes($alumno),
             $this->getNumSanciones($alumno), $this->getNumVisitasConvivencia($alumno),
             $this->getNumPartesByMeses($alumno), $this->getNumSancionesByMeses($alumno),
-            $this->getSancionesByAlumno($alumno, $orderDesc), $this->getPartesByAlumno($alumno, $orderDesc));
+            $this->getSancionesByAlumno($alumno, $orderDesc, true), $this->getPartesByAlumno($alumno, $orderDesc, true));
+    }
+
+    /**
+     * Función que devuelve los alumno filtrados por los puntos pasados por parámetro
+     * @param $puntos
+     * @return null
+     */
+    function getCarnetByPuntos($puntos, $alumnos)
+    {
+        if (!is_numeric($puntos)) return null;
+        return $this->repositoryAlumno->findByPuntosAndAlumnos($puntos, $alumnos);
+
+    }
+
+    /**
+     * Función que filtra por puntos dependiendo de la selección del usuario.
+     * @param $valorSeleccionado
+     * @return array
+     */
+    public function filtrarPorPuntos($valorSeleccionado, $alumnos)
+    {
+        $carnetsFiltrados = [];
+        if($valorSeleccionado == self::SELECT_PUNTOS[0])
+            return $this->getArrayCarnetsData($alumnos);
+        foreach (self::SELECT_PUNTOS as $puntosSelect) {
+            if ($puntosSelect == $valorSeleccionado) {
+                $carnets = [];
+                $puntos = explode(' - ', $puntosSelect);
+                $puntosIni = intval($puntos[0]);
+                count($puntos) > 1 ? $puntosFin = $puntos[1] : $puntosFin = $puntosIni;
+                do {
+                    $alumnosFiltrados = $this->getCarnetByPuntos($puntosIni++, $alumnos);
+                    $carnets[] = $this->getArrayCarnetsData($alumnosFiltrados);
+                } while ($puntosIni <= $puntosFin);
+
+                foreach ($carnets as $carnet)
+                    foreach ($carnet as $value)
+                        $carnetsFiltrados[] = $value;
+            }
+        }
+        return $carnetsFiltrados;
     }
 }
