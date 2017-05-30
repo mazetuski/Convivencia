@@ -8,8 +8,9 @@
             <h1>Gestion Sanciones</h1>
             {#TODO: ajustar form#}
             <form action="">
-                <div class="w3-col m4 w3-section">
-                    <input type="text" name="like" id="partesSearchBar" value="{{ app.request.get('like') }}">
+                <div class="w3-col l6 m8 w3-section">
+                    <input type="text" class="w3-input w3-col l6 m12" name="like" id="partesSearchBar"
+                           value="{{ app.request.get('like') }}" placeholder="Introduce fecha, alumno, curso...">
                     <i class=" fa fa-search fa-lg fa-flip-horizontal"></i>
                     <div class="i-checks">
                         {% if app.request.get('historico') == 'on' %}
