@@ -47,7 +47,7 @@
         {#{{ form_row(form.Fecha) }}#}
         <label class="w3-text-teal">Fecha</label>
         <input type="text" name="fecha" class = "w3-select datepicker w3-border w3-light-grey marginBottom"
-        value="{{ parte.fecha|date('d/m/Y') }}">
+        value="{{ parte.fecha|date('d/m/Y') }}" required>
         {{ form_row(form.idConducta) }}
         {{ form_row(form.Descripcion) }}
         <br/>

@@ -33,8 +33,17 @@
 
         {{ form_start(form, {'attr': {'class':'w3-content formConvivencia'}}) }}
         {{ form_row(form.idAlumno) }}
-        {{ form_row(form.Fecha) }}
+        {#{{ form_row(form.Fecha) }}#}
+        <label class="w3-text-teal">Fecha</label>
+        <input type="text" name="fecha" class = "w3-select datepicker w3-border w3-light-grey marginBottom"
+               value="{{ sancion.fecha|date('d/m/Y') }}" required>
         {{ form_row(form.idTipo) }}
+        <label class="w3-text-teal">Fecha Inicio</label>
+        <input type="text" name="fechaInicio" class = "w3-select datepicker w3-border w3-light-grey marginBottom"
+               value="{{ sancion.fechaInicio|date('d/m/Y') }}" required>
+        <label class="w3-text-teal">Fecha Final</label>
+        <input type="text" name="fechaFinal" class = "w3-select datepicker w3-border w3-light-grey marginBottom"
+               value="{{ sancion.fechaFinal|date('d/m/Y') }}" required>
         {% if detalles is defined and detalles is not null and detalles is not empty %}
             <div class="contenedorFlexEdit">
                 {% for detalle in detalles %}

@@ -49,6 +49,12 @@ class SancionController extends Controller
                 $parte = $repositoryPartes->findOneById($request->get('idParte'));
                 $sancion->setIdParte([$parte]);
             }
+            $fechaSancion = \DateTime::createFromFormat('d/m/Y', $request->get('fecha'));
+            $sancion->setFecha($fechaSancion);
+            $fechaSancion = \DateTime::createFromFormat('d/m/Y', $request->get('fechaInicio'));
+            $sancion->setFechaInicio($fechaSancion);
+            $fechaSancion = \DateTime::createFromFormat('d/m/Y', $request->get('fechaFinal'));
+            $sancion->setFechaFinal($fechaSancion);
             $em->persist($sancion);
             $em->flush();
             $crearSancionHelper->creaDiarioFromSancion($sancion, $request);
