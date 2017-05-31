@@ -67,7 +67,9 @@
         {{ form_row(form.fechaComunicacion) }}
         {{ form_row(form.fechaConfirmacion) }}
         {{ form_widget(form) }}
+        <br/>
         <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="registrarse" value="Enviar">
+        <a href="{{ path('gestion_partes') }}" data-title="Cancelar" class="w3-button w3-block w3-section w3-text-white botonSubmit">Cancelar</a>
         {{ form_end(form) }}
 
     </div>

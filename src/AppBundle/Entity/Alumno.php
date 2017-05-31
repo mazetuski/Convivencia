@@ -33,7 +33,7 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Usuarios", inversedBy="alumno")
      * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id", onDelete="CASCADE")
      */
     private $idUsuario;

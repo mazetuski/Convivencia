@@ -33,8 +33,8 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios", cascade={"remove"})
-     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
      */
     private $idUsuario;
 
@@ -451,4 +451,28 @@ class Alumno
     }
 
 
+
+    /**
+     * Set puntosIniciales
+     *
+     * @param integer $puntosIniciales
+     *
+     * @return Alumno
+     */
+    public function setPuntosIniciales($puntosIniciales)
+    {
+        $this->puntosIniciales = $puntosIniciales;
+
+        return $this;
+    }
+
+    /**
+     * Get puntosIniciales
+     *
+     * @return integer
+     */
+    public function getPuntosIniciales()
+    {
+        return $this->puntosIniciales;
+    }
 }

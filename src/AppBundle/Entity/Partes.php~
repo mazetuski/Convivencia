@@ -41,9 +41,9 @@ class Partes
     /**
      * @var string
      *
-     * @ORM\Column(name="tareas", type="string", length=600)
+     * @ORM\Column(name="tareas", type="string", length=600, nullable=true)
      */
-    private $tareas;
+    private $tareas = "";
 
     /**
      * @var \DateTime

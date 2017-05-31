@@ -50,6 +50,11 @@ class Usuarios implements  UserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Alumno", mappedBy="idUsuario", cascade={"remove"})
+     */
+    protected $alumno;
+
 
     /**
      * Get id
