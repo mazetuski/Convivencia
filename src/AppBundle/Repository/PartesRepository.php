@@ -2,6 +2,11 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\AppBundle;
+use AppBundle\Entity\Alumno;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * PartesRepository
  *
@@ -43,17 +48,48 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Función que devuelve los partes de un alumno ordenados por fecha
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getPartesByAlumnoOrdenado(Alumno $alumno, $orderDesc = false)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('p')
+            ->from('AppBundle:Partes', 'p')
+            ->where('p.idAlumno = :alumno');
+
+        if (!$orderDesc)
+            $query->orderBy('p.fecha');
+        else
+            $query->orderBy('p.fecha', 'DESC');
+
+
+        $query->setParameter('alumno', $alumno);
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * Función que devuelve todos los partes ordenados por fecha
      * @return array
      */
-    public function getPartesOrdenados(){
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT p 
-             FROM AppBundle\Entity\Partes p
-             ORDER BY p.fecha DESC'
-        );
-
+    public function getPartesOrdenados($historico = false)
+    {
+        if (!$historico) {
+            $query = $this->createQueryBuilder('partes');
+            $query->select('partes');
+            $query->join('partes.idEstado', 'estado');
+            $query->where("estado.estado != 'Caducado' ");
+        } else {
+            $query = $this->createQueryBuilder('partes');
+            $query->select('partes');
+        }
+        $query->orderBy('partes.fecha', 'DESC');
+        $query->addOrderBy('partes.id', 'DESC');
+        $query = $query->getQuery();
         return $query->getResult();
+
+//        return $query->getResult();
     }
 
     /**
@@ -78,21 +114,41 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
      * @param $string
      * @return array
      */
-    public function getPartesLike($string){
-        if($string == '')
-            return $this->getPartesOrdenados();
-        $query = $this->getEntityManager()->createQuery(
-            "SELECT p
+    public function getPartesLike($string, $historico = false)
+    {
+        if ($string == '')
+            return $this->getPartesOrdenados($historico);
+        if (!$historico) {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT p
              FROM AppBundle\Entity\Partes p
              JOIN p.idAlumno as alumno
              JOIN p.idProfesor as profesor
              JOIN p.idTipo as tipo
              JOIN p.idEstado as estado
+             JOIN alumno.idCurso as curso
              WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
-             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string)
-             ORDER BY p.fecha DESC"
-        );
-        $query->setParameter("string", '%'.$string.'%');
+             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
+             OR curso.grupo LIKE :string OR estado.estado LIKE :string)
+             AND estado.estado != 'Caducado'
+             ORDER BY p.fecha DESC, p.id DESC"
+            );
+        } else {
+            $query = $this->getEntityManager()->createQuery(
+                "SELECT p
+             FROM AppBundle\Entity\Partes p
+             JOIN p.idAlumno as alumno
+             JOIN p.idProfesor as profesor
+             JOIN p.idTipo as tipo
+             JOIN p.idEstado as estado
+             JOIN alumno.idCurso as curso
+             WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
+             OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
+             OR curso.grupo LIKE :string OR estado.estado LIKE :string)
+             ORDER BY p.fecha DESC, p.id DESC"
+            );
+        }
+        $query->setParameter("string", '%' . $string . '%');
         return $query->getResult();
     }
 

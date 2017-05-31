@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Partes
@@ -13,8 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Partes
 {
-
-
 
     /**
      * @var int
@@ -35,16 +34,16 @@ class Partes
     /**
      * @var string
      *
-     * @ORM\Column(name="descripcion", type="string", length=255)
+     * @ORM\Column(name="descripcion", type="string", length=1000)
      */
     private $descripcion;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tareas", type="string", length=255)
+     * @ORM\Column(name="tareas", type="string", length=600, nullable=true)
      */
-    private $tareas;
+    private $tareas = "";
 
     /**
      * @var \DateTime
@@ -77,9 +76,16 @@ class Partes
     /**
      * @var int
      *
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 12,
+     *      minMessage = "Tiene que ser un mínimo de {{ limit }} puntos",
+     *      maxMessage = "Como máximo pueden ser {{ limit }} puntos"
+     * )
+     *
      * @ORM\Column(name="puntos", type="integer")
      */
-    private $puntos;
+    private $puntos = 0;
 
     /**
      * @var integer
@@ -101,7 +107,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id", onDelete="cascade")
      */
     private $idAlumno;
 
@@ -113,16 +119,31 @@ class Partes
      */
     private $idProfesor;
 
-//    /**
-//     * @ORM\OneToMany(targetEntity="rPartesConductas", mappedBy="idParte")
-//     */
-//    private $parteConducta;
-
     /**
      * @ORM\ManyToMany(targetEntity="Conductas", inversedBy="idParte")
      * @ORM\JoinTable(name="partes_conductas")
      */
     private $idConducta;
+
+    /**
+     * @var int
+     * @ORM\Column(name="recupera", type="integer")
+     */
+    private $recupera;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="string", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
+     */
+    private $fechaComunicacion;
 
 
     /**
@@ -433,9 +454,12 @@ class Partes
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
         $this->horaSalidaAula = new \DateTime();
         $this->horaLlegadaJefatura = new \DateTime();
         $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->recupera = 0;
     }
 
     /**
@@ -470,5 +494,77 @@ class Partes
     public function getIdConducta()
     {
         return $this->idConducta;
+    }
+
+    /**
+     * Set recupera
+     *
+     * @param integer $recupera
+     *
+     * @return Partes
+     */
+    public function setRecupera($recupera)
+    {
+        $this->recupera = $recupera;
+
+        return $this;
+    }
+
+    /**
+     * Get recupera
+     *
+     * @return integer
+     */
+    public function getRecupera()
+    {
+        return $this->recupera;
+    }
+
+    /**
+     * Set fechaConfirmacion
+     *
+     * @param string $fechaConfirmacion
+     *
+     * @return Partes
+     */
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaConfirmacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    /**
+     * Set fechaComunicacion
+     *
+     * @param string $fechaComunicacion
+     *
+     * @return Partes
+     */
+    public function setFechaComunicacion($fechaComunicacion)
+    {
+        $this->fechaComunicacion = $fechaComunicacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaComunicacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaComunicacion()
+    {
+        return $this->fechaComunicacion;
     }
 }

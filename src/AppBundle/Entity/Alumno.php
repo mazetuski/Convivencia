@@ -33,7 +33,7 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Usuarios", inversedBy="alumno")
      * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id", onDelete="CASCADE")
      */
     private $idUsuario;
@@ -80,7 +80,7 @@ class Alumno
     /**
      * @var string
      *
-     * @ORM\Column(name="telefono", type="string", length=10)
+     * @ORM\Column(name="telefono", type="string", length=70)
      * @Assert\NotBlank()
      */
     private $telefono;
@@ -115,8 +115,7 @@ class Alumno
     /**
      * @var string
      *
-     * @ORM\Column(name="foto", type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="foto", type="string", length=255, nullable=true)
      */
     private $foto;
 
@@ -127,13 +126,30 @@ class Alumno
      */
     private $puntos;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="puntosIniciales", type="integer")
+     */
+    private $puntosIniciales;
+
 
     /**
      * Función que devuelve el nombre completo del alumno
      * @return string
      */
-    public function getNombreCompleto(){
+    public function getNombreCompleto()
+    {
         return $this->getNombre() . ' ' . $this->getApellido1() . ' ' . $this->getApellido2();
+    }
+
+    public function getNombreCompletoYCurso()
+    {
+        if ($this->getIdCurso() != null && $this->getIdCurso()->getGrupo())
+            return $this->getNombre() . ' ' . $this->getApellido1()
+                . ' ' . $this->getApellido2() . ' - ' . $this->getIdCurso()->getGrupo();
+        else
+            return $this->getNombreCompleto();
     }
 
     /**
@@ -435,4 +451,28 @@ class Alumno
     }
 
 
+
+    /**
+     * Set puntosIniciales
+     *
+     * @param integer $puntosIniciales
+     *
+     * @return Alumno
+     */
+    public function setPuntosIniciales($puntosIniciales)
+    {
+        $this->puntosIniciales = $puntosIniciales;
+
+        return $this;
+    }
+
+    /**
+     * Get puntosIniciales
+     *
+     * @return integer
+     */
+    public function getPuntosIniciales()
+    {
+        return $this->puntosIniciales;
+    }
 }

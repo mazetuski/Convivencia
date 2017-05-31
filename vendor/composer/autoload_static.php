@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd
+class ComposerStaticInit02189c529cbddec3de09b60eba39cc58
 {
     public static $files = array (
         '92c8763cd6170fce6fcfe7e26b4e8c10' => __DIR__ . '/..' . '/symfony/phpunit-bridge/bootstrap.php',
@@ -50,6 +50,10 @@ class ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd
         'M' => 
         array (
             'Monolog\\' => 8,
+        ),
+        'K' => 
+        array (
+            'Knp\\Bundle\\PaginatorBundle\\' => 27,
         ),
         'I' => 
         array (
@@ -150,6 +154,10 @@ class ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Knp\\Bundle\\PaginatorBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-paginator-bundle',
+        ),
         'Incenteev\\ParameterHandler\\' => 
         array (
             0 => __DIR__ . '/..' . '/incenteev/composer-parameter-handler',
@@ -187,12 +195,23 @@ class ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd
             array (
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
+            'Tiloweb\\PaginationBundle\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/tiloweb/pagination-bundle',
+            ),
         ),
         'S' => 
         array (
             'SensioLabs\\Security' => 
             array (
                 0 => __DIR__ . '/..' . '/sensiolabs/security-checker',
+            ),
+        ),
+        'K' => 
+        array (
+            'Knp\\Component' => 
+            array (
+                0 => __DIR__ . '/..' . '/knplabs/knp-components/src',
             ),
         ),
         'D' => 
@@ -243,11 +262,11 @@ class ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit5c2b717fba5a2da05291a9d54da6b5fd::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit02189c529cbddec3de09b60eba39cc58::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit02189c529cbddec3de09b60eba39cc58::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit02189c529cbddec3de09b60eba39cc58::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit02189c529cbddec3de09b60eba39cc58::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit02189c529cbddec3de09b60eba39cc58::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -38,24 +38,17 @@ class DiarioAulaConvivencia
     /**
      * @var string
      *
-     * @ORM\Column(name="observaciones", type="string", length=255)
+     * @ORM\Column(name="observaciones", type="string", length=255, nullable=true)
      */
     private $observaciones;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')")
+     * @ORM\Column(name="actitud", type="string", length=255, columnDefinition="enum('A', 'B', 'C')", nullable=true)
      */
     private $actitud;
 
-    /**
-     * @var int
-     *
-     * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
-     */
-    private $idAlumno;
 
     /**
      * @var int
@@ -65,6 +58,26 @@ class DiarioAulaConvivencia
      */
     private $idProfesor;
 
+    /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Sanciones")
+     * @ORM\JoinColumn(name="idSancion", referencedColumnName="id", onDelete="cascade")
+     */
+    private $idSancion;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="asiste", type="integer")
+     */
+    private $asiste;
+
+
+    function __construct()
+    {
+        $this->asiste = 0;
+    }
 
     /**
      * Get id
@@ -173,30 +186,6 @@ class DiarioAulaConvivencia
     }
 
     /**
-     * Set idAlumno
-     *
-     * @param integer $idAlumno
-     *
-     * @return DiarioAulaConvivencia
-     */
-    public function setIdAlumno($idAlumno)
-    {
-        $this->idAlumno = $idAlumno;
-
-        return $this;
-    }
-
-    /**
-     * Get idAlumno
-     *
-     * @return int
-     */
-    public function getIdAlumno()
-    {
-        return $this->idAlumno;
-    }
-
-    /**
      * Set idProfesor
      *
      * @param integer $idProfesor
@@ -218,5 +207,53 @@ class DiarioAulaConvivencia
     public function getIdProfesor()
     {
         return $this->idProfesor;
+    }
+
+    /**
+     * Set idSancion
+     *
+     * @param \AppBundle\Entity\Sanciones $idSancion
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setIdSancion(\AppBundle\Entity\Sanciones $idSancion = null)
+    {
+        $this->idSancion = $idSancion;
+
+        return $this;
+    }
+
+    /**
+     * Get idSancion
+     *
+     * @return \AppBundle\Entity\Sanciones
+     */
+    public function getIdSancion()
+    {
+        return $this->idSancion;
+    }
+
+    /**
+     * Set asiste
+     *
+     * @param integer $asiste
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setAsiste($asiste)
+    {
+        $this->asiste = $asiste;
+
+        return $this;
+    }
+
+    /**
+     * Get asiste
+     *
+     * @return integer
+     */
+    public function getAsiste()
+    {
+        return $this->asiste;
     }
 }

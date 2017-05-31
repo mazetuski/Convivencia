@@ -64,10 +64,10 @@ class Usuarios extends \AppBundle\Entity\Usuarios implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles'];
+            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles'];
+        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno'];
     }
 
     /**
@@ -329,6 +329,39 @@ class Usuarios extends \AppBundle\Entity\Usuarios implements \Doctrine\ORM\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'eraseCredentials', []);
 
         return parent::eraseCredentials();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addAlumno(\AppBundle\Entity\Alumno $alumno)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAlumno', [$alumno]);
+
+        return parent::addAlumno($alumno);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeAlumno(\AppBundle\Entity\Alumno $alumno)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeAlumno', [$alumno]);
+
+        return parent::removeAlumno($alumno);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAlumno()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAlumno', []);
+
+        return parent::getAlumno();
     }
 
 }

@@ -19,12 +19,15 @@ class ParteFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->traitChoices = $options['compound'];
+
         $builder
             ->add('idAlumno', EntityType::class, array(
                 'label' => 'Alumno',
                 'class' => 'AppBundle:Alumno',
+                'choices' => $this->traitChoices,
                 'choice_label' => function ($alumno) {
-                    return $alumno->getNombreCompleto();
+                    return $alumno->getNombreCompletoYCurso();
                 },
                 'attr' => array(
                     'class' => 'w3-select w3-border w3-light-grey chosen-select',
@@ -43,10 +46,10 @@ class ParteFormType extends AbstractType
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
-            ->add('Fecha', DateType::class, array(
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
-            ))
+//            ->add('Fecha', DateType::class, array(
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
             ->add('idConducta', EntityType::class, array(
                 'label' => 'Conducta',
                 'class' => 'AppBundle:Conductas',
@@ -66,6 +69,7 @@ class ParteFormType extends AbstractType
             ))
             ->add('Tareas', TextareaType::class, array(
                 'label' => 'Tareas',
+                'required' =>false,
                 'attr' => array('class' => 'w3-input w3-border w3-light-grey minTextArea'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
@@ -94,18 +98,28 @@ class ParteFormType extends AbstractType
                 'attr' => array('class' => 'w3-input w3-border w3-light-grey minTextArea'),
                 'label_attr' => array('class' => 'w3-text-teal'),
             ))
-            ->add('Puntos', IntegerType::class, array(
+            ->add('fechaConfirmacion', TextType::class, array(
                 'required' =>false,
-                'empty_data' => 0,
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
-            ->add('idEstado', EntityType::class, array(
-                'class' => 'AppBundle:EstadosParte',
-                'choice_label' => 'estado',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+            ->add('fechaComunicacion', TextType::class, array(
+                'required' =>false,
+                'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
+//            ->add('Puntos', IntegerType::class, array(
+//                'required' =>false,
+//                'empty_data' => 0,
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
+//            ->add('idEstado', EntityType::class, array(
+//                'class' => 'AppBundle:EstadosParte',
+//                'choice_label' => 'estado',
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
             ->add('idTipo', EntityType::class, array(
                 'class' => 'AppBundle:TipoParte',
                 'choice_label' => 'tipo',

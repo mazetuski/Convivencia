@@ -27,13 +27,13 @@ security:
                 login_path: login
                 check_path: login
             logout:
-                path: /convivencia/logout
-                target: /convivencia/login
+                path: /logout
+                target: /login
 
     access_control:
-        - { path: ^/convivencia/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/convivencia/registro$, roles: ROLE_ADMIN }
-        - { path: ^/convivencia/admin$, roles: ROLE_ADMIN }
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/registro$, roles: ROLE_ADMIN }
+        - { path: ^/admin$, roles: ROLE_ADMIN }
         - { path: ^/, roles: ROLE_USER }
             # activate different ways to authenticate
 

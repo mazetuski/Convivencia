@@ -41,9 +41,9 @@ class Partes
     /**
      * @var string
      *
-     * @ORM\Column(name="tareas", type="string", length=600)
+     * @ORM\Column(name="tareas", type="string", length=600, nullable=true)
      */
-    private $tareas;
+    private $tareas = "";
 
     /**
      * @var \DateTime
@@ -107,7 +107,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id", onDelete="cascade")
      */
     private $idAlumno;
 
@@ -124,6 +124,26 @@ class Partes
      * @ORM\JoinTable(name="partes_conductas")
      */
     private $idConducta;
+
+    /**
+     * @var int
+     * @ORM\Column(name="recupera", type="integer")
+     */
+    private $recupera;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaConfirmacion", type="string", nullable=true)
+     */
+    private $fechaConfirmacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
+     */
+    private $fechaComunicacion;
 
 
     /**
@@ -434,9 +454,12 @@ class Partes
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->fechaComunicacion = null;
+        $this->fechaConfirmacion = null;
         $this->horaSalidaAula = new \DateTime();
         $this->horaLlegadaJefatura = new \DateTime();
         $this->idConducta = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->recupera = 0;
     }
 
     /**
@@ -471,5 +494,77 @@ class Partes
     public function getIdConducta()
     {
         return $this->idConducta;
+    }
+
+    /**
+     * Set recupera
+     *
+     * @param integer $recupera
+     *
+     * @return Partes
+     */
+    public function setRecupera($recupera)
+    {
+        $this->recupera = $recupera;
+
+        return $this;
+    }
+
+    /**
+     * Get recupera
+     *
+     * @return integer
+     */
+    public function getRecupera()
+    {
+        return $this->recupera;
+    }
+
+    /**
+     * Set fechaConfirmacion
+     *
+     * @param string $fechaConfirmacion
+     *
+     * @return Partes
+     */
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaConfirmacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    /**
+     * Set fechaComunicacion
+     *
+     * @param string $fechaComunicacion
+     *
+     * @return Partes
+     */
+    public function setFechaComunicacion($fechaComunicacion)
+    {
+        $this->fechaComunicacion = $fechaComunicacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaComunicacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaComunicacion()
+    {
+        return $this->fechaComunicacion;
     }
 }

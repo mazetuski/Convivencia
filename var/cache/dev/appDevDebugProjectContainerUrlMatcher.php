@@ -105,126 +105,108 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
         }
 
-        if (0 === strpos($pathinfo, '/convivencia')) {
-            // index
-            if (rtrim($pathinfo, '/') === '/convivencia') {
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'index');
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::indexAction',  '_route' => 'index',);
-            }
-
-            // login
-            if ($pathinfo === '/convivencia/login') {
-                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                    goto not_login;
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::loginAction',  '_route' => 'login',);
-            }
-            not_login:
-
-            // convivencia_registro
-            if ($pathinfo === '/convivencia/registro') {
-                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                    goto not_convivencia_registro;
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::registroAction',  '_route' => 'convivencia_registro',);
-            }
-            not_convivencia_registro:
-
-            // logout
-            if ($pathinfo === '/convivencia/logout') {
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::logoutAction',  '_route' => 'logout',);
-            }
-
-            if (0 === strpos($pathinfo, '/convivencia/alumno')) {
+        if (0 === strpos($pathinfo, '/a')) {
+            if (0 === strpos($pathinfo, '/alumno')) {
                 // alumno
-                if ($pathinfo === '/convivencia/alumno') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::alumnoAction',  '_route' => 'alumno',);
+                if ($pathinfo === '/alumno') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::alumnoAction',  '_route' => 'alumno',);
                 }
 
                 // verAlumno
-                if (preg_match('#^/convivencia/alumno/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'verAlumno')), array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showAlumnoAction',));
+                if (preg_match('#^/alumno/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'verAlumno')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::showAlumnoAction',));
                 }
 
             }
 
-            // verProfesor
-            if (0 === strpos($pathinfo, '/convivencia/profesor') && preg_match('#^/convivencia/profesor/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'verProfesor')), array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showProfesorAction',));
+            // admin_import
+            if ($pathinfo === '/admin/import') {
+                return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::importAlumnoAction',  '_route' => 'admin_import',);
             }
 
-            if (0 === strpos($pathinfo, '/convivencia/admin')) {
-                // admin
-                if ($pathinfo === '/convivencia/admin') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::adminAction',  '_route' => 'admin',);
-                }
+        }
 
-                // admin_import
-                if ($pathinfo === '/convivencia/admin/import') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importAlumnoAction',  '_route' => 'admin_import',);
-                }
-
+        // registrarAlumno
+        if ($pathinfo === '/registrarAlumno') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_registrarAlumno;
             }
 
-            // gestion_partes
-            if ($pathinfo === '/convivencia/partes') {
-                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                    goto not_gestion_partes;
-                }
+            return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::registrarAlumnoAction',  '_route' => 'registrarAlumno',);
+        }
+        not_registrarAlumno:
 
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showGestionPartes',  '_route' => 'gestion_partes',);
-            }
-            not_gestion_partes:
-
-            // gestion_sanciones
-            if ($pathinfo === '/convivencia/sanciones') {
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showGestionSanciones',  '_route' => 'gestion_sanciones',);
+        // show_carnets
+        if ($pathinfo === '/carnets') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_show_carnets;
             }
 
-            // registrarAlumno
-            if ($pathinfo === '/convivencia/registrarAlumno') {
-                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                    goto not_registrarAlumno;
-                }
+            return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::showCarnets',  '_route' => 'show_carnets',);
+        }
+        not_show_carnets:
 
-                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::registrarAlumnoAction',  '_route' => 'registrarAlumno',);
-            }
-            not_registrarAlumno:
+        // show_partesAlumno
+        if (0 === strpos($pathinfo, '/partes') && preg_match('#^/partes/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'show_partesAlumno')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::mostrarTodosPartes',));
+        }
 
-            if (0 === strpos($pathinfo, '/convivencia/nuev')) {
-                // nuevoParte
-                if ($pathinfo === '/convivencia/nuevoParte') {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                        goto not_nuevoParte;
-                    }
+        // show_partesSanciones
+        if (0 === strpos($pathinfo, '/sanciones') && preg_match('#^/sanciones/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'show_partesSanciones')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::mostrarTodasSanciones',));
+        }
 
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::crearParteAction',  '_route' => 'nuevoParte',);
-                }
-                not_nuevoParte:
-
-                // nueva_sancion
-                if ($pathinfo === '/convivencia/nuevaSancion') {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                        goto not_nueva_sancion;
-                    }
-
-                    return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::crearSancionAction',  '_route' => 'nueva_sancion',);
-                }
-                not_nueva_sancion:
-
+        // index
+        if (rtrim($pathinfo, '/') === '') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'index');
             }
 
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::indexAction',  '_route' => 'index',);
+        }
+
+        // login
+        if ($pathinfo === '/login') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_login;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::loginAction',  '_route' => 'login',);
+        }
+        not_login:
+
+        // convivencia_registro
+        if ($pathinfo === '/registro') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_convivencia_registro;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::registroAction',  '_route' => 'convivencia_registro',);
+        }
+        not_convivencia_registro:
+
+        // logout
+        if ($pathinfo === '/logout') {
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::logoutAction',  '_route' => 'logout',);
+        }
+
+        // verProfesor
+        if (0 === strpos($pathinfo, '/profesor') && preg_match('#^/profesor/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'verProfesor')), array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showProfesorAction',));
+        }
+
+        // admin
+        if ($pathinfo === '/admin') {
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::adminAction',  '_route' => 'admin',);
+        }
+
+        // admin_diario_aula
+        if ($pathinfo === '/diario') {
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::gestionDiarioAula',  '_route' => 'admin_diario_aula',);
         }
 
         // homepage
@@ -235,6 +217,50 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
             return array (  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',  '_route' => 'homepage',);
         }
+
+        // show_diario
+        if ($pathinfo === '/diarioAula') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_show_diario;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\DiarioAulaController::showDiario',  '_route' => 'show_diario',);
+        }
+        not_show_diario:
+
+        // edit_diario
+        if (0 === strpos($pathinfo, '/modificarDiarioAula') && preg_match('#^/modificarDiarioAula/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_edit_diario;
+            }
+
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'edit_diario')), array (  '_controller' => 'AppBundle\\Controller\\DiarioAulaController::editDiario',));
+        }
+        not_edit_diario:
+
+        // gestion_partes
+        if ($pathinfo === '/partes') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_gestion_partes;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\PartesController::showGestionPartes',  '_route' => 'gestion_partes',);
+        }
+        not_gestion_partes:
+
+        // nuevoParte
+        if ($pathinfo === '/nuevoParte') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_nuevoParte;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\PartesController::crearParteAction',  '_route' => 'nuevoParte',);
+        }
+        not_nuevoParte:
 
         if (0 === strpos($pathinfo, '/perfil')) {
             // perfil_index
@@ -264,6 +290,28 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             not_perfil_show:
 
         }
+
+        // nueva_sancion
+        if ($pathinfo === '/nuevaSancion') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_nueva_sancion;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\SancionController::crearSancionAction',  '_route' => 'nueva_sancion',);
+        }
+        not_nueva_sancion:
+
+        // gestion_sanciones
+        if ($pathinfo === '/sanciones') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_gestion_sanciones;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\SancionController::showGestionSanciones',  '_route' => 'gestion_sanciones',);
+        }
+        not_gestion_sanciones:
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();
     }

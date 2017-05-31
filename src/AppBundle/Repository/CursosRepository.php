@@ -10,4 +10,34 @@ namespace AppBundle\Repository;
  */
 class CursosRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * Función que devuelve los cursos agrupados por curso
+     * @return array
+     */
+    public function getCursosGroupByCursos(){
+        $qb = $this->getEntityManager()->createQuery(
+          'SELECT c.curso
+           FROM AppBundle\Entity\Cursos c
+           GROUP BY c.curso'
+        );
+
+        return $qb->getResult();
+    }
+
+    /**
+     * Función que devuelve los cursos que contengan el curso del parámetro
+     * @param $curso
+     * @return array
+     */
+    public function getCursosByCurso($curso){
+        $qb = $this->getEntityManager()->createQuery(
+            'SELECT c
+             FROM AppBundle\Entity\Cursos c
+             WHERE c.curso = :curso'
+        );
+
+        $qb->setParameter('curso', $curso);
+        return $qb->getResult();
+    }
 }
