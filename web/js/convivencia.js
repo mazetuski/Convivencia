@@ -161,4 +161,19 @@ $(document).ready(function () {
     $('.tooltip').tooltipster({
         theme: 'tooltipster-light'
     });
+
+    // Pantalla Confirmación
+    $('a.botonSubmit').confirm({
+        icon: 'fa fa-question-circle-o fa-2x',
+        content: "¿Está seguro de realizar esta acción?",
+        buttons: {
+            Aceptar: function () {
+                location.href = this.$target.attr('href');
+            },
+            Cancelar: function () {
+
+            }
+        },
+        columnClass: 'confirmdialog'
+    });
 });

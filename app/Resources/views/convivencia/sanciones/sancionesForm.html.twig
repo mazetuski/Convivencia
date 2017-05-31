@@ -11,8 +11,10 @@
                        value="Búsqueda Avanzada">
                 {% if app.request.get('idSancion') is not null %}
                     {% if accion != 'Inhabilitada' %}
-                        <input class="w3-button w3-text-white"
-                               type="submit" name="estadoSancion" value="{{ accion }}">
+                        <a href="{{ path('nueva_sancion', {'idSancion': sancion.id, 'estadoSancion': 'continuar' }) }}"
+                           class="w3-button w3-text-white botonSubmit" data-title="{{ accion }}">{{ accion }}</a>
+                        {#<input class="w3-button w3-text-white"#}
+                               {#type="submit" name="estadoSancion" value="{{ accion }}">#}
                     {% else %}
                         <input class="w3-button w3-text-white botonSubmit"
                                type="button" value="{{ sancion.getIdEstado().getEstado() }}" disabled>

@@ -78,13 +78,15 @@ class PartesHelper
      */
     public function recuperarPuntos(Request $request)
     {
-        if ($request->get('recuperaPunto') != null && $request->get('parteHidden') != null) {
+        if ($request->get('recuperaPunto') != null && $request->get('idParte') != null) {
             /** @var Partes $parte */
-            $parte = $this->repositoryPartes->getParteById($request->get('parteHidden'));
-            $parte->setRecupera(1);
-            $this->em->persist($parte);
-            $this->em->flush();
-            return true;
+            $parte = $this->repositoryPartes->getParteById($request->get('idParte'));
+            if($parte->getRecupera()!=1) {
+                $parte->setRecupera(1);
+                $this->em->persist($parte);
+                $this->em->flush();
+                return true;
+            }
         }
         return false;
     }

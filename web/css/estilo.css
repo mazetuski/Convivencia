@@ -65,6 +65,11 @@ body {
     margin: 40px 0;
 }
 
+.confirmdialog{
+    width: 90%;
+    margin: 0 auto;
+}
+
 .contenedorFlex, .contenedorFlexEdit, #cursos {
     display: flex;
     flex-wrap: wrap;
@@ -242,6 +247,11 @@ nav {
 
 @media (min-width: 768px) {
 
+    .confirmdialog{
+        width: 50%;
+        margin: 0 auto;
+    }
+
     .w3-col.s12 {
         width: 60%;
     }
@@ -268,6 +278,12 @@ nav {
 }
 
 @media (min-width: 1024px) {
+
+    .confirmdialog{
+        width: 30%;
+        margin: 0 auto;
+    }
+
     .w3-col.s12 {
         width: 100%;
     }

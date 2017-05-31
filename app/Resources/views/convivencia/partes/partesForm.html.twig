@@ -8,17 +8,18 @@
                 <input class="w3-button w3-text-white busquedaMas" id="busqueda" type="button"
                        value="Búsqueda Avanzada">
                 {% if app.request.get('idParte') is not null %}
-                    <input type="hidden" value="{{ app.request.get('idParte') }}" name="parteHidden">
+                    <input type="hidden" value="{{ app.request.get('idParte') }}" name="idParte">
                     {% if recupera %}
-                        <input class="w3-button w3-text-white" type="submit" name="recuperaPunto" value="+1 Punto">
+                        <a href="{{ path('nuevoParte', {'idParte': app.request.get('idParte'), 'recuperaPunto': 'true'}) }}"
+                        class="w3-button w3-text-white botonSubmit" data-title="Recuperar Punto">+1 Punto</a>
                     {% else %}
                         <input class="w3-button w3-text-white botonSubmit" type="button" name="recuperaPunto"
                                value="+1 Punto"
                                disabled>
                     {% endif %}
                     {% if accion != 'Inhabilitada' %}
-                        <input class="w3-button w3-text-white"
-                               type="submit" name="estadoParte" value="{{ accion }}">
+                        <a href="{{ path('nuevoParte', {'idParte': app.request.get('idParte'), 'estadoParte': 'continuar' }) }}"
+                           class="w3-button w3-text-white botonSubmit" data-title="{{ accion }}">{{ accion }}</a>
                     {% else %}
                         <input class="w3-button w3-text-white botonSubmit"
                                type="button" value="{{ parte.getIdEstado().getEstado() }}" disabled>
