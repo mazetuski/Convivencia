@@ -46,10 +46,10 @@ class ParteFormType extends AbstractType
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
-            ->add('Fecha', DateType::class, array(
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
-            ))
+//            ->add('Fecha', DateType::class, array(
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ))
             ->add('idConducta', EntityType::class, array(
                 'label' => 'Conducta',
                 'class' => 'AppBundle:Conductas',

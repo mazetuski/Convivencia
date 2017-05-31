@@ -51,7 +51,7 @@ class Usuarios implements  UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Alumno", mappedBy="idUsuario", cascade={"remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Alumno", mappedBy="idUsuario", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $alumno;
 

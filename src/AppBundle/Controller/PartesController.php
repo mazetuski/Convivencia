@@ -82,6 +82,7 @@ class PartesController extends Controller
             $parteHelper->changeEstado($request, $parte))
             return $this->redirectToRoute("nuevoParte", array(
                 'idParte' => $parte->getId()));
+//        return 'hola';
         if ($request->query->has('idParte'))
             $recupera = $parteHelper->parteRecupera($parte);
 
@@ -91,6 +92,8 @@ class PartesController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $fechaParte = \DateTime::createFromFormat('d/m/Y', $request->get('fecha'));
+            $parte->setFecha($fechaParte);
             $em->persist($parte);
             $em->flush();
             $parteHelper->createSancionFromRequest($request, $parte);
