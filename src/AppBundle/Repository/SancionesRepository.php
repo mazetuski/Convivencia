@@ -106,7 +106,8 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              JOIN s.idAlumno as alumno
              JOIN s.idTipo as tipo
              JOIN s.idEstado as estado
-             WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
+             WHERE ((YEAR(s.fecha) = :stringFecha2 AND MONTH(s.fecha) = :stringFecha1
+             AND DAY(s.fecha) = :stringFecha0) OR alumno.nombre LIKE :string
              OR tipo.tipo LIKE :string OR estado.estado LIKE :string)
              AND estado.estado != 'Finalizada'
              ORDER BY s.fecha DESC, s.id DESC"
@@ -119,12 +120,21 @@ class SancionesRepository extends \Doctrine\ORM\EntityRepository
              JOIN s.idAlumno as alumno
              JOIN s.idTipo as tipo
              JOIN s.idEstado as estado
-             WHERE (s.fecha LIKE :string OR alumno.nombre LIKE :string
+             WHERE ((YEAR(s.fecha) = :stringFecha2 AND MONTH(s.fecha) = :stringFecha1
+             AND DAY(s.fecha) = :stringFecha0) OR alumno.nombre LIKE :string
              OR tipo.tipo LIKE :string OR estado.estado LIKE :string)
              ORDER BY s.fecha DESC, s.id DESC"
             );
         }
         $query->setParameter("string", '%' . $string . '%');
+        $fecha = explode('/', $string);
+        for($i=0; $i<3; $i++){
+            if(count($fecha) >= ($i+1)) {
+                $query->setParameter('stringFecha' . $i, $fecha[$i]);
+            }
+            else
+                $query->setParameter('stringFecha'.$i, '');
+        }
         return $query->getResult();
     }
 

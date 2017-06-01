@@ -11,17 +11,17 @@
                     <input type="hidden" value="{{ app.request.get('idParte') }}" name="idParte">
                     {% if recupera %}
                         <a href="{{ path('nuevoParte', {'idParte': app.request.get('idParte'), 'recuperaPunto': 'true'}) }}"
-                        class="w3-button w3-text-white botonSubmit" data-title="Recuperar Punto">+1 Punto</a>
+                        class="w3-button w3-text-white botonSubmit confirm" data-title="Recuperar Punto">+1 Punto</a>
                     {% else %}
-                        <input class="w3-button w3-text-white botonSubmit" type="button" name="recuperaPunto"
+                        <input class="w3-button w3-text-white botonSubmit confirm" type="button" name="recuperaPunto"
                                value="+1 Punto"
                                disabled>
                     {% endif %}
                     {% if accion != 'Inhabilitada' %}
                         <a href="{{ path('nuevoParte', {'idParte': app.request.get('idParte'), 'estadoParte': 'continuar' }) }}"
-                           class="w3-button w3-text-white botonSubmit" data-title="{{ accion }}">{{ accion }}</a>
+                           class="w3-button w3-text-white botonSubmit confirm" data-title="{{ accion }}">{{ accion }}</a>
                     {% else %}
-                        <input class="w3-button w3-text-white botonSubmit"
+                        <input class="w3-button w3-text-white botonSubmit confirm"
                                type="button" value="{{ parte.getIdEstado().getEstado() }}" disabled>
                     {% endif %}
                 {% endif %}
@@ -72,7 +72,7 @@
         {{ form_widget(form) }}
         <br/>
         <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="registrarse" value="Enviar">
-        <a href="{{ path('gestion_partes') }}" data-title="Cancelar" class="w3-button w3-block w3-section w3-text-white botonSubmit">Cancelar</a>
+        <a href="{{ path('gestion_partes') }}" data-title="Cancelar" class="w3-button w3-block w3-section w3-text-white botonSubmit confirm">Cancelar</a>
         {{ form_end(form) }}
 
     </div>

@@ -163,7 +163,7 @@ $(document).ready(function () {
     });
 
     // Pantalla Confirmación
-    $('a.botonSubmit').confirm({
+    $('a.confirm').confirm({
         icon: 'fa fa-question-circle-o fa-2x',
         content: "¿Está seguro de realizar esta acción?",
         buttons: {

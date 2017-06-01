@@ -127,7 +127,8 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              JOIN p.idTipo as tipo
              JOIN p.idEstado as estado
              JOIN alumno.idCurso as curso
-             WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
+             WHERE ((YEAR(p.fecha) = :stringFecha2 AND MONTH(p.fecha) = :stringFecha1
+             AND DAY(p.fecha) = :stringFecha0) OR alumno.nombre LIKE :string
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
              OR curso.grupo LIKE :string OR estado.estado LIKE :string)
              AND estado.estado != 'Caducado'
@@ -142,13 +143,24 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
              JOIN p.idTipo as tipo
              JOIN p.idEstado as estado
              JOIN alumno.idCurso as curso
-             WHERE (p.fecha LIKE :string OR alumno.nombre LIKE :string
+             WHERE ((YEAR(p.fecha) = :stringFecha2 AND MONTH(p.fecha) = :stringFecha1
+             AND DAY(p.fecha) = :stringFecha0) OR alumno.nombre LIKE :string
              OR profesor.nombre LIKE :string OR tipo.tipo LIKE :string
              OR curso.grupo LIKE :string OR estado.estado LIKE :string)
              ORDER BY p.fecha DESC, p.id DESC"
             );
         }
         $query->setParameter("string", '%' . $string . '%');
+
+        $fecha = explode('/', $string);
+        for($i=0; $i<3; $i++){
+            if(count($fecha) >= ($i+1)) {
+                $query->setParameter('stringFecha' . $i, $fecha[$i]);
+            }
+            else
+                $query->setParameter('stringFecha'.$i, '');
+        }
+
         return $query->getResult();
     }
 

@@ -172,6 +172,19 @@ tr:hover, tr:hover a {
 
 }
 
+.fa-pencil, .fa-trash{
+    font-size: 1.4em;
+}
+
+tr:hover i{
+    color: white;
+}
+
+tr i:hover{
+    transition: transform 1s;
+    transform: rotateY(360deg);
+}
+
 th {
     background-color: #38889B;
     color: #FFFFFF;

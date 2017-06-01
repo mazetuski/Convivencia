@@ -12,6 +12,7 @@ use AppBundle\Services\CrearSancionHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 class SancionController extends Controller
@@ -105,5 +106,22 @@ class SancionController extends Controller
             'sanciones' => $sancionesPagination,
             'user' => $this->getUser(),
         ));
+    }
+
+    /**
+     * @Route("/borrarSancion/{id}", name="borrar_sancion")
+     * @Method({"GET"})
+     */
+    public function removeSancion(Sanciones $sancion)
+    {
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($sancion);
+            $this->addFlash("sancion", "Se ha eliminado correctamente");
+            $em->flush();
+        }catch (Exception $e) {
+            $this->addFlash("sancionError", "No se ha podido eliminar la sanción");
+        }
+        return $this->redirectToRoute("gestion_sanciones");
     }
 }

@@ -16,6 +16,7 @@ use AppBundle\Services\PartesHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 class PartesController extends Controller
@@ -111,6 +112,23 @@ class PartesController extends Controller
             'parte' => $parte,
             'sanciones' => $sanciones
         ));
+    }
+
+    /**
+     * @Route("/borrarParte/{id}", name="borrar_parte")
+     * @Method({"GET"})
+     */
+    public function removeSancion(Partes $parte)
+    {
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($parte);
+            $this->addFlash("parte", "Se ha eliminado correctamente");
+            $em->flush();
+        }catch (Exception $e) {
+            $this->addFlash("parteError", "No se ha podido eliminar la sanción");
+        }
+        return $this->redirectToRoute("gestion_partes");
     }
 
 }

@@ -5,6 +5,20 @@
     {% block header %}
         <main class="w3-container">
             <h1>Gestion Partes</h1>
+
+            {% for flash_message in app.session.flashBag.get('parte') %}
+                <div class="w3-panel w3-pale-green w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
+            {% for flash_message in app.session.flashBag.get('parteError') %}
+                <div class="w3-panel w3-pale-red w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
+
             {#TODO: ajustar form#}
             <form action="">
                 <div class="w3-col l6 m8 w3-section">
@@ -40,6 +54,7 @@
                             <th>Puntos</th>
                             <th>Estado</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         {% for parte in partes %}
                             {% if parte.idTipo.tipo == 'Grave' %}
@@ -69,7 +84,9 @@
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>
                                 <td>{{ parte.idEstado.estado }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">editar</a></td>
+                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i class="fa fa-pencil" aria-hidden="true"></a></td>
+                                <td><a class="confirm" href="{{ path('borrar_parte', {'id': parte.id}) }}"
+                                       data-title="Eliminar Parte"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
                             </tr>
                         {% endfor %}
                     </table>

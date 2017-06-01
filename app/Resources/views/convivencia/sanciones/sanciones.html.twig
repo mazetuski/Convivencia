@@ -6,6 +6,19 @@
     {% block header %}
         <main class="w3-container">
             <h1>Gestion Sanciones</h1>
+
+            {% for flash_message in app.session.flashBag.get('sancion') %}
+                <div class="w3-panel w3-pale-green w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
+            {% for flash_message in app.session.flashBag.get('sancionError') %}
+                <div class="w3-panel w3-pale-red w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
             {#TODO: ajustar form#}
             <form action="">
                 <div class="w3-col l6 m8 w3-section">
@@ -41,6 +54,7 @@
                             <th>Puntos</th>
                             <th>Estado</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         {% for sancion in sanciones %}
                             <tr>
@@ -54,7 +68,9 @@
                                 <td>{{ sancion.idTipo.tipo }}</td>
                                 <td>{{ sancion.puntosRecuperados }}</td>
                                 <td>{{ sancion.idEstado.estado }}</td>
-                                <td><a href="{{ path('nueva_sancion') }}?idSancion={{ sancion.id }}">editar</a></td>
+                                <td><a href="{{ path('nueva_sancion') }}?idSancion={{ sancion.id }}"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                <td><a class="confirm" href="{{ path('borrar_sancion', {'id': sancion.id}) }}"
+                                        data-title="Eliminar Sanción"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
                             </tr>
                         {% endfor %}
                     </table>
