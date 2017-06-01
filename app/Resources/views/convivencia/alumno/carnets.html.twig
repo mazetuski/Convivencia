@@ -65,7 +65,7 @@
                                             {% else %}
                                                 {% set sancionName = 'Sanción '~sancion.idEstado.estado %}
                                             {% endif %}
-                                            <a href="{{ path('nueva_sancion', {'idSancion':sancion.id}) }}"> {{ sancionName }}</a>
+                                            <a href="{{ path('nueva_sancion', {'idSancion':sancion.id}) }}"> ({{ sancion.fecha|date('d/m/Y') }} - {{ sancion.idTipo.tipo }} - {{ sancionName }})</a><br/>
                                         {% endfor %}
                                     </td>
                                 {% else %}

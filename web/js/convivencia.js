@@ -6,12 +6,12 @@ $(document).ready(function () {
 
     const SANCION_TYPE_HORAS = 5;
     const HORAS_CLASE = {
-        '1' : '8:15 - 9:15',
-        '2' : '9:15 - 10:15',
-        '3' : '10:15 - 11-15',
-        '4' : '11:40 - 12:40',
-        '5' : '12:40 - 13:40',
-        '6' : '13:40 - 14:40'
+        '1': '8:15 - 9:15',
+        '2': '9:15 - 10:15',
+        '3': '10:15 - 11-15',
+        '4': '11:40 - 12:40',
+        '5': '12:40 - 13:40',
+        '6': '13:40 - 14:40'
     };
 
     //CHOSEN
@@ -37,7 +37,6 @@ $(document).ready(function () {
     };
     $.datepicker.setDefaults($.datepicker.regional['es']);
     $('.datepicker').datepicker();
-
 
 
     //PARTE FORM, CONDUCTAS MOSTRAR Y OCULTAR
@@ -81,18 +80,18 @@ $(document).ready(function () {
 
             $('.checkCerrar').removeClass('checkCerrar').addClass('checkAbrir').val('+');
         }).on('click', '.checkNewSancion', function () {
-            // Funcionalidad boton añadir Sanción HoraAC
+        // Funcionalidad boton añadir Sanción HoraAC
         $(this).before(contenedorNewHoraSancion());
     })
     //PARTE FORM BÚSQUEDA AVANZADA
-    .on('click', '.busquedaMas', function () {
-        $('#cursos').show(300).css('display', 'flex');
-        $(this).removeClass('busquedaMas').addClass('busquedaMenos');
-    })
-    .on('click', '.busquedaMenos', function () {
-        $('#cursos').hide(300);
-        $(this).removeClass('busquedaMenos').addClass('busquedaMas');
-    });
+        .on('click', '.busquedaMas', function () {
+            $('#cursos').show(300).css('display', 'flex');
+            $(this).removeClass('busquedaMas').addClass('busquedaMenos');
+        })
+        .on('click', '.busquedaMenos', function () {
+            $('#cursos').hide(300);
+            $(this).removeClass('busquedaMenos').addClass('busquedaMas');
+        });
 
     // SANCIONES, SI TIPO ES HORAS O JORNADA MOSTRAR NUEVOS INPUTS
 
@@ -121,14 +120,14 @@ $(document).ready(function () {
         let input = '<div class="contenedorFlex">' +
             '   <div class="contenedorFlexChild">' +
             '       <label class="w3-text-teal">Fecha Hora Sanción</label>' +
-            '       <input type="text" class="w3-input w3-border w3-light-grey datepicker" name="fechaHora[]" contenteditable="false" value="'+fecha+'">' +
+            '       <input type="text" class="w3-input w3-border w3-light-grey datepicker" name="fechaHora[]" contenteditable="false" value="' + fecha + '">' +
             '   </div><div class="contenedorFlexChild">' +
             '       <label class="w3-text-teal">Hora</label>' +
             '       <select class="w3-select w3-border w3-light-grey" name="horaAc[]">';
-        for(let key in HORAS_CLASE){
-           input+='<option value="'+key+'">'+HORAS_CLASE[key]+'</option>';
+        for (let key in HORAS_CLASE) {
+            input += '<option value="' + key + '">' + HORAS_CLASE[key] + '</option>';
         }
-        input+='</select></div></div>';
+        input += '</select></div></div>';
         $('#sancion_form_idTipo').after(input);
         $('.contenedorFlex')
             .append(text);
@@ -150,9 +149,9 @@ $(document).ready(function () {
         $('.overlay').css('min-height', $(window).height());
 
     })
-    
+
     // Hamburguer Nav
-    
+
     $("#hamburguer").on('click', function () {
         $("nav").toggle();
     })
@@ -176,4 +175,15 @@ $(document).ready(function () {
         },
         columnClass: 'confirmdialog'
     });
+
+    $('#contenedorUpload').on('change', 'input:file', function(){
+        if ($(this).val()) {
+            $('#contenedorUpload input:submit').removeAttr('disabled');
+        }
+    });
+    
+    $('#botonImportar').on('click', function () {
+        $('#contenedorUpload .loader').css({opacity: 0, visibility: "visible"}).animate({opacity: 1}, 500)
+    })
+
 });

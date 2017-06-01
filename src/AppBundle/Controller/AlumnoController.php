@@ -13,6 +13,7 @@ use AppBundle\Services\ImportHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -68,18 +69,24 @@ class AlumnoController extends Controller
      */
     public function importAlumnoAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(ImportFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var File $file */
-            $file = $form['importar']->getData();
-            /** @var ImportHelper $importHelper */
-            $importHelper = $this->get('app.importHelper');
-            $importHelper->importarAlumnos($file);
+        try {
+            $form = $this->createForm(ImportFormType::class);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                /** @var File $file */
+                $file = $form['importar']->getData();
+                /** @var ImportHelper $importHelper */
+                $importHelper = $this->get('app.importHelper');
+                $importHelper->importarAlumnos($file);
+                $this->addFlash(
+                    'alumnos',
+                    'El fichero ha sido importado!'
+                );
+            }
+        }catch (Exception $e){
             $this->addFlash(
-                'alumnos',
-                'El fichero ha sido importado!'
+                'alumnosError',
+                'El fichero no se ha podido importar'
             );
         }
 

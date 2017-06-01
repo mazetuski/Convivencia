@@ -64,6 +64,7 @@ class ImportHelper
                         $alumno->setPuntos(0);
                         $alumno->setFoto('');
                         $alumno->setNie($row[6]);
+                        $alumno->setPuntosIniciales(0);
                         $user = new Usuarios();
                         $userNombre = mb_substr($alumno->getNombre(), 0, 2) . mb_substr($alumno->getApellido1(), 0, 2) . mb_substr($alumno->getApellido2(), 0, 2);
                         $userNombre = strtr($userNombre, $arrayMayus);
