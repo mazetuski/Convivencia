@@ -148,13 +148,14 @@ class AlumnoController extends Controller
             $arrayCarnetData = $alumnoHelper->filtrarPorPuntos($request->get('puntosFiltro'), $alumnos);
         else
             $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
-        $arrayCarnetDataPaginator = $paginator->paginate(
-            $arrayCarnetData, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            13/*limit per page*/
-        );
+//        $arrayCarnetDataPaginator = $paginator->paginate(
+//            $arrayCarnetData, /* query NOT result */
+//            $request->query->getInt('page', 1)/*page number*/,
+//            13/*limit per page*/
+//        );
         return $this->render('convivencia/alumno/carnets.html.twig', array(
-            'arrayCarnetData' => $arrayCarnetDataPaginator,
+//            'arrayCarnetData' => $arrayCarnetDataPaginator,
+            'arrayCarnetData' => $arrayCarnetData,
             'puntosSelect' => AlumnoHelper::SELECT_PUNTOS,
         ));
     }

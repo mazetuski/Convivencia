@@ -186,4 +186,29 @@ $(document).ready(function () {
         $('#contenedorUpload .loader').css({opacity: 0, visibility: "visible"}).animate({opacity: 1}, 500)
     })
 
+    // DataTables
+
+    $('.tableData').DataTable({
+        language: {
+            search: "Busca en la tabla ",
+            paginate: {
+                first:      "Primero",
+                previous:   "Anterior",
+                next:       "Siguiente",
+                last:       "Último"
+            },
+            lengthMenu:    "Mostrar _MENU_ Resultados",
+            emptyTable:     "No hay registros en la tabla",
+            info:           "Mostrando _END_ registros de _TOTAL_ en total",
+            infoEmpty:      "No hay resultados",
+            infoFiltered:   "(filtrado de _MAX_ en total)",
+            zeroRecords:    "No se encuentra ningun registro",
+        }
+    });
+
+    $('.dataTables_filter input').attr("placeholder", "Fecha, alumno, curso...");
+    $('.dataTables_wrapper input').addClass("marginBottom");
+    // $('.dataTables_wrapper label').addClass("contenedorFlex");
+
+
 });

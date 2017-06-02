@@ -162,6 +162,10 @@ input::-moz-placeholder {
     background-color: rgba(0, 0, 0, .9);
 }
 
+table{
+    text-align: center;
+}
+
 table a {
     text-decoration: underline;
 }
@@ -214,6 +218,10 @@ nav {
     color: #316f80;
     text-align: center;
     padding: 1em;
+}
+
+.paddingRightLeft{
+    padding: 0 10px;
 }
 
 .selectForm input {
