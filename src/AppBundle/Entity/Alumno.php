@@ -40,7 +40,7 @@ class Alumno
 
     /**
      * @var int
-     * @ORM\ManyToOne(targetEntity="Tutores")
+     * @ORM\ManyToMany(targetEntity="Tutores")
      * @ORM\JoinColumn(name="idTutor", referencedColumnName="id")
      */
     private $idTutor;

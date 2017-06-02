@@ -27,9 +27,13 @@
                                    class="w3-padding w3-bar-item w3-button w3-hover-grey w3-text-white w3-mobile w3-large">Conductas</a>
                             </div>
                         </div>
-                    {% elseif is_granted('ROLE_USER') %}
-                        <a href="{{ path('registrarAlumno') }}"
-                           class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Perfil</a>
+
+                    {% elseif is_granted('ROLE_TUTOR') %}
+                        <a href="{{ path('index') }}"
+                           class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Alumnos</a>
+                    {#{% elseif is_granted('ROLE_USER') %}#}
+                        {#<a href="{{ path('registrarAlumno') }}"#}
+                           {#class="w3-padding w3-mobile w3-left w3-hover-grey w3-large">Perfil</a>#}
                     {% endif %}
                 </nav>
             </div>

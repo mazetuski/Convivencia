@@ -30,8 +30,10 @@ class AlumnoController extends Controller
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
-            return $this->redirectToRoute("admin");
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+            || in_array("ROLE_TUTOR", $this->getUser()->getRoles())
+        )
+            return $this->redirectToRoute("index");
 
         if (!$alumnoHelper->alumnoExists($this->getUser()))
             return $this->redirectToRoute('registrarAlumno');
@@ -47,14 +49,21 @@ class AlumnoController extends Controller
     /**
      * @Route("/alumno/{id}", name="verAlumno", requirements={"id": "\d+"})
      */
-    public function showAlumnoAction($id)
+    public function showAlumnoAction(Alumno $alumno)
     {
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
-        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
+
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+            && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles())
+            && !in_array("ROLE_TUTOR", $this->getUser()->getRoles())
+        )
             return $this->redirectToRoute("index");
-        $em = $this->getDoctrine()->getManager();
-        $alumno = $em->getRepository("AppBundle:Alumno")->findOneById($id);
+
+        if (in_array("ROLE_TUTOR", $this->getUser()->getRoles()) &&
+            !$alumnoHelper->isTutorAlumno($alumno, $alumnoHelper->getTutorByUsuario($this->getUser())))
+            return $this->redirectToRoute("index");
+
         $userData = $alumnoHelper->getUserData($alumno, true);
         return $this->render('convivencia/alumno/alumno.html.twig', array(
                 'alumnoData' => $userData,
@@ -83,7 +92,7 @@ class AlumnoController extends Controller
                     'El fichero ha sido importado!'
                 );
             }
-        }catch (Exception $e){
+        } catch (Exception $e) {
             $this->addFlash(
                 'alumnosError',
                 'El fichero no se ha podido importar'
@@ -194,6 +203,11 @@ class AlumnoController extends Controller
         ));
     }
 
+    /**
+     * Función que comprueba que el el usuario sea el alumno pasado por parámetro
+     * @param Alumno $alumno
+     * @return bool
+     */
     public function comprobarIsThisAlumno(Alumno $alumno)
     {
         /** @var AlumnoHelper $alumnoHelper */

@@ -5,16 +5,19 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Entity\Tutores;
 use AppBundle\Model\CarnetData;
 use AppBundle\Model\UserData;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
+use AppBundle\Repository\TutoresRepository;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Entity\Usuarios;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class AlumnoHelper
 {
@@ -36,6 +39,8 @@ class AlumnoHelper
         $this->repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
         /** @var DiarioAulaConvivenciaRepository repositoryAulaConvivencia */
         $this->repositoryAulaConvivencia = $this->emConvivencia->getRepository('AppBundle:DiarioAulaConvivencia');
+        /** @var TutoresRepository repositoryTutor */
+        $this->repositoryTutor = $this->emConvivencia->getRepository('AppBundle:Tutores');
     }
 
     /**
@@ -328,5 +333,41 @@ class AlumnoHelper
             }
         }
         return $carnetsFiltrados;
+    }
+
+    /**
+     * Función que devuelve los alumnos de un tutor
+     * @param Tutores $tutor
+     * @return mixed
+     */
+    public function getAlumnosByTutor(Tutores $tutor){
+        return $this->repositoryAlumno->getAlumnosByTutor($tutor);
+    }
+
+    /**
+     * Función que devuelve un tutor a través de un usuario
+     * @param Usuarios $user
+     * @return mixed
+     */
+    public function getTutorByUsuario(Usuarios $user){
+        if(!in_array("ROLE_TUTOR", $user->getRoles())) return null;
+        return $this->repositoryTutor->findOneByIdUsuario($user);
+    }
+
+    /**
+     * Función que comprueba si un tutor es tutor de un alumno
+     * @param Alumno $alumno
+     * @param Tutores $tutor
+     * @return bool
+     */
+    public function isTutorAlumno(Alumno $alumno, Tutores $tutor){
+        if(!in_array("ROLE_TUTOR", $tutor->getIdUsuario()->getRoles())) return false;
+
+        $alumnosTutores = $this->getAlumnosByTutor($tutor);
+        /** @var Alumno $alumnoTutor */
+        foreach ($alumnosTutores as $alumnoTutor)
+            if($alumnoTutor->getId() == $alumno->getId())
+                return true;
+        return false;
     }
 }

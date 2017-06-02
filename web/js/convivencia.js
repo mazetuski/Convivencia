@@ -2,8 +2,20 @@
  * Created by maze on 24/04/17.
  */
 
+//Spinner loader intro
+
+$(window).bind("load", function() {
+
+    "use strict";
+
+    $('.loaderIntro').fadeOut(1000);
+    $('.containerLoader').fadeOut(1000);
+
+});
+
 $(document).ready(function () {
 
+    $('.containerLoader img').css('height', $(window).height()-1).css('width', $(window).width());
     const SANCION_TYPE_HORAS = 5;
     const HORAS_CLASE = {
         '1': '8:15 - 9:15',
@@ -13,6 +25,10 @@ $(document).ready(function () {
         '5': '12:40 - 13:40',
         '6': '13:40 - 14:40'
     };
+
+
+
+
 
     //CHOSEN
     $('.chosen-select').chosen();

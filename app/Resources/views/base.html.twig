@@ -36,7 +36,14 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+    {% block spinner %}
+        <div class="loaderIntro"></div>
+        <div class="containerLoader">
+            <img src="{{ asset('img/white.png') }}" alt="">
+        </div>
+    {% endblock %}
         {% include 'convivencia/header.html.twig' %}
+
         {% block body %}
 
         {% endblock %}
