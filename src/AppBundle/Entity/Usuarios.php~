@@ -51,7 +51,7 @@ class Usuarios implements  UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Alumno", mappedBy="idUsuario", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Alumno", mappedBy="idUsuario", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $alumno;
 
@@ -222,4 +222,45 @@ class Usuarios implements  UserInterface
     }
 
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->alumno = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add alumno
+     *
+     * @param \AppBundle\Entity\Alumno $alumno
+     *
+     * @return Usuarios
+     */
+    public function addAlumno(\AppBundle\Entity\Alumno $alumno)
+    {
+        $this->alumno[] = $alumno;
+
+        return $this;
+    }
+
+    /**
+     * Remove alumno
+     *
+     * @param \AppBundle\Entity\Alumno $alumno
+     */
+    public function removeAlumno(\AppBundle\Entity\Alumno $alumno)
+    {
+        $this->alumno->removeElement($alumno);
+    }
+
+    /**
+     * Get alumno
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAlumno()
+    {
+        return $this->alumno;
+    }
 }

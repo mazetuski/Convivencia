@@ -50,8 +50,14 @@ class DiarioAulaController extends Controller
     public function editDiario(DiarioAulaConvivencia $diario, Request $request)
     {
         $emConvivencia = $this->getDoctrine()->getManager();
+        /** @var DiarioHelper $diarioHelper */
+        $diarioHelper = $this->get('app.diarioHelper');
         $form = $this->createForm(DiarioAulaConvivenciaType::class, $diario);
         $form->handleRequest($request);
+        $recupera = $diarioHelper->diarioRecupera($diario);
+        if ($diarioHelper->recuperarPuntos($request))
+            return $this->redirectToRoute("edit_diario", array(
+                'id' => $diario->getId()));
         if ($form->isSubmitted() && $form->isValid()) {
             $emConvivencia->persist($diario);
             $emConvivencia->flush();
@@ -61,6 +67,7 @@ class DiarioAulaController extends Controller
             'convivencia/diarioAulaConvivencia/diarioAulaForm.html.twig', array(
                 'form' => $form->createView(),
                 'diario' => $diario,
+                'recupera' => $recupera
             )
         );
     }

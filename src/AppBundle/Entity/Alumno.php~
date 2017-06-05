@@ -33,14 +33,14 @@ class Alumno
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
-     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Usuarios", inversedBy="alumno")
+     * @ORM\JoinColumn(name="idUsuario", referencedColumnName="id", onDelete="CASCADE")
      */
     private $idUsuario;
 
     /**
      * @var int
-     * @ORM\ManyToOne(targetEntity="Tutores")
+     * @ORM\ManyToMany(targetEntity="Tutores")
      * @ORM\JoinColumn(name="idTutor", referencedColumnName="id")
      */
     private $idTutor;

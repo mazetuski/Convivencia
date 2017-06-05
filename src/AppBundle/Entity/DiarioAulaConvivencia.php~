@@ -73,10 +73,17 @@ class DiarioAulaConvivencia
      */
     private $asiste;
 
+    /**
+     * @var int
+     * @ORM\Column(name="recupera", type="integer")
+     */
+    private $recupera;
+
 
     function __construct()
     {
         $this->asiste = 0;
+        $this->recupera = 0;
     }
 
     /**

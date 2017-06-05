@@ -114,7 +114,7 @@ class Sanciones
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Alumno")
-     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idAlumno", referencedColumnName="id", onDelete="cascade")
      */
     private $idAlumno;
 

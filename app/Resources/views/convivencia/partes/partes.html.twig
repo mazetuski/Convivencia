@@ -40,7 +40,6 @@
                     <a href="{{ path('nuevoParte') }}" class="w3-margin-right" title="Nuevo Parte"><i
                                 class="fa fa-plus-circle fa-2x"></i></a>
                     <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
-                    <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
                 </div>
                 <div class="w3-col m12 w3-responsive w3-section">
                     <table class="tableData stripe" data-order='[[ 1, "desc" ]]'>
@@ -76,7 +75,7 @@
                                     <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.getNombreCompleto() }}</a>
                                 </td>
                                 {% if parte.idAlumno.idCurso != null %}
-                                    <td>{{ parte.idAlumno.idCurso.grupo }}</td>
+                                    <td><a href="{{ path('gestion_partes', {'like': parte.idAlumno.idCurso.grupo}) }}">{{ parte.idAlumno.idCurso.grupo }}</a></td>
                                 {% else %}
                                     <td>Ninguno</td>
                                 {% endif %}
