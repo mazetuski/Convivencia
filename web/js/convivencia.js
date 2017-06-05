@@ -4,7 +4,7 @@
 
 //Spinner loader intro
 
-$(window).bind("load", function() {
+$(window).bind("load", function () {
 
     "use strict";
 
@@ -15,7 +15,7 @@ $(window).bind("load", function() {
 
 $(document).ready(function () {
 
-    $('.containerLoader img').css('height', $(window).height()-1).css('width', $(window).width());
+    $('.containerLoader img').css('height', $(window).height() - 1).css('width', $(window).width());
     const SANCION_TYPE_HORAS = 5;
     const HORAS_CLASE = {
         '1': '8:15 - 9:15',
@@ -25,9 +25,6 @@ $(document).ready(function () {
         '5': '12:40 - 13:40',
         '6': '13:40 - 14:40'
     };
-
-
-
 
 
     //CHOSEN
@@ -192,35 +189,105 @@ $(document).ready(function () {
         columnClass: 'confirmdialog'
     });
 
-    $('#contenedorUpload').on('change', 'input:file', function(){
+    $('#contenedorUpload').on('change', 'input:file', function () {
         if ($(this).val()) {
             $('#contenedorUpload input:submit').removeAttr('disabled');
         }
     });
-    
+
     $('#botonImportar').on('click', function () {
         $('#contenedorUpload .loader').css({opacity: 0, visibility: "visible"}).animate({opacity: 1}, 500)
     })
 
     // DataTables
 
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "date-eu-pre": function ( date ) {
+            date = date.replace(" ", "");
+
+            if ( ! date ) {
+                return 0;
+            }
+
+            var year;
+            var eu_date = date.split(/[\.\-\/]/);
+
+            /*year (optional)*/
+            if ( eu_date[2] ) {
+                year = eu_date[2];
+            }
+            else {
+                year = 0;
+            }
+
+            /*month*/
+            var month = eu_date[1];
+            if ( month.length == 1 ) {
+                month = 0+month;
+            }
+
+            /*day*/
+            var day = eu_date[0];
+            if ( day.length == 1 ) {
+                day = 0+day;
+            }
+
+            return (year + month + day) * 1;
+        },
+
+        "date-eu-asc": function ( a, b ) {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        },
+
+        "date-eu-desc": function ( a, b ) {
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+        }
+    } );
+
     $('.tableData').DataTable({
         language: {
             search: "Busca en la tabla ",
             paginate: {
-                first:      "Primero",
-                previous:   "Anterior",
-                next:       "Siguiente",
-                last:       "Último"
+                first: "Primero",
+                previous: "Anterior",
+                next: "Siguiente",
+                last: "Último"
             },
-            lengthMenu:    "Mostrar _MENU_ Resultados",
-            emptyTable:     "No hay registros en la tabla",
-            info:           "Mostrando _END_ registros de _TOTAL_ en total",
-            infoEmpty:      "No hay resultados",
-            infoFiltered:   "(filtrado de _MAX_ en total)",
-            zeroRecords:    "No se encuentra ningun registro",
-        }
+            lengthMenu: "Mostrar _MENU_ Resultados",
+            emptyTable: "No hay registros en la tabla",
+            info: "Mostrando _END_ registros de _TOTAL_ en total",
+            infoEmpty: "No hay resultados",
+            infoFiltered: "(filtrado de _MAX_ en total)",
+            zeroRecords: "No se encuentra ningun registro",
+        },
+        "aoColumnDefs": [
+            { "sType": "date-eu", "aTargets": [ 1 ] }
+        ],
     });
+
+    $('.tableDataCarnets').DataTable({
+        language: {
+            search: "Busca en la tabla ",
+            paginate: {
+                first: "Primero",
+                previous: "Anterior",
+                next: "Siguiente",
+                last: "Último"
+            },
+            lengthMenu: "Mostrar _MENU_ Resultados",
+            emptyTable: "No hay registros en la tabla",
+            info: "Mostrando _END_ registros de _TOTAL_ en total",
+            infoEmpty: "No hay resultados",
+            infoFiltered: "(filtrado de _MAX_ en total)",
+            zeroRecords: "No se encuentra ningun registro",
+        },
+    }).search(
+        $('.dataTables_filter input').val(),
+        true,
+        false
+    ).draw();
+
+
 
     $('.dataTables_filter input').attr("placeholder", "Fecha, alumno, curso...");
     $('.dataTables_wrapper input').addClass("marginBottom");

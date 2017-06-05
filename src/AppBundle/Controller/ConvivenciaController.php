@@ -10,9 +10,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Usuarios;
 use AppBundle\Form\RegistroFormType;
+use AppBundle\Form\UsuarioFormType;
 use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
+use AppBundle\Repository\UsuariosRepository;
 use AppBundle\Services\CrearSancionHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -156,6 +158,46 @@ class ConvivenciaController extends Controller
     public function gestionDiarioAula()
     {
         return $this->render("convivencia/diarioAulaConvivencia/diarioAula.html.twig");
+    }
+
+    /**
+     * @Route("/changePassword", name="change_password")
+     * @Method({"GET", "POST"})
+     */
+    public function changePassword(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $usuario = new Usuarios();
+        $form = $this->createForm(UsuarioFormType::class, $usuario);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            /** @var UsuariosRepository $repositoryUser */
+            $repositoryUser = $em->getRepository("AppBundle:Usuarios");
+            $password = $this->get('security.password_encoder')
+                ->encodePassword($usuario, $usuario->getPlainPassword());
+            /** @var Usuarios $usuario */
+            $usuario  = $repositoryUser->findOneById($this->getUser());
+            $usuario->setPassword($password);
+
+            // Persistimos la entidad como cualquier otra
+            $em->persist($usuario);
+            $em->flush();
+
+            $this->addFlash(
+                'password',
+                'La contraseña ha sido cambiada con éxito'
+            );
+        }
+        elseif ($form->isSubmitted() && !$form->isValid()){
+            $this->addFlash(
+                'passwordError',
+                'La contraseña no se ha podido cambiar'
+            );
+        }
+        return $this->render("convivencia/changePassword.html.twig", array(
+            'form' => $form->createView(),
+        ));
     }
 
 }

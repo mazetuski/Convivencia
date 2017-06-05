@@ -264,6 +264,10 @@ nav {
     margin-bottom: 10px;
 }
 
+.marginBottomMore {
+    margin-bottom: 2em;
+}
+
 .tooltip_templates {
     display: none;
 }

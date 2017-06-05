@@ -143,7 +143,7 @@ class AlumnoController extends Controller
     public function showCarnets(Request $request)
     {
         $emConvivencia = $this->getDoctrine()->getManager();
-        $paginator = $this->get('knp_paginator');
+//        $paginator = $this->get('knp_paginator');
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
         if ($request->get('like') != null AND $request->get('like') != '')

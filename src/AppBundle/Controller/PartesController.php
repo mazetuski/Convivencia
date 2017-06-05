@@ -32,7 +32,7 @@ class PartesController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $paginator  = $this->get('knp_paginator');
+//        $paginator  = $this->get('knp_paginator');
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository("AppBundle:Partes");
         if ($request->query->has('like')) {
