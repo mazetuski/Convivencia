@@ -145,6 +145,13 @@ class Partes
      */
     private $fechaComunicacion;
 
+    /**
+     * @var int
+     *
+     * @ORM\ManyToMany(targetEntity="Sanciones", mappedBy="idParte")
+     */
+    private $sancion;
+
 
     /**
      * Get id
@@ -566,5 +573,39 @@ class Partes
     public function getFechaComunicacion()
     {
         return $this->fechaComunicacion;
+    }
+
+    /**
+     * Add sancion
+     *
+     * @param \AppBundle\Entity\Sanciones $sancion
+     *
+     * @return Partes
+     */
+    public function addSancion(\AppBundle\Entity\Partes $sancion)
+    {
+        $this->sancion[] = $sancion;
+
+        return $this;
+    }
+
+    /**
+     * Remove sancion
+     *
+     * @param \AppBundle\Entity\Partes $sancion
+     */
+    public function removeSancion(\AppBundle\Entity\Partes $sancion)
+    {
+        $this->sancion->removeElement($sancion);
+    }
+
+    /**
+     * Get sancion
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSancion()
+    {
+        return $this->sancion;
     }
 }

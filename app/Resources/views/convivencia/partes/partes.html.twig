@@ -23,7 +23,7 @@
             <form action="">
                 <div class="w3-col l3 m8 w3-section">
                     {#<input class="w3-input w3-col l6 m12" type="text" name="like" id="partesSearchBar"#}
-                           {#value="{{ app.request.get('like') }}" placeholder="Introduce fecha, alumno, curso...">#}
+                    {#value="{{ app.request.get('like') }}" placeholder="Introduce fecha, alumno, curso...">#}
                     {#<i class="fa fa-search fa-lg fa-flip-horizontal"></i>#}
                     <div class="i-checks">
                         {% if app.request.get('historico') == 'on' %}
@@ -75,7 +75,9 @@
                                     <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.getNombreCompleto() }}</a>
                                 </td>
                                 {% if parte.idAlumno.idCurso != null %}
-                                    <td><a href="{{ path('gestion_partes', {'like': parte.idAlumno.idCurso.grupo}) }}">{{ parte.idAlumno.idCurso.grupo }}</a></td>
+                                    <td>
+                                        <a href="{{ path('gestion_partes', {'like': parte.idAlumno.idCurso.grupo}) }}">{{ parte.idAlumno.idCurso.grupo }}</a>
+                                    </td>
                                 {% else %}
                                     <td>Ninguno</td>
                                 {% endif %}
@@ -85,16 +87,33 @@
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>
                                 <td>{{ parte.idEstado.estado }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                <a class="confirm paddingRightLeft" href="{{ path('borrar_parte', {'id': parte.id}) }}"
-                                       data-title="Eliminar Parte"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                                {% if (is_granted('ROLE_ADMIN') == false) and (is_granted('ROLE_PROFESOR')) %}
+                                    {% if(parte.idProfesor.idUsuario.id == app.user.id) %}
+                                        <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i
+                                                        class="fa fa-pencil" aria-hidden="true"></i></a>
+                                            <a class="confirm paddingRightLeft"
+                                               href="{{ path('borrar_parte', {'id': parte.id}) }}"
+                                               data-title="Eliminar Parte"><i class="fa fa-trash"
+                                                                              aria-hidden="true"></i></a></td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i
+                                                    class="fa fa-pencil" aria-hidden="true"></i></a>
+                                        <a class="confirm paddingRightLeft"
+                                           href="{{ path('borrar_parte', {'id': parte.id}) }}"
+                                           data-title="Eliminar Parte"><i class="fa fa-trash"
+                                                                          aria-hidden="true"></i></a></td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 {#<div class="paginator w3-col m12">#}
-                    {#{{ knp_pagination_render(partes) }}#}
+                {#{{ knp_pagination_render(partes) }}#}
                 {#</div>#}
             </form>
         </main>

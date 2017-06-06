@@ -23,6 +23,9 @@ class SancionController extends Controller
      */
     public function crearSancionAction(Request $request)
     {
+        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles()))
+            return $this->redirectToRoute('index');
+
         $em = $this->getDoctrine()->getManager();
         /** @var CrearSancionHelper $crearSancionHelper */
         $crearSancionHelper = $this->get('app.crearSancionHelper');
@@ -115,6 +118,9 @@ class SancionController extends Controller
      */
     public function removeSancion(Sanciones $sancion)
     {
+        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles()))
+            return $this->redirectToRoute('index');
+
         try {
             $em = $this->getDoctrine()->getManager();
             $em->remove($sancion);

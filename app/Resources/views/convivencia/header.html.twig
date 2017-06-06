@@ -8,7 +8,7 @@
                 <i id="hamburguer" class="fa fa-bars fa-2x w3-padding w3-left w3-text-white"
                    style="vertical-align: middle" aria-hidden="true"></i>
                 <nav>
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_PROFESOR')) %}
                         <a href="{{ path('show_carnets') }}"
                            class="w3-padding w3-left w3-hover-grey w3-mobile w3-large">Carnets</a>
                         <a href="{{ path('gestion_partes') }}"

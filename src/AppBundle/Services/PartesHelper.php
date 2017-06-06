@@ -14,9 +14,11 @@ use AppBundle\Entity\DiarioAulaConvivencia;
 use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Entity\Usuarios;
 use AppBundle\Repository\EstadosParteRepository;
 use AppBundle\Repository\EstadosSancionRepository;
 use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\ProfesoresRepository;
 use AppBundle\Repository\TipoSancionRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -132,7 +134,8 @@ class PartesHelper
     public function createSancionFromRequest(Request $request, Partes $parte){
         if($request->get('expulsion')!=null){
             $sancion = new Sanciones();
-            $sancion->setIdParte([$parte]);
+//            $sancion->setIdParte([$parte]);
+            $sancion->addIdParte($parte);
             $sancion->setIdAlumno($parte->getIdAlumno());
             $sancion->setFecha(new \DateTime());
             $estado = $this->repositoryEstadoSanciones->findOneByEstado(CrearSancionHelper::ESTADO_INICIADO);
@@ -151,5 +154,26 @@ class PartesHelper
             $this->em->persist($diarioAula);
             $this->em->flush();
         }
+    }
+
+    /**
+     * Función que devuelve un profesor por usuario
+     * @param Usuarios $usuario
+     * @return mixed
+     */
+    public function getProfesorByUser(Usuarios $usuario){
+        /** @var ProfesoresRepository $repositoryProfesor */
+        $repositoryProfesor = $this->em->getRepository("AppBundle:Profesores");
+        return [$repositoryProfesor->findOneByIdUsuario($usuario)];
+    }
+
+    /**
+     * Función que devuelve todos los profesores
+     * @return array
+     */
+    public function getAllProfesores(){
+        /** @var ProfesoresRepository $repositoryProfesor */
+        $repositoryProfesor = $this->em->getRepository("AppBundle:Profesores");
+        return $repositoryProfesor->findAll();
     }
 }

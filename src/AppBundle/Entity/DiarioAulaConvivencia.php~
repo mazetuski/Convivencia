@@ -263,4 +263,28 @@ class DiarioAulaConvivencia
     {
         return $this->asiste;
     }
+
+    /**
+     * Set recupera
+     *
+     * @param integer $recupera
+     *
+     * @return DiarioAulaConvivencia
+     */
+    public function setRecupera($recupera)
+    {
+        $this->recupera = $recupera;
+
+        return $this;
+    }
+
+    /**
+     * Get recupera
+     *
+     * @return integer
+     */
+    public function getRecupera()
+    {
+        return $this->recupera;
+    }
 }

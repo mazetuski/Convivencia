@@ -475,4 +475,35 @@ class Alumno
     {
         return $this->puntosIniciales;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idTutor = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add idTutor
+     *
+     * @param \AppBundle\Entity\Tutores $idTutor
+     *
+     * @return Alumno
+     */
+    public function addIdTutor(\AppBundle\Entity\Tutores $idTutor)
+    {
+        $this->idTutor[] = $idTutor;
+
+        return $this;
+    }
+
+    /**
+     * Remove idTutor
+     *
+     * @param \AppBundle\Entity\Tutores $idTutor
+     */
+    public function removeIdTutor(\AppBundle\Entity\Tutores $idTutor)
+    {
+        $this->idTutor->removeElement($idTutor);
+    }
 }

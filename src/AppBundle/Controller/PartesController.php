@@ -65,6 +65,7 @@ class PartesController extends Controller
      */
     public function crearParteAction(Request $request)
     {
+        $recupera = false;
         $em = $this->getDoctrine()->getManager();
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
@@ -80,17 +81,27 @@ class PartesController extends Controller
         /** @var Alumno $alumnos */
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
         $parte = $parteHelper->getParteFromRequest($request);
-        $recupera = false;
+        if ($request->query->has('idParte')) {
+            if ((!in_array('ROLE_ADMIN', $this->getUser()->getRoles()) &&
+                    in_array('ROLE_PROFESOR', $this->getUser()->getRoles())) &&
+                $parte->getIdProfesor()->getIdUsuario()->getId() != $this->getUser()->getId()
+            )
+                return $this->redirectToRoute('index');
+            $recupera = $parteHelper->parteRecupera($parte);
+        }
         if ($parteHelper->recuperarPuntos($request) ||
-            $parteHelper->changeEstado($request, $parte))
+            $parteHelper->changeEstado($request, $parte)
+        )
             return $this->redirectToRoute("nuevoParte", array(
                 'idParte' => $parte->getId()));
-//        return 'hola';
-        if ($request->query->has('idParte'))
-            $recupera = $parteHelper->parteRecupera($parte);
+
+        if(in_array('ROLE_PROFESOR', $this->getUser()->getRoles()))
+            $compound = [$alumnos, $parteHelper->getProfesorByUser($this->getUser())];
+        else
+            $compound = [$alumnos, $parteHelper->getAllProfesores()];
 
         $form = $this->createForm(ParteFormType::class, $parte, array(
-            'compound' => $alumnos,
+            'compound' => $compound,
         ));
         $form->handleRequest($request);
 
@@ -120,14 +131,27 @@ class PartesController extends Controller
      * @Route("/borrarParte/{id}", name="borrar_parte")
      * @Method({"GET"})
      */
-    public function removeSancion(Partes $parte)
+    public function removeParte(Partes $parte)
     {
+        if ((!in_array('ROLE_ADMIN', $this->getUser()->getRoles()) &&
+                in_array('ROLE_PROFESOR', $this->getUser()->getRoles())) &&
+            $parte->getIdProfesor()->getIdUsuario()->getId() != $this->getUser()->getId()
+        )
+            return $this->redirectToRoute('index');
+
+        $em = $this->getDoctrine()->getEntityManager();
+        /** @var SancionesRepository $repositorySanciones */
+        $repositorySanciones = $em->getRepository('AppBundle:Sanciones');
+
         try {
             $em = $this->getDoctrine()->getManager();
             $em->remove($parte);
-            $this->addFlash("parte", "Se ha eliminado correctamente");
+            $sanciones = $repositorySanciones->getSancionesByPartes($parte);
+            foreach ($sanciones as $sancion)
+                $em->remove($sancion);
             $em->flush();
-        }catch (Exception $e) {
+            $this->addFlash("parte", "Se ha eliminado correctamente");
+        } catch (Exception $e) {
             $this->addFlash("parteError", "No se ha podido eliminar la sanción");
         }
         return $this->redirectToRoute("gestion_partes");
