@@ -8,6 +8,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Alumno;
+use AppBundle\Entity\EstadosParte;
+use AppBundle\Entity\Profesores;
+use AppBundle\Entity\TipoParte;
 use AppBundle\Entity\Usuarios;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\UsuarioFormType;
@@ -16,11 +20,16 @@ use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Repository\UsuariosRepository;
 use AppBundle\Services\CrearSancionHelper;
+use AppBundle\Services\PartesHelper;
+use AppBundle\Utils\CsvResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class ConvivenciaController
@@ -173,13 +182,13 @@ class ConvivenciaController extends Controller
         $form = $this->createForm(UsuarioFormType::class, $usuario);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var UsuariosRepository $repositoryUser */
             $repositoryUser = $em->getRepository("AppBundle:Usuarios");
             $password = $this->get('security.password_encoder')
                 ->encodePassword($usuario, $usuario->getPlainPassword());
             /** @var Usuarios $usuario */
-            $usuario  = $repositoryUser->findOneById($this->getUser());
+            $usuario = $repositoryUser->findOneById($this->getUser());
             $usuario->setPassword($password);
 
             // Persistimos la entidad como cualquier otra
@@ -190,8 +199,7 @@ class ConvivenciaController extends Controller
                 'password',
                 'La contraseña ha sido cambiada con éxito'
             );
-        }
-        elseif ($form->isSubmitted() && !$form->isValid()){
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash(
                 'passwordError',
                 'La contraseña no se ha podido cambiar'
@@ -200,6 +208,106 @@ class ConvivenciaController extends Controller
         return $this->render("convivencia/changePassword.html.twig", array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("/admin/importAlumno", name="admin_import")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function importAlumnoAction(Request $request)
+    {
+        try {
+            $form = $this->createForm(ImportFormType::class);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                /** @var File $file */
+                $file = $form['importar']->getData();
+                /** @var ImportHelper $importHelper */
+                $importHelper = $this->get('app.importHelper');
+                $importHelper->importarAlumnos($file);
+                $this->addFlash(
+                    'alumnos',
+                    'El fichero ha sido importado!'
+                );
+            }
+        } catch (Exception $e) {
+            $this->addFlash(
+                'alumnosError',
+                'El fichero no se ha podido importar'
+            );
+        }
+
+        return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/admin/importProfesor", name="admin_import_profesor")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function importProfesorAction(Request $request)
+    {
+        try {
+            $form = $this->createForm(ImportFormType::class);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                /** @var File $file */
+                $file = $form['importar']->getData();
+                /** @var ImportHelper $importHelper */
+                $importHelper = $this->get('app.importHelper');
+                $importHelper->importarProfesor($file);
+                $this->addFlash(
+                    'profesor',
+                    'El fichero ha sido importado!'
+                );
+            }
+        } catch (Exception $e) {
+            $this->addFlash(
+                'profesorError',
+                'El fichero no se ha podido importar'
+            );
+        }
+
+        return $this->render('convivencia/admin/gestionProfesores.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/admin/exportPartes", name="admin_export_partes")
+     */
+    public function exportPartes()
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+        $repositoryPartes = $em->getRepository('AppBundle:Partes');
+        $data = $repositoryPartes->findByIdEstado(PartesHelper::ESTADO_INICIADO);
+        $arrData = [];
+        foreach ($data as $parte) {
+            $parteArray = (array)$parte;
+            $parteCsv = [];
+            foreach ($parteArray as $parteValue)
+                if ($parteValue instanceof Profesores || $parteValue instanceof Alumno)
+                    $parteCsv[] = $parteValue->getNombreCompleto();
+                elseif ($parteValue instanceof TipoParte)
+                    $parteCsv[] = $parteValue->getTipo();
+                elseif ($parteValue instanceof EstadosParte)
+                    $parteCsv[] = $parteValue->getEstado();
+                elseif ($parteValue instanceof \DateTime) {
+                    if ($parteValue == null)
+                        $fecha = "Sin fecha";
+                    else
+                        $fecha = $parteValue->format('Y-m-d H:i:s');
+                    $parteCsv[] = $fecha;
+                } elseif (!$parteValue instanceof PersistentCollection)
+                    $parteCsv[] = $parteValue;
+//            array_pop($parteArray);
+            $arrData[$parte->getId()] = $parteCsv;
+        }
+        $response = new CsvResponse($arrData, 200);
+        $response->setFilename("data.csv");
+        return $response;
     }
 
 }

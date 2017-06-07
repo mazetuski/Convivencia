@@ -75,38 +75,6 @@ class AlumnoController extends Controller
     }
 
     /**
-     * @Route("/admin/import", name="admin_import")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    public function importAlumnoAction(Request $request)
-    {
-        try {
-            $form = $this->createForm(ImportFormType::class);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                /** @var File $file */
-                $file = $form['importar']->getData();
-                /** @var ImportHelper $importHelper */
-                $importHelper = $this->get('app.importHelper');
-                $importHelper->importarAlumnos($file);
-                $this->addFlash(
-                    'alumnos',
-                    'El fichero ha sido importado!'
-                );
-            }
-        } catch (Exception $e) {
-            $this->addFlash(
-                'alumnosError',
-                'El fichero no se ha podido importar'
-            );
-        }
-
-        return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
      * @Route("/registrarAlumno", name="registrarAlumno")
      * @Method({"GET", "POST"})
      */

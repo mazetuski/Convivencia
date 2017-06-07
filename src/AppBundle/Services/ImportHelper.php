@@ -11,6 +11,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
+use AppBundle\Entity\Profesores;
 use AppBundle\Entity\Usuarios;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\UsuariosRepository;
@@ -20,6 +21,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 class ImportHelper
 {
+
+    const ARRAY_MAYUS =
+        array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N');
+    const ARRAY_MINUS =
+        array('á' => 'a', 'é' => 'e', 'í' => 'e', 'ó' => 'o', 'ú' => 'u', 'ñ' => ',');
 
     function __construct(EntityManager $em, UserPasswordEncoder $securityEncoder)
     {
@@ -39,20 +45,17 @@ class ImportHelper
         /** @var UsuariosRepository $repositoryUsuarios */
         $repositoryUsuarios = $this->em->getRepository('AppBundle:Usuarios');
         $contadorLineas = 0;
-        $arrayMayus = array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N');
-        $arrayMinus = array('á' => 'a', 'é' => 'e', 'í' => 'e', 'ó' => 'o', 'ú' => 'u', 'ñ' => ',');
         if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
             while (($row = fgetcsv($handle)) !== FALSE) {
                 if (count($row) > 1) {
-                    if($contadorLineas<=0){
+                    if ($contadorLineas <= 0) {
                         $contadorLineas++;
-                    }
-                    else {
+                    } else {
                         $alumno = new Alumno();
 
-                        $alumno->setApellido1($row[0]);
-                        $alumno->setApellido2($row[1]);
-                        $alumno->setNombre($row[2]);
+                        $alumno->setNombre($row[0]);
+                        $alumno->setApellido1($row[1]);
+                        $alumno->setApellido2($row[2]);
 
                         /** @var Cursos $curso */
                         $curso = $repositoryCurso->findOneByGrupo($row[3]);
@@ -67,8 +70,8 @@ class ImportHelper
                         $alumno->setPuntosIniciales(0);
                         $user = new Usuarios();
                         $userNombre = mb_substr($alumno->getNombre(), 0, 2) . mb_substr($alumno->getApellido1(), 0, 2) . mb_substr($alumno->getApellido2(), 0, 2);
-                        $userNombre = strtr($userNombre, $arrayMayus);
-                        $userNombre = strtr($userNombre, $arrayMinus);
+                        $userNombre = strtr($userNombre, self::ARRAY_MAYUS);
+                        $userNombre = strtr($userNombre, self::ARRAY_MINUS);
                         $user->setUsuario(mb_strtolower($userNombre));
                         $contador = 1;
                         while ($repositoryUsuarios->findOneByUsuario($user->getUsuario()) != null) {
@@ -83,6 +86,57 @@ class ImportHelper
                         $this->em->persist($user);
                         $alumno->setIdUsuario($user);
                         $this->em->persist($alumno);
+                        $this->em->flush();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Función que importa los profesores a través de un fichero CSV
+     * @param File $file
+     */
+    function importarProfesor(File $file)
+    {
+        ini_set('max_execution_time', 300);
+        /** @var UsuariosRepository $repositoryUsuarios */
+        $repositoryUsuarios = $this->em->getRepository('AppBundle:Usuarios');
+        $contadorLineas = 0;
+        if (($handle = fopen($file->getRealPath(), "r")) !== FALSE) {
+            while (($row = fgetcsv($handle)) !== FALSE) {
+                if (count($row) > 1) {
+                    if ($contadorLineas <= 0) {
+                        $contadorLineas++;
+                    } else {
+                        $profesor = new Profesores();
+
+                        $profesor->setNombre($row[0]);
+                        $profesor->setApellido1($row[1]);
+                        $profesor->setApellido2($row[2]);
+                        $profesor->setTelefono($row[3]);
+                        $profesor->setEmail($row[4]);
+                        $user = new Usuarios();
+                        $userNombre = mb_substr(
+                            $profesor->getNombre(), 0, 2) .
+                            mb_substr($profesor->getApellido1(), 0, 2) .
+                            mb_substr($profesor->getApellido2(), 0, 2);
+                        $userNombre = strtr($userNombre, self::ARRAY_MAYUS);
+                        $userNombre = strtr($userNombre, self::ARRAY_MINUS);
+                        $user->setUsuario(mb_strtolower($userNombre));
+                        $contador = 1;
+                        while ($repositoryUsuarios->findOneByUsuario($user->getUsuario()) != null) {
+                            $user->setUsuario(mb_strtolower($userNombre . "" . $contador));
+                            $contador++;
+                        }
+                        $password = $this->securityEncoder
+                            ->encodePassword($user, 'profesor');
+                        $user->setPassword($password);
+                        $user->setRoles(['ROLE_PROFESOR']);
+
+                        $this->em->persist($user);
+                        $profesor->setIdUsuario($user);
+                        $this->em->persist($profesor);
                         $this->em->flush();
                     }
                 }

@@ -28,6 +28,7 @@ class PartesHelper
 {
     const VALUE_INICIADO = 'Iniciado';
     const VALUE_COMUNICADO = 'Comunicado';
+    const ESTADO_INICIADO = 1;
 
     function __construct(EntityManager $em, CrearSancionHelper $sancionHelper)
     {
