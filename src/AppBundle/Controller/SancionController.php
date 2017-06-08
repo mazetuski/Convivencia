@@ -2,13 +2,19 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
+use AppBundle\Entity\EstadosSancion;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Entity\TipoSancion;
 use AppBundle\Form\SancionFormType;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\CrearSancionHelper;
+use AppBundle\Utils\CsvResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -130,5 +136,45 @@ class SancionController extends Controller
             $this->addFlash("sancionError", "No se ha podido eliminar la sanción");
         }
         return $this->redirectToRoute("gestion_sanciones");
+    }
+
+    /**
+     * @Route("/sancion/exportSanciones", name="admin_export_sanciones")
+     */
+    public function exportSanciones()
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+        /** @var SancionesRepository $repositorySanciones */
+        $repositorySanciones = $em->getRepository('AppBundle:Sanciones');
+        $data = $repositorySanciones->getSancionesOrdenadas();
+        $arrData = [];
+        $arrData[] = ['Id', 'Fecha', 'Fecha Inicio', 'Fecha Final', 'Sanción', 'Observaciones', 'Evaluación', 'Puntos Recuperados', 'Fecha Confirmacion', 'Fecha Comunicación', 'Tipo', 'Estado', 'Alumno'];
+        foreach ($data as $sancion) {
+            $sancionArray = (array)$sancion;
+            $sancionCsv = [];
+            foreach ($sancionArray as $sancionValue)
+                if ($sancionValue instanceof Alumno)
+                    $sancionCsv[] = $sancionValue->getNombreCompleto();
+                elseif ($sancionValue instanceof TipoSancion)
+                    $sancionCsv[] = $sancionValue->getTipo();
+                elseif ($sancionValue instanceof EstadosSancion)
+                    $sancionCsv[] = $sancionValue->getEstado();
+                elseif ($sancionValue instanceof \DateTime) {
+                    $year = $sancionValue->format('Y');
+                    if ($sancionValue == null)
+                        $fecha = "Sin fecha";
+                    elseif ($year == '1970')
+                        $fecha = $sancionValue->format('H:i:s');
+                    else
+                        $fecha = $sancionValue->format('Y-m-d H:i:s');
+                    $sancionCsv[] = $fecha;
+                } elseif (!$sancionValue instanceof PersistentCollection)
+                    $sancionCsv[] = $sancionValue;
+            $arrData[$sancion->getId()] = $sancionCsv;
+        }
+        $response = new CsvResponse($arrData, 200);
+        $response->setFilename("Sanciones.csv");
+        return $response;
     }
 }

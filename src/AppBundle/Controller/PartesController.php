@@ -6,13 +6,18 @@ use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Cursos;
 use AppBundle\Entity\EstadosParte;
 use AppBundle\Entity\Partes;
+use AppBundle\Entity\Profesores;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Entity\TipoParte;
 use AppBundle\Form\ParteFormType;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\PartesHelper;
+use AppBundle\Utils\CsvResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -155,6 +160,46 @@ class PartesController extends Controller
             $this->addFlash("parteError", "No se ha podido eliminar la sanción");
         }
         return $this->redirectToRoute("gestion_partes");
+    }
+
+    /**
+     * @Route("/parte/exportPartes", name="admin_export_partes")
+     */
+    public function exportPartes()
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+        /** @var PartesRepository $repositoryPartes */
+        $repositoryPartes = $em->getRepository('AppBundle:Partes');
+        $data = $repositoryPartes->getPartesOrdenados();
+        $arrData = [];
+        $arrData[] = ['Id', 'Fecha', 'Descripción', 'Tareas', 'Hora Salida Aula', 'Hora Llegada Jefatura', 'Formato', 'Observación', 'Puntos', 'Estado', 'Tipo', 'Alumno', 'Profesor', 'Recupera Punto', 'Fecha Confirmacion', 'Fecha Comunicación'];
+        foreach ($data as $parte) {
+            $parteArray = (array)$parte;
+            $parteCsv = [];
+            foreach ($parteArray as $parteValue)
+                if ($parteValue instanceof Profesores || $parteValue instanceof Alumno)
+                    $parteCsv[] = $parteValue->getNombreCompleto();
+                elseif ($parteValue instanceof TipoParte)
+                    $parteCsv[] = $parteValue->getTipo();
+                elseif ($parteValue instanceof EstadosParte)
+                    $parteCsv[] = $parteValue->getEstado();
+                elseif ($parteValue instanceof \DateTime) {
+                    $year = $parteValue->format('Y');
+                    if ($parteValue == null)
+                        $fecha = "Sin fecha";
+                    elseif ($year == '1970')
+                        $fecha = $parteValue->format('H:i:s');
+                    else
+                        $fecha = $parteValue->format('Y-m-d H:i:s');
+                    $parteCsv[] = $fecha;
+                } elseif (!$parteValue instanceof PersistentCollection)
+                    $parteCsv[] = $parteValue;
+            $arrData[$parte->getId()] = $parteCsv;
+        }
+        $response = new CsvResponse($arrData, 200);
+        $response->setFilename("Partes.csv");
+        return $response;
     }
 
 }

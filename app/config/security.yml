@@ -35,7 +35,9 @@ security:
         - { path: ^/registro$, roles: ROLE_ADMIN }
         - { path: ^/admin$, roles: ROLE_ADMIN }
         - { path: ^/partes$, roles: [ROLE_ADMIN, ROLE_CONVIVENCIA, ROLE_PROFESOR] }
+        - { path: ^/parte/, roles: [ROLE_ADMIN, ROLE_CONVIVENCIA, ROLE_PROFESOR] }
         - { path: ^/sanciones$, roles: [ROLE_ADMIN, ROLE_CONVIVENCIA, ROLE_PROFESOR] }
+        - { path: ^/sancion/, roles: [ROLE_ADMIN, ROLE_CONVIVENCIA, ROLE_PROFESOR] }
         - { path: ^/, roles: ROLE_USER }
             # activate different ways to authenticate
 

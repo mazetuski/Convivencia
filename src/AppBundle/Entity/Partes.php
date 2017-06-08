@@ -544,7 +544,7 @@ class Partes
     /**
      * Get fechaConfirmacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaConfirmacion()
     {
@@ -568,7 +568,7 @@ class Partes
     /**
      * Get fechaComunicacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaComunicacion()
     {

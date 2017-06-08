@@ -10,8 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\EstadosParte;
+use AppBundle\Entity\EstadosSancion;
 use AppBundle\Entity\Profesores;
 use AppBundle\Entity\TipoParte;
+use AppBundle\Entity\TipoSancion;
 use AppBundle\Entity\Usuarios;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\UsuarioFormType;
@@ -272,42 +274,6 @@ class ConvivenciaController extends Controller
         return $this->render('convivencia/admin/gestionProfesores.html.twig', array(
             'form' => $form->createView(),
         ));
-    }
-
-    /**
-     * @Route("/admin/exportPartes", name="admin_export_partes")
-     */
-    public function exportPartes()
-    {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.entity_manager');
-        $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        $data = $repositoryPartes->findByIdEstado(PartesHelper::ESTADO_INICIADO);
-        $arrData = [];
-        foreach ($data as $parte) {
-            $parteArray = (array)$parte;
-            $parteCsv = [];
-            foreach ($parteArray as $parteValue)
-                if ($parteValue instanceof Profesores || $parteValue instanceof Alumno)
-                    $parteCsv[] = $parteValue->getNombreCompleto();
-                elseif ($parteValue instanceof TipoParte)
-                    $parteCsv[] = $parteValue->getTipo();
-                elseif ($parteValue instanceof EstadosParte)
-                    $parteCsv[] = $parteValue->getEstado();
-                elseif ($parteValue instanceof \DateTime) {
-                    if ($parteValue == null)
-                        $fecha = "Sin fecha";
-                    else
-                        $fecha = $parteValue->format('Y-m-d H:i:s');
-                    $parteCsv[] = $fecha;
-                } elseif (!$parteValue instanceof PersistentCollection)
-                    $parteCsv[] = $parteValue;
-//            array_pop($parteArray);
-            $arrData[$parte->getId()] = $parteCsv;
-        }
-        $response = new CsvResponse($arrData, 200);
-        $response->setFilename("data.csv");
-        return $response;
     }
 
 }
