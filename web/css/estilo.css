@@ -165,6 +165,37 @@ input::-moz-placeholder {
     color: #38889B;
 }
 
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: #38889B;
+    display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: black;
+}
+
+.inputfile + label {
+    cursor: pointer; /* "hand" cursor */
+}
+
+.inputfile:focus + label {
+    outline: 1px dotted #38889B;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
 #intro .overlay {
     background-color: rgba(0, 0, 0, .9);
 }
@@ -217,7 +248,12 @@ form .minTextArea {
     margin: 15px 0;
 }
 
-nav {
+#imgIntro{
+    width: 90%;
+    margin: 0 auto;
+}
+
+nav, #navLeft {
     display: none;
 }
 
@@ -343,7 +379,7 @@ nav {
         margin-top: 0;
     }
 
-    nav {
+    nav, #navLeft {
         display: block !important;
     }
 }
@@ -424,7 +460,7 @@ nav {
     right: 50%;
     z-index: 50000;
 
-    margin-left: -60px;
+    margin-left: -30px;
     margin-top: -60px;
 }
 

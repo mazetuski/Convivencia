@@ -161,13 +161,14 @@ $(document).ready(function () {
         $('.wall').css('min-height', $(window).height());
         $('.overlay').css('min-height', $(window).height());
 
-    })
+    });
 
     // Hamburguer Nav
 
     $("#hamburguer").on('click', function () {
         $("nav").toggle();
-    })
+        $("#navLeft").toggle();
+    });
 
     // Tooltipster
     $('.tooltip').tooltipster({

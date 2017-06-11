@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -189,6 +190,35 @@ class AlumnoController extends Controller
         if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && $isThisAlumno == false)
             return false;
         return true;
+    }
+
+    /**
+     * @Route("/alumnoImage", name="change_image")
+     */
+    public function changeProfileImage(Request $request){
+        if(!$request->isMethod('POST') || !in_array("ROLE_USER", $this->getUser()->getRoles()))
+            return $this->redirectToRoute("index");
+
+//        try {
+            $em = $this->get('doctrine.orm.entity_manager');
+            /** @var AlumnoHelper $alumnoHelper */
+            $alumnoHelper = $this->get('app.alumnoHelper');
+            $alumno = $alumnoHelper->getAlumnoLogueado($this->getUser());
+            /** @var UploadedFile $file */
+            $file = $request->files->get('file');
+            $fecha = new \DateTime();
+            $filename = $fecha->getTimestamp();
+            $filename .= $file->getClientOriginalName();
+            $dir = __DIR__ . '/../../../web/img/alumnos';
+            $file->move($dir, $filename);
+            $alumno->setFoto($filename);
+            $em->persist($alumno);
+            $em->flush();
+            $this->addFlash('alumno', 'La imagen ha sido subida con éxito');
+//        }catch (\Exception $e){
+//            $this->addFlash('alumnoError', 'La imagen no se ha podido subir');
+//        }
+        return $this->redirectToRoute("index");
     }
 
 }

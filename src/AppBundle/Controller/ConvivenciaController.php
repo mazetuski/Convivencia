@@ -15,6 +15,7 @@ use AppBundle\Entity\Profesores;
 use AppBundle\Entity\TipoParte;
 use AppBundle\Entity\TipoSancion;
 use AppBundle\Entity\Usuarios;
+use AppBundle\Form\ImportFormType;
 use AppBundle\Form\RegistroFormType;
 use AppBundle\Form\UsuarioFormType;
 use AppBundle\Repository\DiarioAulaConvivenciaRepository;
@@ -22,6 +23,7 @@ use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Repository\UsuariosRepository;
 use AppBundle\Services\CrearSancionHelper;
+use AppBundle\Services\ImportHelper;
 use AppBundle\Services\PartesHelper;
 use AppBundle\Utils\CsvResponse;
 use Doctrine\ORM\EntityManager;
@@ -30,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
 
@@ -232,7 +235,7 @@ class ConvivenciaController extends Controller
                     'El fichero ha sido importado!'
                 );
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlash(
                 'alumnosError',
                 'El fichero no se ha podido importar'
@@ -264,7 +267,7 @@ class ConvivenciaController extends Controller
                     'El fichero ha sido importado!'
                 );
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlash(
                 'profesorError',
                 'El fichero no se ha podido importar'
