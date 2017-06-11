@@ -10,6 +10,7 @@ use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\ImportHelper;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -199,13 +200,20 @@ class AlumnoController extends Controller
         if(!$request->isMethod('POST') || !in_array("ROLE_USER", $this->getUser()->getRoles()))
             return $this->redirectToRoute("index");
 
-//        try {
+        try {
+            /** @var UploadedFile $file */
+            $file = $request->files->get('file');
+            if(!is_array(getimagesize($file))){
+                $this->addFlash('alumnoError', 'No es una imagen');
+                return $this->redirectToRoute("index");
+            }
+
+            /** @var EntityManager $em */
             $em = $this->get('doctrine.orm.entity_manager');
             /** @var AlumnoHelper $alumnoHelper */
             $alumnoHelper = $this->get('app.alumnoHelper');
+            /** @var Alumno $alumno */
             $alumno = $alumnoHelper->getAlumnoLogueado($this->getUser());
-            /** @var UploadedFile $file */
-            $file = $request->files->get('file');
             $fecha = new \DateTime();
             $filename = $fecha->getTimestamp();
             $filename .= $file->getClientOriginalName();
@@ -215,9 +223,9 @@ class AlumnoController extends Controller
             $em->persist($alumno);
             $em->flush();
             $this->addFlash('alumno', 'La imagen ha sido subida con éxito');
-//        }catch (\Exception $e){
-//            $this->addFlash('alumnoError', 'La imagen no se ha podido subir');
-//        }
+        }catch (\Exception $e){
+            $this->addFlash('alumnoError', 'La imagen no se ha podido subir');
+        }
         return $this->redirectToRoute("index");
     }
 
