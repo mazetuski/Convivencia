@@ -18,13 +18,13 @@
         </span>
         </div>
 
-        {% for flash_message in app.session.flashBag.get('profesores') %}
+        {% for flash_message in app.session.flashBag.get('profesor') %}
             <div class="w3-panel w3-pale-green w3-round-large">
                 <p class="w3-center">{{ flash_message }}</p>
             </div>
         {% endfor %}
 
-        {% for flash_message in app.session.flashBag.get('profesoresError') %}
+        {% for flash_message in app.session.flashBag.get('profesorError') %}
             <div class="w3-panel w3-pale-red w3-round-large">
                 <p class="w3-center">{{ flash_message }}</p>
             </div>

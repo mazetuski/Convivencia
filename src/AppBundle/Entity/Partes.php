@@ -115,7 +115,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Profesores")
-     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id", onDelete="cascade")
      */
     private $idProfesor;
 
