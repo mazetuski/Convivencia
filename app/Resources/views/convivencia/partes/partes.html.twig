@@ -82,7 +82,7 @@
                                     <td>Ninguno</td>
                                 {% endif %}
                                 <td>
-                                    <a href="{{ path('verProfesor', {'id': parte.idProfesor.id}) }}">{{ parte.idProfesor.nombre }}</a>
+                                    {{ parte.idProfesor.nombre }}
                                 </td>
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>

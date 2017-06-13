@@ -117,7 +117,6 @@ class AlumnoController extends Controller
     public function showCarnets(Request $request)
     {
         $emConvivencia = $this->getDoctrine()->getManager();
-//        $paginator = $this->get('knp_paginator');
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
         if ($request->get('like') != null AND $request->get('like') != '')
@@ -131,11 +130,7 @@ class AlumnoController extends Controller
             $arrayCarnetData = $alumnoHelper->filtrarPorPuntos($request->get('puntosFiltro'), $alumnos);
         else
             $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
-//        $arrayCarnetDataPaginator = $paginator->paginate(
-//            $arrayCarnetData, /* query NOT result */
-//            $request->query->getInt('page', 1)/*page number*/,
-//            13/*limit per page*/
-//        );
+
         return $this->render('convivencia/alumno/carnets.html.twig', array(
 //            'arrayCarnetData' => $arrayCarnetDataPaginator,
             'arrayCarnetData' => $arrayCarnetData,

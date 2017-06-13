@@ -128,21 +128,21 @@ class ConvivenciaController extends Controller
 
     }
 
-    /**
-     * @Route("/profesor/{id}", name="verProfesor", requirements={"id": "\d+"})
-     */
-    public function showProfesorAction($id)
-    {
-        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
-            return $this->redirectToRoute("index");
-        $em = $this->getDoctrine()->getManager();
-        $profesor = $em->getRepository("AppBundle:Profesores")->findOneById($id);
-        return $this->render('convivencia/profesor/profesor.html.twig', array(
-                'profesor' => $profesor,
-                'userAdmin' => $this->getUser(),
-            )
-        );
-    }
+//    /**
+//     * @Route("/profesor/{id}", name="verProfesor", requirements={"id": "\d+"})
+//     */
+//    public function showProfesorAction($id)
+//    {
+//        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
+//            return $this->redirectToRoute("index");
+//        $em = $this->getDoctrine()->getManager();
+//        $profesor = $em->getRepository("AppBundle:Profesores")->findOneById($id);
+//        return $this->render('convivencia/profesor/profesor.html.twig', array(
+//                'profesor' => $profesor,
+//                'userAdmin' => $this->getUser(),
+//            )
+//        );
+//    }
 
     /**
      * @Route("/admin", name="admin")

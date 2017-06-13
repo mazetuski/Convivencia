@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Cursos;
 use AppBundle\Entity\Tutores;
 
 /**
@@ -31,7 +32,7 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * @param $curso
      * @return array
      */
-    public function getAlumnosByCurso($curso)
+    public function getAlumnosByCurso(Cursos $curso)
     {
         $query = $this->getEntityManager()->createQuery(
             'SELECT a
@@ -39,7 +40,7 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
            WHERE a.idCurso = :curso'
         );
 
-        $query->setParameter('curso', $curso);
+        $query->setParameter('curso', $curso->getId());
         return $query->getResult();
     }
 

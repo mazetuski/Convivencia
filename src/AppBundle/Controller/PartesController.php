@@ -37,7 +37,6 @@ class PartesController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-//        $paginator  = $this->get('knp_paginator');
         /** @var PartesRepository $repositoryPartes */
         $repositoryPartes = $em->getRepository("AppBundle:Partes");
         if ($request->query->has('like')) {
@@ -51,11 +50,6 @@ class PartesController extends Controller
             else
                 $query = $repositoryPartes->getPartesOrdenados();
         }
-//        $partes = $paginator->paginate(
-//            $query, /* query NOT result */
-//            $request->query->getInt('page', 1)/*page number*/,
-//            10/*limit per page*/
-//        );
 
         $partes = $query;
         return $this->render('convivencia/partes/partes.html.twig', array(
