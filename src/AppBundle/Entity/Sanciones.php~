@@ -121,7 +121,7 @@ class Sanciones
     /**
      * @var int
      *
-     * @ORM\ManyToMany(targetEntity="Partes", inversedBy="sancion")
+     * @ORM\ManyToMany(targetEntity="Partes", inversedBy="sancion", cascade={"remove", "persist"})
      * @ORM\JoinColumn(name="idParte", referencedColumnName="id", onDelete="cascade")
      */
     private $idParte;

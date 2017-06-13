@@ -29,7 +29,8 @@ class SancionController extends Controller
      */
     public function crearSancionAction(Request $request)
     {
-        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles()))
+        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())
+            && !in_array("ROLE_PROFESOR", $this->getUser()->getRoles()))
             return $this->redirectToRoute('index');
 
         $em = $this->getDoctrine()->getManager();
@@ -45,11 +46,13 @@ class SancionController extends Controller
         $cursos = $repositoryACursos->getCursosGroupByCursos();
 
         $alumnos = $alumnoHelper->getAlumnosByRequest($request);
+        $tipos = $alumnoHelper->getTipoByRol($this->getUser());
+        $choices = [$alumnos, $tipos];
         $sancion = $crearSancionHelper->getSancionFromRequest($request);
         if ($crearSancionHelper->changeEstado($request, $sancion))
             $this->redirectToRoute("nueva_sancion", array('idSancion' => $sancion->getId()));
         $form = $this->createForm(SancionFormType::class, $sancion, array(
-            'compound' => $alumnos,
+            'compound' => $choices,
         ));
         $form->handleRequest($request);
         $detalles = $crearSancionHelper->getDiarioFromSancion($sancion);

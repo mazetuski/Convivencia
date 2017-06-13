@@ -55,6 +55,13 @@ class Usuarios implements  UserInterface
      */
     protected $alumno;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hash", type="array", length=1000)
+     */
+    private $hash;
+
 
     /**
      * Get id

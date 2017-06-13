@@ -18,13 +18,13 @@ class SancionFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->alumnos = $options['compound'];
+        $this->choices = $options['compound'];
 
         $builder
             ->add('idAlumno', EntityType::class, array(
                 'label' => 'Alumno',
                 'class' => 'AppBundle:Alumno',
-                'choices' => $this->alumnos,
+                'choices' => $this->choices[0],
                 'choice_label' => function ($alumno) {
                     return $alumno->getNombreCompletoYCurso();
                 },
@@ -41,7 +41,10 @@ class SancionFormType extends AbstractType
 //            ))
             ->add('idTipo', EntityType::class, array(
                 'class' => 'AppBundle:TipoSancion',
-                'choice_label' => 'tipo',
+                'choices' => $this->choices[1],
+                'choice_label' => function ($tipo) {
+                    return $tipo->getTipo();
+                },
                 'attr' => array('class' => 'w3-select w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
             ))
@@ -80,14 +83,14 @@ class SancionFormType extends AbstractType
                 'required' =>false,
                 'attr' => array('class' => 'w3-select datepicker w3-border w3-light-grey marginBottom'),
                 'label_attr' => array('class' => 'w3-text-teal')
-            ))
-            ->add('PuntosRecuperados', IntegerType::class, array(
-                'required' =>false,
-                'empty_data' => 0,
-                'label' => 'Puntos Recuperados',
-                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
-                'label_attr' => array('class' => 'w3-text-teal')
             ));
+//            ->add('PuntosRecuperados', IntegerType::class, array(
+//                'required' =>false,
+//                'empty_data' => 0,
+//                'label' => 'Puntos Recuperados',
+//                'attr' => array('class' => 'w3-select w3-border w3-light-grey'),
+//                'label_attr' => array('class' => 'w3-text-teal')
+//            ));
 //            ->add('idEstado', EntityType::class, array(
 //                'class' => 'AppBundle:EstadosSancion',
 //                'choice_label' => 'estado',

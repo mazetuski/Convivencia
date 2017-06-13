@@ -34,6 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
@@ -55,6 +56,7 @@ class ConvivenciaController extends Controller
             return $this->redirectToRoute("gestion_partes");
         if (in_array("ROLE_USER", $this->getUser()->getRoles()))
             return $this->redirectToRoute("alumno");
+        return $this->redirectToRoute("login");
     }
 
     /**
@@ -277,6 +279,99 @@ class ConvivenciaController extends Controller
         return $this->render('convivencia/admin/gestionProfesores.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("recuperarPassword", name="recuperarPassword")
+     */
+    public function recuperarPassword(Request $request)
+    {
+        try {
+            if ($request->get('recuperar') == null && $request->get('username') == null)
+                return $this->render('convivencia/recuperarPassword.html.twig');
+            $em = $this->getDoctrine()->getManager();
+            /** @var UsuariosRepository $repositoryUsers */
+            $repositoryUsers = $em->getRepository('AppBundle:Usuarios');
+            $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+            $repositoryProfesores = $em->getRepository('AppBundle:Profesores');
+            $repositoryTutores = $em->getRepository('AppBundle:tutores');
+            /** @var Usuarios $user */
+            $user = $repositoryUsers->findOneByUsuario($request->get('username'));
+            if ($user == null) {
+                $this->addFlash('passwordError', 'El usuario no existe');
+                return $this->redirectToRoute('recuperarPassword');
+            }
+
+            $hash = $user->getHash();
+
+            if ($repositoryAlumnos->findOneByIdUsuario($user->getId()) != null)
+                $user = $repositoryAlumnos->findOneByIdUsuario($user->getId());
+            elseif ($repositoryProfesores->findOneByIdUsuario($user->getId()) != null)
+                $user = $repositoryProfesores->findOneByIdUsuario($user->getId());
+            elseif ($repositoryTutores->findOneByIdUsuario($user->getId()) != null)
+                $user = $repositoryTutores->findOneByIdUsuario($user->getId());
+            else {
+                $this->addFlash('passwordError', 'El usuario no existe');
+                return $this->redirectToRoute('recuperarPassword');
+            }
+
+            if ($user->getEmail() == null) {
+                $this->addFlash('passwordError', 'El usuario no tiene email');
+                return $this->redirectToRoute('recuperarPassword');
+            }
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Este es un mensaje automático para recuperar su contraseña')
+                ->setFrom([$this->getParameter('mailer_email') => $this->getParameter('mailer_sender')])
+                ->setTo($user->getEmail())
+                ->setBody("Para recuperar su contraseña pulse aquí:\n" . $this->generateUrl("reset_password", array(), UrlGeneratorInterface::ABSOLUTE_URL )."?hash=".$hash);
+            $this->get('mailer')->send($message);
+            $this->addFlash('login', 'Se ha enviado un mensaje a su correo');
+            return $this->redirectToRoute('login');
+        } catch (\Exception $e) {
+            $this->addFlash('loginError', 'No se ha podido enviar el correo');
+            return $this->redirectToRoute('login');
+        }
+    }
+
+    /**
+     * @Route("/resetPassword", name="reset_password")
+     * @Method({"GET", "POST"})
+     */
+    public function resetPassword(Request $request)
+    {
+        if($request->get('hash') == null)
+            return $this->redirectToRoute('recuperarPassword');
+
+        try {
+            $hash = $request->get('hash');
+            $emConvivencia = $this->getDoctrine()->getManager();
+            /** @var UsuariosRepository $repositoryUsuarios */
+            $repositoryUsuarios = $emConvivencia->getRepository('AppBundle:Usuarios');
+            /** @var Usuarios $usuario */
+            $usuario = $repositoryUsuarios->findOneByHash($hash);
+            if ($usuario == null)
+                return $this->redirectToRoute('recuperarPassword');
+
+            $usuarioReset = new Usuarios();
+            $form = $this->createForm(UsuarioFormType::class, $usuarioReset);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $password = $this->get('security.password_encoder')
+                    ->encodePassword($usuario, $usuarioReset->getPlainPassword());
+                $usuario->setPassword($password);
+                $emConvivencia->persist($usuario);
+                $emConvivencia->flush();
+                $this->addFlash('login', 'La contraseña ha sido restablecida');
+                return $this->redirectToRoute('login');
+            }
+            return $this->render('convivencia/changePassword.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        } catch (\Exception $e) {
+            $this->addFlash('loginError', 'No se ha podido restablecer la contraseña');
+            return $this->redirectToRoute('login');
+        }
     }
 
 }

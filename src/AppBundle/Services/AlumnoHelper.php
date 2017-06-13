@@ -26,6 +26,8 @@ class AlumnoHelper
         'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 12',
     );
 
+    const ID_TIPO_OTRAS = 4;
+
     function __construct(EntityManager $emConvivencia)
     {
         $this->emConvivencia = $emConvivencia;
@@ -105,6 +107,22 @@ class AlumnoHelper
         } else
             $alumnos = $this->repositoryAlumno->findAll();
         return $alumnos;
+    }
+
+    /**
+     * Función que devuelve los tipos filtrados por el rol del usuario
+     * @param Request $request
+     * @return array
+     */
+    public function getTipoByRol(Usuarios $usuario)
+    {
+        $repositoryTipo = $this->emConvivencia->getRepository('AppBundle:TipoSancion');
+        if(in_array("ROLE_PROFESOR", $usuario->getRoles()) &&
+            (!in_array("ROLE_ADMIN", $usuario->getRoles())
+                && !in_array("ROLE_CONVIVENCIA", $usuario->getRoles()))){
+            return $repositoryTipo->findById(self::ID_TIPO_OTRAS);
+        }
+        return $repositoryTipo->findAll();
     }
 
     /**

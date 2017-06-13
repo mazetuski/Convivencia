@@ -14,6 +14,18 @@
                         <img id="imgIntro" src="{{ asset('img/logo3.png') }}"/>
                     </div>
 
+                    {% for flash_message in app.session.flashBag.get('login') %}
+                        <div class="w3-panel w3-pale-green w3-round-large">
+                            <p class="w3-center">{{ flash_message }}</p>
+                        </div>
+                    {% endfor %}
+
+                    {% for flash_message in app.session.flashBag.get('loginError') %}
+                        <div class="w3-panel w3-pale-red w3-round-large">
+                            <p class="w3-center">{{ flash_message }}</p>
+                        </div>
+                    {% endfor %}
+
                     <div class="w3-row w3-section">
                         <div class="w3-col" style="width:50px; color: #38889B;"><i class="w3-xxlarge fa fa-user"></i>
                         </div>
@@ -32,6 +44,9 @@
                         </div>
                     </div>
 
+                    <div class="w3-right-align" style="color: white;">
+                        <a href="{{ path('recuperarPassword') }}">Recuperar contraseña</a>
+                    </div>
 
                     {# Ruta a la que redirige si hay éxito #}
                     <input type="hidden" name="_target_path" value="/alumno"/>

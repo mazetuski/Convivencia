@@ -61,11 +61,13 @@ class AlumnoController extends Controller
         if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())
             && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles())
             && !in_array("ROLE_TUTOR", $this->getUser()->getRoles())
+            && !in_array("ROLE_PROFESOR", $this->getUser()->getRoles())
         )
             return $this->redirectToRoute("index");
 
         if (in_array("ROLE_TUTOR", $this->getUser()->getRoles()) &&
-            !$alumnoHelper->isTutorAlumno($alumno, $alumnoHelper->getTutorByUsuario($this->getUser())))
+            !$alumnoHelper->isTutorAlumno($alumno, $alumnoHelper->getTutorByUsuario($this->getUser()))
+        )
             return $this->redirectToRoute("index");
 
         $userData = $alumnoHelper->getUserData($alumno, true);
@@ -196,14 +198,15 @@ class AlumnoController extends Controller
     /**
      * @Route("/alumnoImage", name="change_image")
      */
-    public function changeProfileImage(Request $request){
-        if(!$request->isMethod('POST') || !in_array("ROLE_USER", $this->getUser()->getRoles()))
+    public function changeProfileImage(Request $request)
+    {
+        if (!$request->isMethod('POST') || !in_array("ROLE_USER", $this->getUser()->getRoles()))
             return $this->redirectToRoute("index");
 
         try {
             /** @var UploadedFile $file */
             $file = $request->files->get('file');
-            if(!is_array(getimagesize($file))){
+            if (!is_array(getimagesize($file))) {
                 $this->addFlash('alumnoError', 'No es una imagen');
                 return $this->redirectToRoute("index");
             }
@@ -223,7 +226,7 @@ class AlumnoController extends Controller
             $em->persist($alumno);
             $em->flush();
             $this->addFlash('alumno', 'La imagen ha sido subida con éxito');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->addFlash('alumnoError', 'La imagen no se ha podido subir');
         }
         return $this->redirectToRoute("index");

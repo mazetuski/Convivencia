@@ -115,7 +115,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Profesores")
-     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id", onDelete="cascade")
      */
     private $idProfesor;
 
@@ -544,7 +544,7 @@ class Partes
     /**
      * Get fechaConfirmacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaConfirmacion()
     {
@@ -568,7 +568,7 @@ class Partes
     /**
      * Get fechaComunicacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaComunicacion()
     {
@@ -582,7 +582,7 @@ class Partes
      *
      * @return Partes
      */
-    public function addSancion(\AppBundle\Entity\Partes $sancion)
+    public function addSancion(\AppBundle\Entity\Sanciones $sancion)
     {
         $this->sancion[] = $sancion;
 
@@ -592,9 +592,9 @@ class Partes
     /**
      * Remove sancion
      *
-     * @param \AppBundle\Entity\Partes $sancion
+     * @param \AppBundle\Entity\Sanciones $sancion
      */
-    public function removeSancion(\AppBundle\Entity\Partes $sancion)
+    public function removeSancion(\AppBundle\Entity\Sanciones $sancion)
     {
         $this->sancion->removeElement($sancion);
     }

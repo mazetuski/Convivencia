@@ -39,7 +39,7 @@ class ImportHelper
      */
     function importarAlumnos(File $file)
     {
-        ini_set('max_execution_time', 300);
+        ini_set('max_execution_time', 500);
         /** @var CursosRepository $repositoryCurso */
         $repositoryCurso = $this->em->getRepository('AppBundle:Cursos');
         /** @var UsuariosRepository $repositoryUsuarios */
@@ -82,7 +82,7 @@ class ImportHelper
                             ->encodePassword($user, 'usuario');
                         $user->setPassword($password);
                         $user->setRoles(['ROLE_USER']);
-
+                        $this->setHashUser($user);
                         $this->em->persist($user);
                         $alumno->setIdUsuario($user);
                         $this->em->persist($alumno);
@@ -133,7 +133,7 @@ class ImportHelper
                             ->encodePassword($user, 'profesor');
                         $user->setPassword($password);
                         $user->setRoles(['ROLE_PROFESOR']);
-
+                        $this->setHashUser($user);
                         $this->em->persist($user);
                         $profesor->setIdUsuario($user);
                         $this->em->persist($profesor);
@@ -142,6 +142,16 @@ class ImportHelper
                 }
             }
         }
+    }
+
+    /**
+     * Función que crea el hash del usuario
+     * @param Usuarios $user
+     */
+    public function setHashUser(Usuarios $user){
+        $hash = $this->securityEncoder
+            ->encodePassword($user, $user->getUsername() . $user->getId());
+        $user->setHash($hash);
     }
 
 }

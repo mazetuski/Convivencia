@@ -51,7 +51,7 @@
                             <th>Fecha Inicio</th>
                             <th>Fecha Final</th>
                             <th>Tipo</th>
-                            <th>Puntos</th>
+                            {#<th>Puntos</th>#}
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -67,7 +67,7 @@
                                 <td>{{ sancion.fechaInicio|date("d/m/Y") }}</td>
                                 <td>{{ sancion.fechaFinal|date("d/m/Y") }}</td>
                                 <td>{{ sancion.idTipo.tipo }}</td>
-                                <td>{{ sancion.puntosRecuperados }}</td>
+                                {#<td>{{ sancion.puntosRecuperados }}</td>#}
                                 <td>{{ sancion.idEstado.estado }}</td>
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <td><a href="{{ path('nueva_sancion') }}?idSancion={{ sancion.id }}">
