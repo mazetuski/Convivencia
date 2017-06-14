@@ -9,9 +9,12 @@ use AppBundle\Entity\Partes;
 use AppBundle\Entity\Profesores;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\TipoParte;
+use AppBundle\Form\ParteExportFormType;
 use AppBundle\Form\ParteFormType;
+use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
+use AppBundle\Repository\ProfesoresRepository;
 use AppBundle\Repository\SancionesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\PartesHelper;
@@ -94,7 +97,7 @@ class PartesController extends Controller
             return $this->redirectToRoute("nuevoParte", array(
                 'idParte' => $parte->getId()));
 
-        if(in_array('ROLE_PROFESOR', $this->getUser()->getRoles()))
+        if (in_array('ROLE_PROFESOR', $this->getUser()->getRoles()))
             $compound = [$alumnos, $parteHelper->getProfesorByUser($this->getUser())];
         else
             $compound = [$alumnos, $parteHelper->getAllProfesores()];
@@ -159,41 +162,85 @@ class PartesController extends Controller
     /**
      * @Route("/parte/exportPartes", name="admin_export_partes")
      */
-    public function exportPartes()
+    public function exportPartes(Request $request)
     {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.entity_manager');
-        /** @var PartesRepository $repositoryPartes */
-        $repositoryPartes = $em->getRepository('AppBundle:Partes');
-        $data = $repositoryPartes->getPartesOrdenados();
-        $arrData = [];
-        $arrData[] = ['Id', 'Fecha', 'Descripción', 'Tareas', 'Hora Salida Aula', 'Hora Llegada Jefatura', 'Formato', 'Observación', 'Puntos', 'Estado', 'Tipo', 'Alumno', 'Profesor', 'Recupera Punto', 'Fecha Confirmacion', 'Fecha Comunicación'];
-        foreach ($data as $parte) {
-            $parteArray = (array)$parte;
-            $parteCsv = [];
-            foreach ($parteArray as $parteValue)
-                if ($parteValue instanceof Profesores || $parteValue instanceof Alumno)
-                    $parteCsv[] = $parteValue->getNombreCompleto();
-                elseif ($parteValue instanceof TipoParte)
-                    $parteCsv[] = $parteValue->getTipo();
-                elseif ($parteValue instanceof EstadosParte)
-                    $parteCsv[] = $parteValue->getEstado();
-                elseif ($parteValue instanceof \DateTime) {
-                    $year = $parteValue->format('Y');
-                    if ($parteValue == null)
-                        $fecha = "Sin fecha";
-                    elseif ($year == '1970')
-                        $fecha = $parteValue->format('H:i:s');
-                    else
-                        $fecha = $parteValue->format('Y-m-d H:i:s');
-                    $parteCsv[] = $fecha;
-                } elseif (!$parteValue instanceof PersistentCollection)
-                    $parteCsv[] = $parteValue;
-            $arrData[$parte->getId()] = $parteCsv;
+        try {
+            /** @var EntityManager $em */
+            $em = $this->get('doctrine.orm.entity_manager');
+            $alumnosSeleccionados = $request->get('alumnos');
+            $profesoresSeleccionados = $request->get('profesores');
+            $fechaSeleccionada = $request->get('fecha');
+            /** @var AlumnoRepository $repositoryAlumnos */
+            $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+            /** @var ProfesoresRepository $repositoryProfesores */
+            $repositoryProfesores = $em->getRepository('AppBundle:Profesores');
+            if($alumnosSeleccionados == "Todos"){
+                $alumnos = $repositoryAlumnos->findAll();
+            }
+            else{
+                $alumnos = $repositoryAlumnos->findById($alumnosSeleccionados);
+            }
+
+            if($profesoresSeleccionados == "Todos"){
+                $profesores = $repositoryProfesores->findAll();
+            }
+            else{
+                $profesores = $repositoryProfesores->findById($profesoresSeleccionados);
+            }
+            /** @var PartesRepository $repositoryPartes */
+            $repositoryPartes = $em->getRepository('AppBundle:Partes');
+            $data = $repositoryPartes->getPartesExportar($fechaSeleccionada, $alumnos, $profesores);
+            $arrData = [];
+            $arrData[] = ['Id', 'Fecha', 'Descripción', 'Tareas', 'Hora Salida Aula', 'Hora Llegada Jefatura', 'Formato', 'Observación', 'Puntos', 'Estado', 'Tipo', 'Alumno', 'Profesor', 'Recupera Punto', 'Fecha Confirmacion', 'Fecha Comunicación'];
+            foreach ($data as $parte) {
+                $parteArray = (array)$parte;
+                $parteCsv = [];
+                foreach ($parteArray as $parteValue)
+                    if ($parteValue instanceof Profesores || $parteValue instanceof Alumno)
+                        $parteCsv[] = $parteValue->getNombreCompleto();
+                    elseif ($parteValue instanceof TipoParte)
+                        $parteCsv[] = $parteValue->getTipo();
+                    elseif ($parteValue instanceof EstadosParte)
+                        $parteCsv[] = $parteValue->getEstado();
+                    elseif ($parteValue instanceof \DateTime) {
+                        $year = $parteValue->format('Y');
+                        if ($parteValue == null)
+                            $fecha = "Sin fecha";
+                        elseif ($year == '1970')
+                            $fecha = $parteValue->format('H:i:s');
+                        else
+                            $fecha = $parteValue->format('Y-m-d H:i:s');
+                        $parteCsv[] = $fecha;
+                    } elseif (!$parteValue instanceof PersistentCollection)
+                        $parteCsv[] = $parteValue;
+                $arrData[$parte->getId()] = $parteCsv;
+            }
+            $response = new CsvResponse($arrData, 200);
+            $response->setFilename("Partes.csv");
+            return $response;
+        } catch (\Exception $e) {
+            $this->addFlash('exportarError', 'No se ha podido exportar');
+            return $this->redirectToRoute('export_form_partes');
         }
-        $response = new CsvResponse($arrData, 200);
-        $response->setFilename("Partes.csv");
-        return $response;
+    }
+
+    /**
+     * @Route("/parte/exportFormPartes", name="export_form_partes")
+     */
+    public function exportForm()
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var ProfesoresRepository $repositoryProfesores */
+        $repositoryProfesores = $em->getRepository('AppBundle:Profesores');
+        $alumnos = $repositoryAlumnos->findAll();
+        $profesores = $repositoryProfesores->findAll();
+
+        return $this->render('convivencia/exportPartes.html.twig', array(
+            'alumnos' => $alumnos,
+            'profesores' => $profesores,
+        ));
     }
 
 }

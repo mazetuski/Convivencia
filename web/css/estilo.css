@@ -115,6 +115,11 @@ body {
     color: #38889B !important;
 }
 
+.formExport input, .formExport div{
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
 #hamburguer {
     cursor: pointer;
 }

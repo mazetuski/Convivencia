@@ -4,6 +4,7 @@ namespace AppBundle\Repository;
 
 use AppBundle\AppBundle;
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Profesores;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -66,6 +67,23 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
 
 
         $query->setParameter('alumno', $alumno);
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Función que devuelve los partes de un profesor
+     * @param Alumno $alumno
+     * @return array
+     */
+    public function getPartesByProfesor(Profesores $profesor)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('p')
+            ->from('AppBundle:Partes', 'p')
+            ->where('p.idProfesor = :profesor');
+        $query->orderBy('p.fecha');
+
+        $query->setParameter('profesor', $profesor);
         return $query->getQuery()->getResult();
     }
 
@@ -153,15 +171,76 @@ class PartesRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter("string", '%' . $string . '%');
 
         $fecha = explode('/', $string);
-        for($i=0; $i<3; $i++){
-            if(count($fecha) >= ($i+1)) {
+        for ($i = 0; $i < 3; $i++) {
+            if (count($fecha) >= ($i + 1)) {
                 $query->setParameter('stringFecha' . $i, $fecha[$i]);
-            }
-            else
-                $query->setParameter('stringFecha'.$i, '');
+            } else
+                $query->setParameter('stringFecha' . $i, '');
         }
 
         return $query->getResult();
+    }
+
+    /**
+     * Función que devuelve los partes a exportar
+     * @param $fechas
+     * @param $alumnos
+     * @param $profesores
+     * @return array
+     */
+    function getPartesExportar($fechas, $alumnos, $profesores)
+    {
+        $partesAlumno = [];
+        foreach ($alumnos as $alumno)
+            $partesAlumno[] = $this->getPartesByAlumnoOrdenado($alumno);
+        $partesProfesor = [];
+        foreach ($profesores as $profesor)
+            $partesProfesor[] = $this->getPartesByProfesor($profesor);
+        $fecha = explode(' a ', $fechas);
+        $fechaIni = $fecha[0];
+        $fechaFin = $fecha[1];
+
+        $fechaIni = date_create_from_format('d/m/Y', $fechaIni);
+        date_sub($fechaIni, date_interval_create_from_date_string('1 day'));
+        $fechaFin = date_create_from_format('d/m/Y', $fechaFin);
+
+        $query = $this->getEntityManager()->createQuery(
+            "SELECT p
+             FROM AppBundle\Entity\Partes p
+             WHERE (p.fecha BETWEEN :fechaIni AND :fechaFin)"
+        );
+        $query->setParameter(':fechaIni', $fechaIni);
+        $query->setParameter(':fechaFin', $fechaFin);
+        $partesFecha = $query->getResult();
+        $partesExportar = [];
+        $partesExportar2 = [];
+        $partesExportarFinal = [];
+        $partesAlumnosSelec = [];
+        $partesProfesorSelec = [];
+        foreach ($partesAlumno as $parteAlumno)
+            foreach ($parteAlumno as $value)
+                $partesAlumnosSelec[] = $value;
+
+        foreach ($partesProfesor as $parteProfesor)
+            foreach ($parteProfesor as $value)
+                $partesProfesorSelec[] = $value;
+
+        foreach ($partesAlumnosSelec as $parteAlumno)
+            foreach ($partesProfesorSelec as $parteProfesor)
+                if ($parteAlumno->getId() == $parteProfesor->getId())
+                    $partesExportar[] = $parteAlumno;
+
+        foreach ($partesAlumnosSelec as $parteAlumno)
+            foreach ($partesFecha as $parteFecha)
+                if ($parteAlumno->getId() == $parteFecha->getId())
+                    $partesExportar2[] = $parteAlumno;
+
+        foreach ($partesExportar as $parteExportar)
+            foreach ($partesExportar2 as $parteExportar2)
+                if ($parteExportar->getId() == $parteExportar2->getId())
+                    $partesExportarFinal[] = $parteExportar;
+
+        return $partesExportarFinal;
     }
 
 }

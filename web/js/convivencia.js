@@ -200,6 +200,7 @@ $(document).ready(function () {
         $('#contenedorUpload .loader').css({opacity: 0, visibility: "visible"}).animate({opacity: 1}, 500)
     })
 
+
     // DataTables
 
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -293,6 +294,5 @@ $(document).ready(function () {
     $('.dataTables_filter input').attr("placeholder", "Fecha, alumno, curso...");
     $('.dataTables_wrapper input').addClass("marginBottom");
     // $('.dataTables_wrapper label').addClass("contenedorFlex");
-
 
 });

@@ -8,8 +8,10 @@ use AppBundle\Entity\EstadosSancion;
 use AppBundle\Entity\Sanciones;
 use AppBundle\Entity\TipoSancion;
 use AppBundle\Form\SancionFormType;
+use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\SancionesRepository;
+use AppBundle\Repository\TipoSancionRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\CrearSancionHelper;
 use AppBundle\Utils\CsvResponse;
@@ -144,13 +146,33 @@ class SancionController extends Controller
     /**
      * @Route("/sancion/exportSanciones", name="admin_export_sanciones")
      */
-    public function exportSanciones()
+    public function exportSanciones(Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.entity_manager');
+        $alumnosSeleccionados = $request->get('alumnos');
+        $tiposSeleccionados = $request->get('tipos');
+        $fechaSeleccionada = $request->get('fecha');
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var TipoSancionRepository $repositoryTipoSancion */
+        $repositoryTipoSancion = $em->getRepository('AppBundle:TipoSancion');
+        if($alumnosSeleccionados == "Todos"){
+            $alumnos = $repositoryAlumnos->findAll();
+        }
+        else{
+            $alumnos = $repositoryAlumnos->findById($alumnosSeleccionados);
+        }
+
+        if($tiposSeleccionados == "Todos"){
+            $tipos = $repositoryTipoSancion->findAll();
+        }
+        else{
+            $tipos = $repositoryTipoSancion->findById($tiposSeleccionados);
+        }
         /** @var SancionesRepository $repositorySanciones */
         $repositorySanciones = $em->getRepository('AppBundle:Sanciones');
-        $data = $repositorySanciones->getSancionesOrdenadas();
+        $data = $repositorySanciones->getSancionesExportar($fechaSeleccionada, $alumnos, $tipos);
         $arrData = [];
         $arrData[] = ['Id', 'Fecha', 'Fecha Inicio', 'Fecha Final', 'Sanción', 'Observaciones', 'Evaluación', 'Puntos Recuperados', 'Fecha Confirmacion', 'Fecha Comunicación', 'Tipo', 'Estado', 'Alumno'];
         foreach ($data as $sancion) {
@@ -179,5 +201,24 @@ class SancionController extends Controller
         $response = new CsvResponse($arrData, 200);
         $response->setFilename("Sanciones.csv");
         return $response;
+    }
+
+    /**
+     * @Route("/sancion/exportFormSanciones", name="export_form_sanciones")
+     */
+    public function exportSancionForm()
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var TipoSancionRepository $repositoryTipoSancion */
+        $repositoryTipoSancion = $em->getRepository('AppBundle:TipoSancion');
+        $alumnos = $repositoryAlumnos->findAll();
+        $tipos = $repositoryTipoSancion->findAll();
+
+        return $this->render('convivencia/exportSanciones.html.twig', array(
+            'alumnos' => $alumnos,
+            'tipos' => $tipos,
+        ));
     }
 }
