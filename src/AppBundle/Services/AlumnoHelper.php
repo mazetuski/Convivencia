@@ -23,7 +23,7 @@ class AlumnoHelper
 {
 
     const SELECT_PUNTOS = array(
-        'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 12',
+        'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 10',
     );
 
     const ID_TIPO_OTRAS = 4;
@@ -172,13 +172,17 @@ class AlumnoHelper
      * @param $alumnos
      * @return array
      */
-    public function getArrayCarnetsData($alumnos)
+    public function getArrayCarnetsData($alumnos, $carnetData = true)
     {
         $arrCarnetsData = [];
         /** @var Alumno $alumno */
         foreach ($alumnos as $alumno) {
-            $sanciones = $this->getSancionesByAlumno($alumno);
-            $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
+            if($carnetData) {
+                $sanciones = $this->getSancionesByAlumno($alumno);
+                $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
+            }
+            else
+                $arrCarnetsData[] = $alumno;
         }
         return $arrCarnetsData;
     }
@@ -329,11 +333,11 @@ class AlumnoHelper
      * @param $valorSeleccionado
      * @return array
      */
-    public function filtrarPorPuntos($valorSeleccionado, $alumnos)
+    public function filtrarPorPuntos($valorSeleccionado, $alumnos, $carnetData = true)
     {
         $carnetsFiltrados = [];
         if($valorSeleccionado == self::SELECT_PUNTOS[0])
-            return $this->getArrayCarnetsData($alumnos);
+            return $this->getArrayCarnetsData($alumnos, $carnetData);
         foreach (self::SELECT_PUNTOS as $puntosSelect) {
             if ($puntosSelect == $valorSeleccionado) {
                 $carnets = [];
@@ -342,7 +346,7 @@ class AlumnoHelper
                 count($puntos) > 1 ? $puntosFin = $puntos[1] : $puntosFin = $puntosIni;
                 do {
                     $alumnosFiltrados = $this->getCarnetByPuntos($puntosIni++, $alumnos);
-                    $carnets[] = $this->getArrayCarnetsData($alumnosFiltrados);
+                    $carnets[] = $this->getArrayCarnetsData($alumnosFiltrados, $carnetData);
                 } while ($puntosIni <= $puntosFin);
 
                 foreach ($carnets as $carnet)
@@ -387,5 +391,24 @@ class AlumnoHelper
             if($alumnoTutor->getId() == $alumno->getId())
                 return true;
         return false;
+    }
+
+    /**
+     * Función que devuelve los alumnos por curso
+     * @param $cursos
+     * @return array
+     */
+    public function getAlumnosByCursos($cursos){
+        $alumnos = [];
+        foreach ($cursos as $curso){
+            $alumnos[] =$this->repositoryAlumno->findByIdCurso($curso);
+        }
+
+        $alumnosFiltrados = [];
+        foreach ($alumnos as $alumno)
+            foreach ($alumno as $value)
+                $alumnosFiltrados[] = $value;
+
+        return $alumnosFiltrados;
     }
 }

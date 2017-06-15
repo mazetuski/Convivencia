@@ -4,13 +4,18 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Cursos;
+use AppBundle\Entity\Usuarios;
 use AppBundle\Form\ImportFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Repository\AlumnoRepository;
+use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\ImportHelper;
+use AppBundle\Utils\CsvResponse;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -226,6 +231,82 @@ class AlumnoController extends Controller
         }
         return $this->redirectToRoute("index");
     }
+
+    /**
+     * @Route("/carnet/exportCarnet", name="admin_export_carnets")
+     */
+    public function exportSanciones(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+        $alumnosSeleccionados = $request->get('alumnos');
+        $cursosSeleccionados = $request->get('cursos');
+        $puntos = $request->get('puntosFiltro');
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var CursosRepository $repositoryCursos */
+        $repositoryCursos = $em->getRepository('AppBundle:Cursos');
+        if($alumnosSeleccionados == "Todos"){
+            $alumnos = $repositoryAlumnos->findAll();
+        }
+        else{
+            $alumnos = $repositoryAlumnos->findById($alumnosSeleccionados);
+        }
+
+        if($cursosSeleccionados == "Todos"){
+            $cursos = $repositoryCursos->findAll();
+        }
+        else{
+            $cursos = $repositoryCursos->findById($cursosSeleccionados);
+        }
+
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        $alumnosPuntos = $alumnoHelper->filtrarPorPuntos($puntos, $alumnos, false);
+        $alumnosCursos = $alumnoHelper->getAlumnosByCursos($cursos);
+        $data = [];
+        foreach ($alumnosPuntos as $alumnosPunto)
+            foreach ($alumnosCursos as $alumnosCurso)
+                if ($alumnosPunto->getId() == $alumnosCurso->getId())
+                    $data[] = $alumnosCurso;
+
+        $arrData = [];
+        $arrData[] = ['Id', 'Alumno', 'Puntos', 'Grupo'];
+        /** @var Alumno $carnet */
+        foreach ($data as $carnet) {
+            $carnetCsv = [];
+            $carnetCsv[] = $carnet->getId();
+            $carnetCsv[] = $carnet->getNombreCompleto();
+            $carnetCsv[] = $carnet->getPuntos();
+            $carnetCsv[] = $carnet->getIdCurso()->getGrupo();
+            $arrData[$carnet->getId()] = $carnetCsv;
+        }
+        $response = new CsvResponse($arrData, 200);
+        $response->setFilename("Carnets.csv");
+        return $response;
+    }
+
+
+    /**
+     * @Route("/carnet/exportFormCarnets", name="export_form_carnets")
+     */
+    public function exportCarnets()
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var CursosRepository $repositoryCursos */
+        $repositoryCursos = $em->getRepository('AppBundle:Cursos');
+        $alumnos = $repositoryAlumnos->findAll();
+        $cursos = $repositoryCursos->findAll();
+
+        return $this->render('convivencia/exportCarnets.html.twig', array(
+            'alumnos' => $alumnos,
+            'cursos' => $cursos,
+            'puntosSelect' => AlumnoHelper::SELECT_PUNTOS,
+        ));
+    }
+
 
 }
 

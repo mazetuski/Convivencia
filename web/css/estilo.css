@@ -120,6 +120,12 @@ body {
     margin-top: 10px;
 }
 
+.formExport2{
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: column;
+}
+
 #hamburguer {
     cursor: pointer;
 }
