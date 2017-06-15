@@ -63,7 +63,8 @@
                                 {% else %}
                                     <td>Ha asistido</td>
                                 {% endif %}
-                                <td><a href="{{ path('edit_diario', {'id': diario.id}) }}">editar</a></td>
+                                <td><a href="{{ path('edit_diario', {'id': diario.id}) }}"><i
+                                                class="fa fa-pencil" aria-hidden="true"></i></a></td>
                             </tr>
                         {% endfor %}
                     </table>
