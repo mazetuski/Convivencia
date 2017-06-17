@@ -25,7 +25,7 @@
                     <select name="alumnos" class="w3-select w3-border w3-light-grey chosen-select" required>
                         <option value="Todos">Todos</option>
                         {% for alumno in alumnos %}
-                            <option value="{{ alumno.id }}">{{ alumno.getNombreCompleto() }}</option>
+                            <option value="{{ alumno.id }}">{{ alumno.getNombreCompletoYCurso() }}</option>
                         {% endfor %}
                     </select>
                     <label class="w3-text-teal marginTop">Tipo</label>

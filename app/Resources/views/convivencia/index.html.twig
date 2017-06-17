@@ -6,13 +6,17 @@
         <div class="overlay">
             <div class="w3-col l4 m6 s10 w3-display-middle">
                 <form action="{{ path('login') }}" method="post">
+
+                    <div style="text-align: center; padding-top: 20px;">
+                        <img id="imgIntro" src="{{ asset('img/logo2.svg') }}"/>
+                    </div>
+
                     {# Muestra el error en caso de existir#}
                     {% if error %}
-                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        <div class="w3-panel w3-pale-red w3-round-large">
+                            <p class="w3-center">Credenciales inválidos</p>
+                        </div>
                     {% endif %}
-                    <div style="text-align: center; padding-top: 20px;">
-                        <img id="imgIntro" src="{{ asset('img/logo3.png') }}"/>
-                    </div>
 
                     {% for flash_message in app.session.flashBag.get('login') %}
                         <div class="w3-panel w3-pale-green w3-round-large">
