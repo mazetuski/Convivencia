@@ -25,7 +25,7 @@ class ParteFormType extends AbstractType
             ->add('idAlumno', EntityType::class, array(
                 'label' => 'Alumno',
                 'class' => 'AppBundle:Alumno',
-                'choices' => $this->traitChoices,
+                'choices' => $this->traitChoices[0],
                 'choice_label' => function ($alumno) {
                     return $alumno->getNombreCompletoYCurso();
                 },
@@ -34,10 +34,11 @@ class ParteFormType extends AbstractType
                     'data-placeholder' => 'Selecciona un alumno...',
                 ),
                 'label_attr' => array('class' => 'w3-text-teal')
-            ))
-            ->add('idProfesor', EntityType::class, array(
+            ));
+            $builder->add('idProfesor', EntityType::class, array(
                 'label' => 'Profesor',
                 'class' => 'AppBundle:Profesores',
+                'choices' => $this->traitChoices[1],
                 'choice_label' => function ($profesor) {
                     return $profesor->getNombreCompleto();
                 },

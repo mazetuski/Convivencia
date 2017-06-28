@@ -518,4 +518,26 @@ class Alumno extends \AppBundle\Entity\Alumno implements \Doctrine\ORM\Proxy\Pro
         return parent::getPuntosIniciales();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function addIdTutor(\AppBundle\Entity\Tutores $idTutor)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addIdTutor', [$idTutor]);
+
+        return parent::addIdTutor($idTutor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeIdTutor(\AppBundle\Entity\Tutores $idTutor)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeIdTutor', [$idTutor]);
+
+        return parent::removeIdTutor($idTutor);
+    }
+
 }

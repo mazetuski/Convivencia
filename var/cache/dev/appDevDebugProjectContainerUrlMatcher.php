@@ -105,23 +105,15 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
         }
 
-        if (0 === strpos($pathinfo, '/a')) {
-            if (0 === strpos($pathinfo, '/alumno')) {
-                // alumno
-                if ($pathinfo === '/alumno') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::alumnoAction',  '_route' => 'alumno',);
-                }
-
-                // verAlumno
-                if (preg_match('#^/alumno/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'verAlumno')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::showAlumnoAction',));
-                }
-
+        if (0 === strpos($pathinfo, '/alumno')) {
+            // alumno
+            if ($pathinfo === '/alumno') {
+                return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::alumnoAction',  '_route' => 'alumno',);
             }
 
-            // admin_import
-            if ($pathinfo === '/admin/import') {
-                return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::importAlumnoAction',  '_route' => 'admin_import',);
+            // verAlumno
+            if (preg_match('#^/alumno/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'verAlumno')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::showAlumnoAction',));
             }
 
         }
@@ -156,6 +148,24 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         // show_partesSanciones
         if (0 === strpos($pathinfo, '/sanciones') && preg_match('#^/sanciones/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
             return $this->mergeDefaults(array_replace($matches, array('_route' => 'show_partesSanciones')), array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::mostrarTodasSanciones',));
+        }
+
+        // change_image
+        if ($pathinfo === '/alumnoImage') {
+            return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::changeProfileImage',  '_route' => 'change_image',);
+        }
+
+        if (0 === strpos($pathinfo, '/carnet/export')) {
+            // admin_export_carnets
+            if ($pathinfo === '/carnet/exportCarnet') {
+                return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::exportSanciones',  '_route' => 'admin_export_carnets',);
+            }
+
+            // export_form_carnets
+            if ($pathinfo === '/carnet/exportFormCarnets') {
+                return array (  '_controller' => 'AppBundle\\Controller\\AlumnoController::exportCarnets',  '_route' => 'export_form_carnets',);
+            }
+
         }
 
         // index
@@ -194,11 +204,6 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::logoutAction',  '_route' => 'logout',);
         }
 
-        // verProfesor
-        if (0 === strpos($pathinfo, '/profesor') && preg_match('#^/profesor/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-            return $this->mergeDefaults(array_replace($matches, array('_route' => 'verProfesor')), array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::showProfesorAction',));
-        }
-
         // admin
         if ($pathinfo === '/admin') {
             return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::adminAction',  '_route' => 'admin',);
@@ -207,6 +212,49 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         // admin_diario_aula
         if ($pathinfo === '/diario') {
             return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::gestionDiarioAula',  '_route' => 'admin_diario_aula',);
+        }
+
+        // change_password
+        if ($pathinfo === '/changePassword') {
+            if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                goto not_change_password;
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::changePassword',  '_route' => 'change_password',);
+        }
+        not_change_password:
+
+        if (0 === strpos($pathinfo, '/admin/import')) {
+            // admin_import
+            if ($pathinfo === '/admin/importAlumno') {
+                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importAlumnoAction',  '_route' => 'admin_import',);
+            }
+
+            // admin_import_profesor
+            if ($pathinfo === '/admin/importProfesor') {
+                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::importProfesorAction',  '_route' => 'admin_import_profesor',);
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/re')) {
+            // recuperarPassword
+            if ($pathinfo === '/recuperarPassword') {
+                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::recuperarPassword',  '_route' => 'recuperarPassword',);
+            }
+
+            // reset_password
+            if ($pathinfo === '/resetPassword') {
+                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    goto not_reset_password;
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\ConvivenciaController::resetPassword',  '_route' => 'reset_password',);
+            }
+            not_reset_password:
+
         }
 
         // homepage
@@ -262,32 +310,59 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
         not_nuevoParte:
 
-        if (0 === strpos($pathinfo, '/perfil')) {
-            // perfil_index
-            if (rtrim($pathinfo, '/') === '/perfil') {
-                if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'HEAD'));
-                    goto not_perfil_index;
-                }
-
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'perfil_index');
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\PerfilController::indexAction',  '_route' => 'perfil_index',);
+        // borrar_parte
+        if (0 === strpos($pathinfo, '/borrarParte') && preg_match('#^/borrarParte/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'HEAD'));
+                goto not_borrar_parte;
             }
-            not_perfil_index:
 
-            // perfil_show
-            if (preg_match('#^/perfil/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
-                if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'HEAD'));
-                    goto not_perfil_show;
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'borrar_parte')), array (  '_controller' => 'AppBundle\\Controller\\PartesController::removeParte',));
+        }
+        not_borrar_parte:
+
+        if (0 === strpos($pathinfo, '/p')) {
+            if (0 === strpos($pathinfo, '/parte/export')) {
+                // admin_export_partes
+                if ($pathinfo === '/parte/exportPartes') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\PartesController::exportPartes',  '_route' => 'admin_export_partes',);
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'perfil_show')), array (  '_controller' => 'AppBundle\\Controller\\PerfilController::showAction',));
+                // export_form_partes
+                if ($pathinfo === '/parte/exportFormPartes') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\PartesController::exportForm',  '_route' => 'export_form_partes',);
+                }
+
             }
-            not_perfil_show:
+
+            if (0 === strpos($pathinfo, '/perfil')) {
+                // perfil_index
+                if (rtrim($pathinfo, '/') === '/perfil') {
+                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                        goto not_perfil_index;
+                    }
+
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'perfil_index');
+                    }
+
+                    return array (  '_controller' => 'AppBundle\\Controller\\PerfilController::indexAction',  '_route' => 'perfil_index',);
+                }
+                not_perfil_index:
+
+                // perfil_show
+                if (preg_match('#^/perfil/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                        goto not_perfil_show;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'perfil_show')), array (  '_controller' => 'AppBundle\\Controller\\PerfilController::showAction',));
+                }
+                not_perfil_show:
+
+            }
 
         }
 
@@ -312,6 +387,35 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             return array (  '_controller' => 'AppBundle\\Controller\\SancionController::showGestionSanciones',  '_route' => 'gestion_sanciones',);
         }
         not_gestion_sanciones:
+
+        // borrar_sancion
+        if (0 === strpos($pathinfo, '/borrarSancion') && preg_match('#^/borrarSancion/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                $allow = array_merge($allow, array('GET', 'HEAD'));
+                goto not_borrar_sancion;
+            }
+
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'borrar_sancion')), array (  '_controller' => 'AppBundle\\Controller\\SancionController::removeSancion',));
+        }
+        not_borrar_sancion:
+
+        if (0 === strpos($pathinfo, '/sancion/export')) {
+            // admin_export_sanciones
+            if ($pathinfo === '/sancion/exportSanciones') {
+                return array (  '_controller' => 'AppBundle\\Controller\\SancionController::exportSanciones',  '_route' => 'admin_export_sanciones',);
+            }
+
+            // export_form_sanciones
+            if ($pathinfo === '/sancion/exportFormSanciones') {
+                return array (  '_controller' => 'AppBundle\\Controller\\SancionController::exportSancionForm',  '_route' => 'export_form_sanciones',);
+            }
+
+        }
+
+        // tutor
+        if ($pathinfo === '/tutor') {
+            return array (  '_controller' => 'AppBundle\\Controller\\TutorController::tutorAction',  '_route' => 'tutor',);
+        }
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();
     }

@@ -10,3 +10,7 @@ parameters:
     mailer_user: null
     mailer_password: null
     secret: ThisTokenIsNotSoSecretChangeIt
+    mailer_email: null
+    mailer_sender: null
+    mailer_encryption: null
+    mailer_port: null

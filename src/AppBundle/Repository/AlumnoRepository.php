@@ -3,6 +3,8 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Cursos;
+use AppBundle\Entity\Tutores;
 
 /**
  * AlumnoRepository
@@ -30,7 +32,7 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
      * @param $curso
      * @return array
      */
-    public function getAlumnosByCurso($curso)
+    public function getAlumnosByCurso(Cursos $curso)
     {
         $query = $this->getEntityManager()->createQuery(
             'SELECT a
@@ -38,7 +40,7 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
            WHERE a.idCurso = :curso'
         );
 
-        $query->setParameter('curso', $curso);
+        $query->setParameter('curso', $curso->getId());
         return $query->getResult();
     }
 
@@ -106,6 +108,21 @@ class AlumnoRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $arrAlumnosFiltrados;
+    }
+
+    /**
+     * Función que devuelve los alumnos de un tutor
+     * @param Tutores $tutor
+     * @return array
+     */
+    public function getAlumnosByTutor(Tutores $tutor){
+        $query = $this->getEntityManager()->createQuery('SELECT a
+                 FROM AppBundle\Entity\Alumno a
+                 JOIN a.idTutor as tutor
+                 WHERE tutor.id = :tutor');
+
+        $query->setParameter('tutor', $tutor->getId());
+        return $query->getResult();
     }
 
 }

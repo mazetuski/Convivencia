@@ -5,12 +5,26 @@
     {% block header %}
         <main class="w3-container">
             <h1>Gestion Partes</h1>
+
+            {% for flash_message in app.session.flashBag.get('parte') %}
+                <div class="w3-panel w3-pale-green w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
+            {% for flash_message in app.session.flashBag.get('parteError') %}
+                <div class="w3-panel w3-pale-red w3-round-large">
+                    <p class="w3-center">{{ flash_message }}</p>
+                </div>
+            {% endfor %}
+
+
             {#TODO: ajustar form#}
             <form action="">
-                <div class="w3-col l6 m8 w3-section">
-                    <input class="w3-input w3-col l6 m12" type="text" name="like" id="partesSearchBar"
-                           value="{{ app.request.get('like') }}" placeholder="Introduce fecha, alumno, curso...">
-                    <i class="fa fa-search fa-lg fa-flip-horizontal"></i>
+                <div class="w3-col l3 m8 w3-section">
+                    {#<input class="w3-input w3-col l6 m12" type="text" name="like" id="partesSearchBar"#}
+                    {#value="{{ app.request.get('like') }}" placeholder="Introduce fecha, alumno, curso...">#}
+                    {#<i class="fa fa-search fa-lg fa-flip-horizontal"></i>#}
                     <div class="i-checks">
                         {% if app.request.get('historico') == 'on' %}
                             <input type="checkbox" name="historico" checked>
@@ -25,11 +39,11 @@
                     {#TODO: enlaces#}
                     <a href="{{ path('nuevoParte') }}" class="w3-margin-right" title="Nuevo Parte"><i
                                 class="fa fa-plus-circle fa-2x"></i></a>
-                    <a href="#" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
-                    <a href="#" class="w3-margin-right" title="Importar"><i class="fa fa-upload fa-2x"></i></a>
+                    <a href="{{ path('export_form_partes') }}" class="w3-margin-right" title="Exportar"><i class="fa fa-download fa-2x"></i></a>
                 </div>
                 <div class="w3-col m12 w3-responsive w3-section">
-                    <table class="w3-table-all w3-centered w3-margin-top">
+                    <table class="tableData stripe" data-order='[[ 1, "desc" ]]'>
+                        <thead>
                         <tr>
                             <th>NumParte</th>
                             <th>Fecha</th>
@@ -39,8 +53,10 @@
                             <th>Tipo</th>
                             <th>Puntos</th>
                             <th>Estado</th>
-                            <th></th>
+                            <th>Acciones</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for parte in partes %}
                             {% if parte.idTipo.tipo == 'Grave' %}
                                 {% set colorClass = 'w3-text-red' %}
@@ -59,24 +75,46 @@
                                     <a href="{{ path('verAlumno', {'id': parte.idAlumno.id}) }}">{{ parte.idAlumno.getNombreCompleto() }}</a>
                                 </td>
                                 {% if parte.idAlumno.idCurso != null %}
-                                    <td>{{ parte.idAlumno.idCurso.grupo }}</td>
+                                    <td>
+                                        <a href="{{ path('gestion_partes', {'like': parte.idAlumno.idCurso.grupo}) }}">{{ parte.idAlumno.idCurso.grupo }}</a>
+                                    </td>
                                 {% else %}
                                     <td>Ninguno</td>
                                 {% endif %}
                                 <td>
-                                    <a href="{{ path('verProfesor', {'id': parte.idProfesor.id}) }}">{{ parte.idProfesor.nombre }}</a>
+                                    {{ parte.idProfesor.nombre }}
                                 </td>
                                 <td>{{ parte.idTipo.tipo }}</td>
                                 <td>{{ parte.puntos }}</td>
                                 <td>{{ parte.idEstado.estado }}</td>
-                                <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}">editar</a></td>
+                                {% if (is_granted('ROLE_ADMIN') == false) and (is_granted('ROLE_PROFESOR')) %}
+                                    {% if(parte.idProfesor.idUsuario.id == app.user.id) %}
+                                        <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i
+                                                        class="fa fa-pencil" aria-hidden="true"></i></a>
+                                            <a class="confirm paddingRightLeft"
+                                               href="{{ path('borrar_parte', {'id': parte.id}) }}"
+                                               data-title="Eliminar Parte"><i class="fa fa-trash"
+                                                                              aria-hidden="true"></i></a></td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td><a href="{{ path('nuevoParte') }}?idParte={{ parte.id }}"><i
+                                                    class="fa fa-pencil" aria-hidden="true"></i></a>
+                                        <a class="confirm paddingRightLeft"
+                                           href="{{ path('borrar_parte', {'id': parte.id}) }}"
+                                           data-title="Eliminar Parte"><i class="fa fa-trash"
+                                                                          aria-hidden="true"></i></a></td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
                 </div>
-                <div class="paginator w3-col m12">
-                    {{ knp_pagination_render(partes) }}
-                </div>
+                {#<div class="paginator w3-col m12">#}
+                {#{{ knp_pagination_render(partes) }}#}
+                {#</div>#}
             </form>
         </main>
     {% endblock %}

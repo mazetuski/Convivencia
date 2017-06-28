@@ -63,6 +63,7 @@ body {
 .cartaAlumno {
     flex: 0 0 90%;
     margin: 40px 0;
+    margin: 0 auto;
 }
 
 .confirmdialog{
@@ -96,9 +97,10 @@ body {
     flex: 0 0 20%;
 }
 
-.doubleTam {
-    font-size: 2em;
+.contenedorFlexInput #horasSelect{
+    flex: 0 0 50%;
 }
+
 
 #cursos {
     display: none;
@@ -106,6 +108,26 @@ body {
 
 #cursos label {
     flex: 0 0 45%;
+}
+
+.doubleTam {
+    font-size: 2em;
+}
+
+.enlaceTutorAlumno{
+    background: #F5F5F5 !important;
+    color: #38889B !important;
+}
+
+.formExport input, .formExport div{
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+.formExport2{
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: column;
 }
 
 #hamburguer {
@@ -158,8 +180,43 @@ input::-moz-placeholder {
     color: #38889B;
 }
 
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: #38889B;
+    display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: black;
+}
+
+.inputfile + label {
+    cursor: pointer; /* "hand" cursor */
+}
+
+.inputfile:focus + label {
+    outline: 1px dotted #38889B;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
 #intro .overlay {
     background-color: rgba(0, 0, 0, .9);
+}
+
+table{
+    text-align: center;
 }
 
 table a {
@@ -170,6 +227,19 @@ tr:hover, tr:hover a {
     background-color: #38889B !important;
     color: #FFFFFF !important;
 
+}
+
+.fa-pencil, .fa-trash{
+    font-size: 1.4em;
+}
+
+tr:hover i{
+    color: white;
+}
+
+tr i:hover{
+    transition: transform 1s;
+    transform: rotateY(360deg);
 }
 
 th {
@@ -193,7 +263,12 @@ form .minTextArea {
     margin: 15px 0;
 }
 
-nav {
+#imgIntro{
+    width: 90%;
+    margin: 0 auto;
+}
+
+nav, #navLeft {
     display: none;
 }
 
@@ -201,6 +276,10 @@ nav {
     color: #316f80;
     text-align: center;
     padding: 1em;
+}
+
+.paddingRightLeft{
+    padding: 0 10px;
 }
 
 .selectForm input {
@@ -234,6 +313,10 @@ nav {
 
 .marginBottom {
     margin-bottom: 10px;
+}
+
+.marginBottomMore {
+    margin-bottom: 2em;
 }
 
 .tooltip_templates {
@@ -275,6 +358,9 @@ nav {
         width: 60%;
         margin: 40px auto; !important;
     }
+    .contenedorFlexInput #horasSelect{
+        flex: 0 0 30%;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -294,8 +380,13 @@ nav {
         align-items: center;
     }
 
+    #cartaTutorAlumno{
+        width: 40%;
+    }
+
     .contenedorCartaAlumno {
         margin-top: 50px;
+        margin-bottom: 50px;
     }
 
     #hamburguer {
@@ -306,14 +397,22 @@ nav {
         margin-top: 0;
     }
 
-    nav {
+    nav, #navLeft {
         display: block !important;
     }
 }
 
 @media only screen and (min-width: 1500px) {
+
+    #cartaTutorAlumno{
+        width: 30%;
+    }
+
     .widthChartMobile {
         width: 60%;
+    }
+    .contenedorFlexInput #horasSelect{
+        flex: 0 0 20%;
     }
 }
 
@@ -353,4 +452,51 @@ nav {
 
 .w3-input{
     background-color: #F5F5F5;
+}
+
+/* SPINNER LOADER*/
+
+.containerLoader{
+    position: absolute;
+    z-index: 3000;
+}
+
+.containerLoader img{
+    width: 100%;
+    height: 100%;
+}
+
+.loaderIntro {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    margin: 40px auto;
+    position: absolute;
+    top:50%;
+    left:50%;
+    bottom: 50%;
+    right: 50%;
+    z-index: 50000;
+
+    margin-left: -30px;
+    margin-top: -60px;
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    margin: 40px auto;
+    visibility: hidden;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

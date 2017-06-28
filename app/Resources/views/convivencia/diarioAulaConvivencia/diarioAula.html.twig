@@ -15,7 +15,7 @@
                                                                    value="{{ diarioData.fecha|date('d/m/Y') }}">
                     </div>
                     <div class="contenedorFlexInput">
-                        <label>Horas</label><select class="chosen-select w3-col m12" name="likeHora[]"
+                        <label>Horas</label><select id="horasSelect" class="chosen-select w3-col s12 m12" name="likeHora[]"
                                                     id="diarioHorasSearchBar" multiple>
                             {% for key, hora in diarioData.horas %}
                                 {% if key in diarioData.horasElegidas %}
@@ -63,7 +63,8 @@
                                 {% else %}
                                     <td>Ha asistido</td>
                                 {% endif %}
-                                <td><a href="{{ path('edit_diario', {'id': diario.id}) }}">editar</a></td>
+                                <td><a href="{{ path('edit_diario', {'id': diario.id}) }}"><i
+                                                class="fa fa-pencil" aria-hidden="true"></i></a></td>
                             </tr>
                         {% endfor %}
                     </table>

@@ -64,10 +64,10 @@ class Usuarios extends \AppBundle\Entity\Usuarios implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno'];
+            return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'hash'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno'];
+        return ['__isInitialized__', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'id', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'usuario', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'password', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'plainPassword', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'roles', 'alumno', '' . "\0" . 'AppBundle\\Entity\\Usuarios' . "\0" . 'hash'];
     }
 
     /**
@@ -362,6 +362,28 @@ class Usuarios extends \AppBundle\Entity\Usuarios implements \Doctrine\ORM\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAlumno', []);
 
         return parent::getAlumno();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHash($hash)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHash', [$hash]);
+
+        return parent::setHash($hash);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHash()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHash', []);
+
+        return parent::getHash();
     }
 
 }

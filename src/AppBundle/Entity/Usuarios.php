@@ -55,6 +55,13 @@ class Usuarios implements  UserInterface
      */
     protected $alumno;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hash", type="string", length=1000)
+     */
+    private $hash;
+
 
     /**
      * Get id
@@ -262,5 +269,29 @@ class Usuarios implements  UserInterface
     public function getAlumno()
     {
         return $this->alumno;
+    }
+
+    /**
+     * Set hash
+     *
+     * @param string $hash
+     *
+     * @return Usuarios
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    /**
+     * Get hash
+     *
+     * @return
+     */
+    public function getHash()
+    {
+        return $this->hash;
     }
 }

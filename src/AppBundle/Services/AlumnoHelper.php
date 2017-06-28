@@ -5,23 +5,28 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Alumno;
 use AppBundle\Entity\Partes;
 use AppBundle\Entity\Sanciones;
+use AppBundle\Entity\Tutores;
 use AppBundle\Model\CarnetData;
 use AppBundle\Model\UserData;
 use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\DiarioAulaConvivenciaRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Repository\SancionesRepository;
+use AppBundle\Repository\TutoresRepository;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Repository\AlumnoRepository;
 use AppBundle\Entity\Usuarios;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class AlumnoHelper
 {
 
     const SELECT_PUNTOS = array(
-        'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 12',
+        'Todos', '0', '1 - 3', '1 - 6', '3 - 7', '7 - 10',
     );
+
+    const ID_TIPO_OTRAS = 4;
 
     function __construct(EntityManager $emConvivencia)
     {
@@ -36,6 +41,8 @@ class AlumnoHelper
         $this->repositorySanciones = $this->emConvivencia->getRepository('AppBundle:Sanciones');
         /** @var DiarioAulaConvivenciaRepository repositoryAulaConvivencia */
         $this->repositoryAulaConvivencia = $this->emConvivencia->getRepository('AppBundle:DiarioAulaConvivencia');
+        /** @var TutoresRepository repositoryTutor */
+        $this->repositoryTutor = $this->emConvivencia->getRepository('AppBundle:Tutores');
     }
 
     /**
@@ -103,6 +110,22 @@ class AlumnoHelper
     }
 
     /**
+     * Función que devuelve los tipos filtrados por el rol del usuario
+     * @param Request $request
+     * @return array
+     */
+    public function getTipoByRol(Usuarios $usuario)
+    {
+        $repositoryTipo = $this->emConvivencia->getRepository('AppBundle:TipoSancion');
+        if(in_array("ROLE_PROFESOR", $usuario->getRoles()) &&
+            (!in_array("ROLE_ADMIN", $usuario->getRoles())
+                && !in_array("ROLE_CONVIVENCIA", $usuario->getRoles()))){
+            return $repositoryTipo->findById(self::ID_TIPO_OTRAS);
+        }
+        return $repositoryTipo->findAll();
+    }
+
+    /**
      * Función que devuelve las sanciones de un alumno
      * @param Alumno $alumno
      * @return mixed
@@ -149,13 +172,17 @@ class AlumnoHelper
      * @param $alumnos
      * @return array
      */
-    public function getArrayCarnetsData($alumnos)
+    public function getArrayCarnetsData($alumnos, $carnetData = true)
     {
         $arrCarnetsData = [];
         /** @var Alumno $alumno */
         foreach ($alumnos as $alumno) {
-            $sanciones = $this->getSancionesByAlumno($alumno);
-            $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
+            if($carnetData) {
+                $sanciones = $this->getSancionesByAlumno($alumno);
+                $arrCarnetsData[] = new CarnetData($alumno, $sanciones);
+            }
+            else
+                $arrCarnetsData[] = $alumno;
         }
         return $arrCarnetsData;
     }
@@ -306,11 +333,11 @@ class AlumnoHelper
      * @param $valorSeleccionado
      * @return array
      */
-    public function filtrarPorPuntos($valorSeleccionado, $alumnos)
+    public function filtrarPorPuntos($valorSeleccionado, $alumnos, $carnetData = true)
     {
         $carnetsFiltrados = [];
         if($valorSeleccionado == self::SELECT_PUNTOS[0])
-            return $this->getArrayCarnetsData($alumnos);
+            return $this->getArrayCarnetsData($alumnos, $carnetData);
         foreach (self::SELECT_PUNTOS as $puntosSelect) {
             if ($puntosSelect == $valorSeleccionado) {
                 $carnets = [];
@@ -319,7 +346,7 @@ class AlumnoHelper
                 count($puntos) > 1 ? $puntosFin = $puntos[1] : $puntosFin = $puntosIni;
                 do {
                     $alumnosFiltrados = $this->getCarnetByPuntos($puntosIni++, $alumnos);
-                    $carnets[] = $this->getArrayCarnetsData($alumnosFiltrados);
+                    $carnets[] = $this->getArrayCarnetsData($alumnosFiltrados, $carnetData);
                 } while ($puntosIni <= $puntosFin);
 
                 foreach ($carnets as $carnet)
@@ -328,5 +355,60 @@ class AlumnoHelper
             }
         }
         return $carnetsFiltrados;
+    }
+
+    /**
+     * Función que devuelve los alumnos de un tutor
+     * @param Tutores $tutor
+     * @return mixed
+     */
+    public function getAlumnosByTutor(Tutores $tutor){
+        return $this->repositoryAlumno->getAlumnosByTutor($tutor);
+    }
+
+    /**
+     * Función que devuelve un tutor a través de un usuario
+     * @param Usuarios $user
+     * @return mixed
+     */
+    public function getTutorByUsuario(Usuarios $user){
+        if(!in_array("ROLE_TUTOR", $user->getRoles())) return null;
+        return $this->repositoryTutor->findOneByIdUsuario($user);
+    }
+
+    /**
+     * Función que comprueba si un tutor es tutor de un alumno
+     * @param Alumno $alumno
+     * @param Tutores $tutor
+     * @return bool
+     */
+    public function isTutorAlumno(Alumno $alumno, Tutores $tutor){
+        if(!in_array("ROLE_TUTOR", $tutor->getIdUsuario()->getRoles())) return false;
+
+        $alumnosTutores = $this->getAlumnosByTutor($tutor);
+        /** @var Alumno $alumnoTutor */
+        foreach ($alumnosTutores as $alumnoTutor)
+            if($alumnoTutor->getId() == $alumno->getId())
+                return true;
+        return false;
+    }
+
+    /**
+     * Función que devuelve los alumnos por curso
+     * @param $cursos
+     * @return array
+     */
+    public function getAlumnosByCursos($cursos){
+        $alumnos = [];
+        foreach ($cursos as $curso){
+            $alumnos[] =$this->repositoryAlumno->findByIdCurso($curso);
+        }
+
+        $alumnosFiltrados = [];
+        foreach ($alumnos as $alumno)
+            foreach ($alumno as $value)
+                $alumnosFiltrados[] = $value;
+
+        return $alumnosFiltrados;
     }
 }

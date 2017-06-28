@@ -101,6 +101,10 @@
     <parameter key="mailer_user">null</parameter>
     <parameter key="mailer_password">null</parameter>
     <parameter key="secret">ThisTokenIsNotSoSecretChangeIt</parameter>
+    <parameter key="mailer_email">null</parameter>
+    <parameter key="mailer_sender">null</parameter>
+    <parameter key="mailer_encryption">null</parameter>
+    <parameter key="mailer_port">null</parameter>
     <parameter key="locale">es</parameter>
     <parameter key="fragment.renderer.hinclude.global_template">null</parameter>
     <parameter key="fragment.path">/_fragment</parameter>
@@ -488,7 +492,7 @@
                 <tag name="cache.pool" clearer="cache.default_clearer"/>
                 <argument>1XzIX4xypE</argument>
                 <argument>0</argument>
-                <argument>7nJGqArLgua2SpuJzs2Rqp</argument>
+                <argument>+s5FEbyh3slPVRDKvW4pOh</argument>
                 <argument>C:\Users\Mike\Documents\GitHub\Convivencia\var\cache\dev/pools</argument>
                 <argument type="service" id="monolog.logger.cache" on-invalid="ignore"/>
                 <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
@@ -656,7 +660,7 @@
           <tag name="monolog.logger" channel="cache"/>
           <argument>ejEgGURnoL</argument>
           <argument>null</argument>
-          <argument>7nJGqArLgua2SpuJzs2Rqp</argument>
+          <argument>+s5FEbyh3slPVRDKvW4pOh</argument>
           <argument type="service" id="monolog.logger.cache" on-invalid="ignore"/>
           <factory class="Symfony\Component\PropertyAccess\PropertyAccessor" method="createCache"/>
         </service>
@@ -677,7 +681,7 @@
       <tag name="cache.pool" clearer="cache.default_clearer"/>
       <argument>UuSosUEvjE</argument>
       <argument>0</argument>
-      <argument>7nJGqArLgua2SpuJzs2Rqp</argument>
+      <argument>+s5FEbyh3slPVRDKvW4pOh</argument>
       <argument>C:\Users\Mike\Documents\GitHub\Convivencia\var\cache\dev/pools</argument>
       <argument type="service" id="monolog.logger.cache" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
@@ -687,7 +691,7 @@
       <tag name="cache.pool" clearer="cache.default_clearer"/>
       <argument>dE8uKT-PgL</argument>
       <argument>0</argument>
-      <argument>7nJGqArLgua2SpuJzs2Rqp</argument>
+      <argument>+s5FEbyh3slPVRDKvW4pOh</argument>
       <argument>C:\Users\Mike\Documents\GitHub\Convivencia\var\cache\dev/pools</argument>
       <argument type="service" id="monolog.logger.cache" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
@@ -1739,7 +1743,7 @@
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>592f194d4804b0.41049165</argument>
+            <argument>5953e06ba93141.16472546</argument>
           </service>
         </argument>
       </argument>
@@ -1887,6 +1891,28 @@
                 <call method="add">
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/recuperarPassword</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/resetPassword</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
                       <argument>^/registro$</argument>
                     </service>
                   </argument>
@@ -1903,6 +1929,71 @@
                   </argument>
                   <argument type="collection">
                     <argument>ROLE_ADMIN</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/partes$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/parte/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/sanciones$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/sancion/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/carnet/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
                   </argument>
                   <argument>null</argument>
                 </call>
@@ -2054,7 +2145,7 @@
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.token_storage"/>
-            <argument>592f194d4804b0.41049165</argument>
+            <argument>5953e06ba93141.16472546</argument>
             <argument type="service" id="monolog.logger.security" on-invalid="null"/>
             <argument type="service" id="security.authentication.manager"/>
           </service>
@@ -2070,6 +2161,28 @@
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
                       <argument>^/login$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/recuperarPassword</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/resetPassword</argument>
                     </service>
                   </argument>
                   <argument type="collection">
@@ -2096,6 +2209,71 @@
                   </argument>
                   <argument type="collection">
                     <argument>ROLE_ADMIN</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/partes$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/parte/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/sanciones$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/sancion/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/carnet/</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_ADMIN</argument>
+                    <argument>ROLE_CONVIVENCIA</argument>
+                    <argument>ROLE_PROFESOR</argument>
                   </argument>
                   <argument>null</argument>
                 </call>
@@ -2634,6 +2812,18 @@
           </call>
           <call method="setEntityListenerResolver">
             <argument type="service" id="doctrine.orm.default_entity_listener_resolver"/>
+          </call>
+          <call method="addCustomStringFunction">
+            <argument>MONTH</argument>
+            <argument>DoctrineExtensions\Query\Mysql\Month</argument>
+          </call>
+          <call method="addCustomStringFunction">
+            <argument>YEAR</argument>
+            <argument>DoctrineExtensions\Query\Mysql\Year</argument>
+          </call>
+          <call method="addCustomStringFunction">
+            <argument>DAY</argument>
+            <argument>DoctrineExtensions\Query\Mysql\Day</argument>
           </call>
         </service>
       </argument>

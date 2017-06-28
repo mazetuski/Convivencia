@@ -66,6 +66,7 @@ class ComposerStaticInit02189c529cbddec3de09b60eba39cc58
             'Doctrine\\Common\\' => 16,
             'Doctrine\\Bundle\\DoctrineCacheBundle\\' => 36,
             'Doctrine\\Bundle\\DoctrineBundle\\' => 31,
+            'DoctrineExtensions\\' => 19,
         ),
     );
 
@@ -182,6 +183,10 @@ class ComposerStaticInit02189c529cbddec3de09b60eba39cc58
         array (
             0 => __DIR__ . '/..' . '/doctrine/doctrine-bundle',
         ),
+        'DoctrineExtensions\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/beberlei/DoctrineExtensions/src',
+        ),
     );
 
     public static $fallbackDirsPsr4 = array (
@@ -194,10 +199,6 @@ class ComposerStaticInit02189c529cbddec3de09b60eba39cc58
             'Twig_' => 
             array (
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
-            ),
-            'Tiloweb\\PaginationBundle\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/tiloweb/pagination-bundle',
             ),
         ),
         'S' => 

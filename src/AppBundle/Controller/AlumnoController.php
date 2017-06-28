@@ -4,16 +4,24 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Alumno;
+use AppBundle\Entity\Cursos;
+use AppBundle\Entity\Usuarios;
 use AppBundle\Form\ImportFormType;
 use AppBundle\Form\PerfilAlumnoFormType;
 use AppBundle\Repository\AlumnoRepository;
+use AppBundle\Repository\CursosRepository;
 use AppBundle\Repository\PartesRepository;
 use AppBundle\Services\AlumnoHelper;
 use AppBundle\Services\ImportHelper;
+use AppBundle\Utils\CsvResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -29,8 +37,12 @@ class AlumnoController extends Controller
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
-            return $this->redirectToRoute("admin");
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+            || in_array("ROLE_TUTOR", $this->getUser()->getRoles())
+            || in_array("ROLE_PROFESOR", $this->getUser()->getRoles())
+            || in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles())
+        )
+            return $this->redirectToRoute("index");
 
         if (!$alumnoHelper->alumnoExists($this->getUser()))
             return $this->redirectToRoute('registrarAlumno');
@@ -46,46 +58,29 @@ class AlumnoController extends Controller
     /**
      * @Route("/alumno/{id}", name="verAlumno", requirements={"id": "\d+"})
      */
-    public function showAlumnoAction($id)
+    public function showAlumnoAction(Alumno $alumno)
     {
         /** @var AlumnoHelper $alumnoHelper */
         $alumnoHelper = $this->get('app.alumnoHelper');
-        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles()) && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles()))
+
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+            && !in_array("ROLE_CONVIVENCIA", $this->getUser()->getRoles())
+            && !in_array("ROLE_TUTOR", $this->getUser()->getRoles())
+            && !in_array("ROLE_PROFESOR", $this->getUser()->getRoles())
+        )
             return $this->redirectToRoute("index");
-        $em = $this->getDoctrine()->getManager();
-        $alumno = $em->getRepository("AppBundle:Alumno")->findOneById($id);
+
+        if (in_array("ROLE_TUTOR", $this->getUser()->getRoles()) &&
+            !$alumnoHelper->isTutorAlumno($alumno, $alumnoHelper->getTutorByUsuario($this->getUser()))
+        )
+            return $this->redirectToRoute("index");
+
         $userData = $alumnoHelper->getUserData($alumno, true);
         return $this->render('convivencia/alumno/alumno.html.twig', array(
                 'alumnoData' => $userData,
                 'userAdmin' => $this->getUser(),
             )
         );
-    }
-
-    /**
-     * @Route("/admin/import", name="admin_import")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    public function importAlumnoAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(ImportFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var File $file */
-            $file = $form['importar']->getData();
-            /** @var ImportHelper $importHelper */
-            $importHelper = $this->get('app.importHelper');
-            $importHelper->importarAlumnos($file);
-            $this->addFlash(
-                'alumnos',
-                'El fichero ha sido importado!'
-            );
-        }
-
-        return $this->render('convivencia/admin/gestionAlumnos.html.twig', array(
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -127,7 +122,6 @@ class AlumnoController extends Controller
     public function showCarnets(Request $request)
     {
         $emConvivencia = $this->getDoctrine()->getManager();
-        $paginator = $this->get('knp_paginator');
         /** @var AlumnoRepository $repositoryAlumnos */
         $repositoryAlumnos = $emConvivencia->getRepository('AppBundle:Alumno');
         if ($request->get('like') != null AND $request->get('like') != '')
@@ -141,13 +135,10 @@ class AlumnoController extends Controller
             $arrayCarnetData = $alumnoHelper->filtrarPorPuntos($request->get('puntosFiltro'), $alumnos);
         else
             $arrayCarnetData = $alumnoHelper->getArrayCarnetsData($alumnos);
-        $arrayCarnetDataPaginator = $paginator->paginate(
-            $arrayCarnetData, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            13/*limit per page*/
-        );
+
         return $this->render('convivencia/alumno/carnets.html.twig', array(
-            'arrayCarnetData' => $arrayCarnetDataPaginator,
+//            'arrayCarnetData' => $arrayCarnetDataPaginator,
+            'arrayCarnetData' => $arrayCarnetData,
             'puntosSelect' => AlumnoHelper::SELECT_PUNTOS,
         ));
     }
@@ -186,6 +177,11 @@ class AlumnoController extends Controller
         ));
     }
 
+    /**
+     * Función que comprueba que el el usuario sea el alumno pasado por parámetro
+     * @param Alumno $alumno
+     * @return bool
+     */
     public function comprobarIsThisAlumno(Alumno $alumno)
     {
         /** @var AlumnoHelper $alumnoHelper */
@@ -198,6 +194,119 @@ class AlumnoController extends Controller
             return false;
         return true;
     }
+
+    /**
+     * @Route("/alumnoImage", name="change_image")
+     */
+    public function changeProfileImage(Request $request)
+    {
+        if (!$request->isMethod('POST') || !in_array("ROLE_USER", $this->getUser()->getRoles()))
+            return $this->redirectToRoute("index");
+
+        try {
+            /** @var UploadedFile $file */
+            $file = $request->files->get('file');
+            if (!is_array(getimagesize($file))) {
+                $this->addFlash('alumnoError', 'No es una imagen');
+                return $this->redirectToRoute("index");
+            }
+
+            /** @var EntityManager $em */
+            $em = $this->get('doctrine.orm.entity_manager');
+            /** @var AlumnoHelper $alumnoHelper */
+            $alumnoHelper = $this->get('app.alumnoHelper');
+            /** @var Alumno $alumno */
+            $alumno = $alumnoHelper->getAlumnoLogueado($this->getUser());
+            $fecha = new \DateTime();
+            $filename = $fecha->getTimestamp();
+            $filename .= $file->getClientOriginalName();
+            $dir = __DIR__ . '/../../../web/img/alumnos';
+            $file->move($dir, $filename);
+            $alumno->setFoto($filename);
+            $em->persist($alumno);
+            $em->flush();
+            $this->addFlash('alumno', 'La imagen ha sido subida con éxito');
+        } catch (\Exception $e) {
+            $this->addFlash('alumnoError', 'La imagen no se ha podido subir');
+        }
+        return $this->redirectToRoute("index");
+    }
+
+    /**
+     * @Route("/carnet/exportCarnet", name="admin_export_carnets")
+     */
+    public function exportSanciones(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+        $alumnosSeleccionados = $request->get('alumnos');
+        $cursosSeleccionados = $request->get('cursos');
+        $puntos = $request->get('puntosFiltro');
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var CursosRepository $repositoryCursos */
+        $repositoryCursos = $em->getRepository('AppBundle:Cursos');
+        if($alumnosSeleccionados == "Todos"){
+            $alumnos = $repositoryAlumnos->findAll();
+        }
+        else{
+            $alumnos = $repositoryAlumnos->findById($alumnosSeleccionados);
+        }
+
+        if($cursosSeleccionados == "Todos"){
+            $cursos = $repositoryCursos->findAll();
+        }
+        else{
+            $cursos = $repositoryCursos->findById($cursosSeleccionados);
+        }
+
+        /** @var AlumnoHelper $alumnoHelper */
+        $alumnoHelper = $this->get('app.alumnoHelper');
+        $alumnosPuntos = $alumnoHelper->filtrarPorPuntos($puntos, $alumnos, false);
+        $alumnosCursos = $alumnoHelper->getAlumnosByCursos($cursos);
+        $data = [];
+        foreach ($alumnosPuntos as $alumnosPunto)
+            foreach ($alumnosCursos as $alumnosCurso)
+                if ($alumnosPunto->getId() == $alumnosCurso->getId())
+                    $data[] = $alumnosCurso;
+
+        $arrData = [];
+        $arrData[] = ['Id', 'Alumno', 'Puntos', 'Grupo'];
+        /** @var Alumno $carnet */
+        foreach ($data as $carnet) {
+            $carnetCsv = [];
+            $carnetCsv[] = $carnet->getId();
+            $carnetCsv[] = $carnet->getNombreCompleto();
+            $carnetCsv[] = $carnet->getPuntos();
+            $carnetCsv[] = $carnet->getIdCurso()->getGrupo();
+            $arrData[$carnet->getId()] = $carnetCsv;
+        }
+        $response = new CsvResponse($arrData, 200);
+        $response->setFilename("Carnets.csv");
+        return $response;
+    }
+
+
+    /**
+     * @Route("/carnet/exportFormCarnets", name="export_form_carnets")
+     */
+    public function exportCarnets()
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var AlumnoRepository $repositoryAlumnos */
+        $repositoryAlumnos = $em->getRepository('AppBundle:Alumno');
+        /** @var CursosRepository $repositoryCursos */
+        $repositoryCursos = $em->getRepository('AppBundle:Cursos');
+        $alumnos = $repositoryAlumnos->findAll();
+        $cursos = $repositoryCursos->findAll();
+
+        return $this->render('convivencia/exportCarnets.html.twig', array(
+            'alumnos' => $alumnos,
+            'cursos' => $cursos,
+            'puntosSelect' => AlumnoHelper::SELECT_PUNTOS,
+        ));
+    }
+
 
 }
 

@@ -12,11 +12,11 @@
                 {% if app.request.get('idSancion') is not null %}
                     {% if accion != 'Inhabilitada' %}
                         <a href="{{ path('nueva_sancion', {'idSancion': sancion.id, 'estadoSancion': 'continuar' }) }}"
-                           class="w3-button w3-text-white botonSubmit" data-title="{{ accion }}">{{ accion }}</a>
+                           class="w3-button w3-text-white botonSubmit confirm" data-title="{{ accion }}">{{ accion }}</a>
                         {#<input class="w3-button w3-text-white"#}
                                {#type="submit" name="estadoSancion" value="{{ accion }}">#}
                     {% else %}
-                        <input class="w3-button w3-text-white botonSubmit"
+                        <input class="w3-button w3-text-white botonSubmit confirm"
                                type="button" value="{{ sancion.getIdEstado().getEstado() }}" disabled>
                     {% endif %}
                 {% endif %}
@@ -77,7 +77,7 @@
         {{ form_widget(form) }}
         <br/>
         <input class="w3-button w3-block w3-section w3-text-white" type="submit" name="registrarSancion" value="Enviar">
-        <a href="{{ path('gestion_sanciones') }}" data-title="Cancelar" class="w3-button w3-block w3-section w3-text-white botonSubmit">Cancelar</a>
+        <a href="{{ path('gestion_sanciones') }}" data-title="Cancelar" class="w3-button w3-block w3-section w3-text-white botonSubmit confirm">Cancelar</a>
         {{ form_end(form) }}
 
     </div>

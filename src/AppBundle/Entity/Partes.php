@@ -115,7 +115,7 @@ class Partes
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="Profesores")
-     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id")
+     * @ORM\JoinColumn(name="idProfesor", referencedColumnName="id", onDelete="cascade")
      */
     private $idProfesor;
 
@@ -144,6 +144,13 @@ class Partes
      * @ORM\Column(name="fechaComunicacion", type="string", nullable=true)
      */
     private $fechaComunicacion;
+
+    /**
+     * @var int
+     *
+     * @ORM\ManyToMany(targetEntity="Sanciones", mappedBy="idParte")
+     */
+    private $sancion;
 
 
     /**
@@ -537,7 +544,7 @@ class Partes
     /**
      * Get fechaConfirmacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaConfirmacion()
     {
@@ -561,10 +568,44 @@ class Partes
     /**
      * Get fechaComunicacion
      *
-     * @return \DateTime
+     * @return string
      */
     public function getFechaComunicacion()
     {
         return $this->fechaComunicacion;
+    }
+
+    /**
+     * Add sancion
+     *
+     * @param \AppBundle\Entity\Sanciones $sancion
+     *
+     * @return Partes
+     */
+    public function addSancion(\AppBundle\Entity\Sanciones $sancion)
+    {
+        $this->sancion[] = $sancion;
+
+        return $this;
+    }
+
+    /**
+     * Remove sancion
+     *
+     * @param \AppBundle\Entity\Sanciones $sancion
+     */
+    public function removeSancion(\AppBundle\Entity\Sanciones $sancion)
+    {
+        $this->sancion->removeElement($sancion);
+    }
+
+    /**
+     * Get sancion
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSancion()
+    {
+        return $this->sancion;
     }
 }

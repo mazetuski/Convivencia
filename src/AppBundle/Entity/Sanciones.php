@@ -121,8 +121,8 @@ class Sanciones
     /**
      * @var int
      *
-     * @ORM\ManyToMany(targetEntity="Partes")
-     * @ORM\JoinColumn(name="idParte", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Partes", inversedBy="sancion", cascade={"remove", "persist"})
+     * @ORM\JoinColumn(name="idParte", referencedColumnName="id", onDelete="cascade")
      */
     private $idParte;
 
@@ -386,6 +386,7 @@ class Sanciones
      */
     public function addIdParte(\AppBundle\Entity\Partes $idParte)
     {
+        $idParte->addSancion($this);
         $this->idParte[] = $idParte;
 
         return $this;

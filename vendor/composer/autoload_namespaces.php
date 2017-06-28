@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
-    'Tiloweb\\PaginationBundle\\' => array($vendorDir . '/tiloweb/pagination-bundle'),
     'SensioLabs\\Security' => array($vendorDir . '/sensiolabs/security-checker'),
     'Knp\\Component' => array($vendorDir . '/knplabs/knp-components/src'),
     'Doctrine\\ORM\\' => array($vendorDir . '/doctrine/orm/lib'),
