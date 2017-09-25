@@ -1,4 +1,6 @@
 Convivencia
 ===========
 
-A Symfony project created on March 20, 2017, 3:33 pm.
+Proyecto realizado con Symfony para el I.E.S. Gran Capitán. Gestiona los partes y las sanciones a los alumnos de forma automática.
+
+![alt text](https://github.com/i02lomom/Convivencia/blob/master/convivencia.PNG?raw=true)
